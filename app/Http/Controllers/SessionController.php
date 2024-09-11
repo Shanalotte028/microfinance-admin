@@ -24,7 +24,7 @@ class SessionController extends Controller
                 'email'=> 'Wrong Credentials'
             ]);
         }
-
+        
         request()->session()->regenerate();
 
         return redirect()->route('dashboard');

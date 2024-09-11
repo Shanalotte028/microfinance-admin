@@ -16,10 +16,27 @@ class UserRegistrationController extends Controller
             'first_name'=>['required'],
             'last_name'=>['required'],
             'email'=>['required','email'],
-            'password'=>['required','confirmed']
+            'role'=>['required'],
+            'password'=>['required','confirmed']     
         ]);
         
-        $user = User::create($validatedAttributes);
+        $access_level = '';
+
+        switch (request()->input('role')) {
+            case 'Staff':
+                $access_level = 'Basic';
+                break;
+            case 'Manager':
+                $access_level = 'Manager';
+                break;
+            case 'Admin':
+                $access_level = 'Admin';
+                break;
+        }
+
+        User::create(array_merge($validatedAttributes,[
+            'access_level' => $access_level
+        ]));
 
         return redirect('/login');
     }

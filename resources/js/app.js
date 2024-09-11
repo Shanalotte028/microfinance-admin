@@ -1,8 +1,14 @@
 import './bootstrap';
 
+import './datatables-simple-demo'
+import '../assets/demo/chart-area-demo'
+import '../assets/demo/chart-bar-demo'
+import '../assets/demo/chart-pie-demo'
+
+
 
 window.addEventListener('DOMContentLoaded', event => {
-
+    console.log('DOM fully loaded and parsed');
     // Toggle the side navigation
     const sidebarToggle = document.body.querySelector('#sidebarToggle');
     if (sidebarToggle) {
@@ -16,5 +22,4 @@ window.addEventListener('DOMContentLoaded', event => {
             localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
         });
     }
-
 });
