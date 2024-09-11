@@ -17,12 +17,14 @@ class ClientFactory extends Factory
     public function definition(): array
     {
         return [
-            //
-            'first_name'=> fake()->firstName(),
-            'last_name'=> fake()->lastName(),
-            'email'=> fake()->email(),
-            'phone_number'=> fake()->phoneNumber(),
-            'loan_history'=> fake()->numberBetween(1,10),
+            'first_name' => $this->faker->firstName(),
+            'last_name' => $this->faker->lastName(),
+            'email' => $this->faker->email(),
+            'phone_number' => $this->faker->phoneNumber(),
+            'birthday' => $this->faker->date($format = 'Y-m-d', $max = 'now'),
+            'gender' => $this->faker->randomElement(['Male', 'Female', 'Other']),
+            'client_type' => $this->faker->randomElement(['Individual', 'Business']),
+            'client_status' => $this->faker->randomElement(['Active', 'Inactive', 'Suspended', 'Closed']),
         ];
     }
 }

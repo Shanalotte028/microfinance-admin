@@ -67,7 +67,12 @@
                 <div class="col-md-6">
                     <div class="card bg-dark text-white mb-4">
                         <div class="card-body">
-                            <h1>RISK MITIGATION</h1>
+                            <h1>Risk Mitigation</h1>
+                        </div>
+                    </div>
+                    <div class="card bg-dark text-white mb-4">
+                        <div class="card-body">
+                            <h1>Transaction History</h1>
                         </div>
                     </div>
                     <div class="card bg-dark text-white mb-4">

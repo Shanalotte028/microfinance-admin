@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+
 class Client extends Model
 {
     use HasFactory;
@@ -13,13 +14,26 @@ class Client extends Model
         'last_name',
         'email',
         'phone_number',
-        'loan_history'
+        'birthday',
+        'gender',
+        'client_type',
+        'client_status',
     ];
 
-    public function risk(){
-        return $this->hasOne(Risk::class);
+    public function addresses(){
+        return $this->hasMany(Address::class);
     }
-    public function compliance(){
-        return  $this->hasOne(Compliance::class);
+    
+    // Compliances
+    public function compliance_records(){
+        return  $this->hasMany(Compliance::class);
+    }
+    //financials
+    public function financial_details(){
+        return $this->hasMany(Financial::class);
+    }
+    //risks
+    public function risk_assessments(){
+        return $this->hasMany(Risk::class);
     }
 }

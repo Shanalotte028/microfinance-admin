@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Client;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,7 +18,21 @@ return new class extends Migration
             $table->string('last_name');
             $table->string('email');
             $table->string('phone_number');
-            $table->string('loan_history');
+            $table->date('birthday');
+            $table->enum('gender', ['Male','Female','Other']);
+            $table->enum('client_type', ['Individual','Business']);
+            $table->enum('client_status', ['Active','Inactive','Suspended','Closed']);
+            $table->timestamps();
+        });
+
+        Schema::create('addresses', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(Client::class);
+            $table->string('address_line_1'); // Primary street address.
+            $table->string('address_line_2'); // Additional address info (e.g., apartment number).
+            $table->string('city');
+            $table->string('province');
+            $table->string('postal_code');
             $table->timestamps();
         });
     }
@@ -28,5 +43,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('clients');
+        Schema::dropIfExists('addresses');
     }
 };

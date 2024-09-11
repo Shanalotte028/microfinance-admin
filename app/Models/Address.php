@@ -5,15 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Risk extends Model
+class Address extends Model
 {
     use HasFactory;
-    protected $table = 'risk_assessments';
+    protected $table = 'addresses';
     protected $fillable = [
-        'risk_score',
-        'risk_level',
-        'recommendation',
-        'assessment_date',
+        'address_line_1',
+        'address_line_2',
+        'city',
+        'province',
+        'postal_code',
     ];
 
     public function client(){

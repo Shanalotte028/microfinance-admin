@@ -9,7 +9,16 @@ class Compliance extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['document_status','audit_status'];
+    protected $table = 'compliance_records';
+    
+    protected $fillable = [
+        'document_type',
+        'document_path',
+        'document_status',
+        'submission_date',
+        'approval_date',
+        'remarks',
+    ];
 
     public function client(){
         return $this->belongsTo(Client::class);
