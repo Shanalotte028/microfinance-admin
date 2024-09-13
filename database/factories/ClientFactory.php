@@ -24,7 +24,7 @@ class ClientFactory extends Factory
             'birthday' => $this->faker->date($format = 'Y-m-d', $max = 'now'),
             'gender' => $this->faker->randomElement(['Male', 'Female', 'Other']),
             'client_type' => $this->faker->randomElement(['Individual', 'Business']),
-            'client_status' => $this->faker->randomElement(['Active', 'Inactive', 'Suspended', 'Closed']),
+            'client_status' => 'Active',
         ];
     }
 }

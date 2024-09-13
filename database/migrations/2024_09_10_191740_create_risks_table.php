@@ -16,10 +16,10 @@ return new class extends Migration
         Schema::create('risk_assessments', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Client::class);
-            $table->integer('risk_score');
-            $table->enum('risk_level', ['low','medium','high']);
+            $table->integer('risk_score'); // Numerical score representing the client's risk.
+            $table->enum('risk_level', ['low','medium','high']); // Categorized risk level.
             $table->string('recommendation'); //Suggested actions based on assessment (e.g., flag for review).
-            $table->dateTime('assessment_date');
+            $table->dateTime('assessment_date'); // Date of the assessment.
             $table->timestamps();
         });
     }

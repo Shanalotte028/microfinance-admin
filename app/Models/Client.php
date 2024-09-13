@@ -30,7 +30,7 @@ class Client extends Model
     }
     //financials
     public function financial_details(){
-        return $this->hasMany(Financial::class);
+        return $this->hasOne(Financial::class);
     }
     //risks
     public function risk_assessments(){

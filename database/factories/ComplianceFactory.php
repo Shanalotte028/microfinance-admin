@@ -20,12 +20,11 @@ class ComplianceFactory extends Factory
     {
         return [
             'client_id' => Client::factory(),
-            'document_type'=> fake()->sentence(2),  
-            'document_path'=> fake()->filePath(),    
-            'document_status'=> fake()->randomElement(['pending','approved','rejected']),
-            'submission_date'=> SupportCarbon::now()->format('Y-m-d'),
-            'approval_date'=> SupportCarbon::now()->addDays(12)->format('Y-m-d'),
-            'remarks'=>fake()->sentence(3),
+            'document_type'=> $this->faker->randomElement(['ID Proof', 'Income Proof', 'Citizenship Proof']),     
+            'document_status'=> 'pending',
+            'submission_date'=> fake()->date(),
+            'approval_date'=> null,
+            'remarks'=> null,
         ];
     }
 }

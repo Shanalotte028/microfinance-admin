@@ -8,7 +8,7 @@
                         <ol class="breadcrumb mb-4">
                         <li class="breadcrumb-item active">List Client</li>
                     </ol>
-                        <x-datatable>
+                        <x-table-data>
                             <x-slot:heading>
                                 Clients
                             </x-slot:heading>
@@ -49,7 +49,7 @@
                                         </tr>
                                 @endforeach
                             </tbody>
-                        </x-datatable>
+                        </x-table-data>
                 </div>
             </main>
             <x-footer/>

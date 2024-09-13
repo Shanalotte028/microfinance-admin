@@ -10,11 +10,11 @@
                     </ol>
                         <x-cards></x-cards>
                         <x-charts></x-charts>
-                        <x-datatable>
+                        <x-table-data>
                             <x-slot:heading>
                                 Example
                             </x-slot:heading>
-                        </x-datatable>
+                        </x-table-data>
                 </div>
             </main>
             <x-footer/>
