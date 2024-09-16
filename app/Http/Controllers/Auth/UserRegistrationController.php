@@ -9,37 +9,39 @@ use Illuminate\Validation\Rules;
 
 class UserRegistrationController extends Controller
 {
-    //
-    public function create(){
+    public function create()
+    {
         return view("auth.register");
     }
-    public function store(){
-        $validatedAttributes = request()->validate([
-            'first_name'=>['required', 'string', 'max:255'],
-            'last_name'=>['required', 'string', 'max:255'],
-            'email'=>['required','string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'role'=>['required'],
-            'password'=>['required','confirmed', Rules\Password::defaults()]     
+
+    public function store(Request $request)
+    {
+        // Validate input
+        $validatedAttributes = $request->validate([
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
+            'role' => ['required', 'string', 'in:Staff,Manager,Admin'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
-        
-        $access_level = '';
 
-        switch (request()->input('role')) {
-            case 'Staff':
-                $access_level = 'Basic';
-                break;
-            case 'Manager':
-                $access_level = 'Manager';
-                break;
-            case 'Admin':
-                $access_level = 'Admin';
-                break;
-        }
+        // Determine access level based on role
+        $access_level = match ($request->input('role')) {
+            'Staff' => 'Basic',
+            'Manager' => 'Manager',
+            'Admin' => 'Admin',
+            default => 'Basic',
+        };
 
-        User::create(array_merge($validatedAttributes,[
-            'access_level' => $access_level
+        // Hash the password
+        $validatedAttributes['password'] = bcrypt($validatedAttributes['password']);
+
+        // Create user
+        User::create(array_merge($validatedAttributes, [
+            'access_level' => $access_level,
         ]));
 
-        return redirect('/login');
+        // Redirect with a success message
+        return redirect('/login')->with('status', 'Registration successful. Please login.');
     }
 }

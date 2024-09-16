@@ -5,7 +5,7 @@
             <form method="post" action="/login">
                 @csrf
                 <div class="form-floating mb-3">
-                    <input class="form-control text-dark" id="inputEmail" name="email" type="email" name="email" required/>
+                    <input class="form-control text-dark" id="inputEmail" name="email" type="email" name="email" value="{{ $email ?? old('email') }}" required/>
                     <label for="inputEmail">Email address</label>
                     <x-form-error name="email"></x-form-error>
                 </div>
@@ -15,8 +15,8 @@
                     <x-form-error name="password"></x-form-error>
                 </div>
                 <div class="form-check mb-3 text-muted">
-                    <input class="form-check-input" id="inputRememberPassword" type="checkbox" value="" />
-                    <label class="form-check-label" for="inputRememberPassword">Remember Password</label>
+                    <input class="form-check-input" id="remember" name="remember" type="checkbox" value="" />
+                    <label class="form-check-label" for="remember">Remember Password</label>
                 </div>
                 <div class="mt-4 mb-0 text-center">
                     <button class="btn btn-success w-50 d-block mx-auto mb-2" type="submit">Login</button>
