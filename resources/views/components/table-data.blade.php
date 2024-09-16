@@ -1,10 +1,10 @@
-<div class="card mb-4 border-dark text-light bg-dark">
-    <div class="card-header bg-dark">
+<div class="card mb-4">
+    <div class="card-header">
         <i class="fas fa-table me-1"></i>
         {{ $heading }}
     </div>
     <div class="card-body">
-        <table id="datatablesSimple" class="text-light border-dark table table-striped">
+        <table id="datatablesSimple" class="table table-striped">
             {{$slot}}
         </table>
     </div>
