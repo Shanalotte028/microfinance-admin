@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules;
 
 class UserRegistrationController extends Controller
 {
@@ -13,11 +15,11 @@ class UserRegistrationController extends Controller
     }
     public function store(){
         $validatedAttributes = request()->validate([
-            'first_name'=>['required'],
-            'last_name'=>['required'],
-            'email'=>['required','email'],
+            'first_name'=>['required', 'string', 'max:255'],
+            'last_name'=>['required', 'string', 'max:255'],
+            'email'=>['required','string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'role'=>['required'],
-            'password'=>['required','confirmed']     
+            'password'=>['required','confirmed', Rules\Password::defaults()]     
         ]);
         
         $access_level = '';

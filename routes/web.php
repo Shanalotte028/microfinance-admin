@@ -5,8 +5,10 @@ use App\Http\Controllers\ComplianceController;
 use App\Http\Controllers\FinancialController;
 use App\Http\Controllers\KycController;
 use App\Http\Controllers\LoanController;
-use App\Http\Controllers\SessionController;
-use App\Http\Controllers\UserRegistrationController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\Auth\SessionController;
+use App\Http\Controllers\Auth\UserRegistrationController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -33,6 +35,15 @@ route::get('/clients/{client}/financial-details/{financial}/loans/{loan}', [Loan
 Route::get('/login', [SessionController::class,'create'])->name('login');
 Route::post('/login', [SessionController::class,'store']);
 Route::post('/logout', [SessionController::class,'destroy']);
+// Reset Password Route
+Route::get('password/reset', [ForgotPasswordController::class, 'create'])->name('password.request');
+// Route to submit the email for a password reset link
+Route::post('password/email', [ForgotPasswordController::class, 'store'])->name('password.email');
+// Route to show the password reset form when the user clicks the reset link
+Route::get('password/reset/{token}', [ResetPasswordController::class, 'create'])->name('password.reset');
+// Route to submit the new password
+Route::post('/reset', [ResetPasswordController::class, 'update'])->name('password.update');
+
 //Registration
 Route::get('/register', [UserRegistrationController::class,'create']);
 Route::post('/register', [UserRegistrationController::class,'store']);

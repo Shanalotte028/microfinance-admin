@@ -1996,7 +1996,7 @@ progress {
 .form-text {
   margin-top: 0.25rem;
   font-size: 0.875em;
-  color: #6c757d;
+  color: #212529;
 }
 
 .form-control, .datatable-input {
@@ -2449,6 +2449,7 @@ textarea.form-control-lg {
   border: 1px solid transparent;
   transform-origin: 0 0;
   transition: opacity 0.1s ease-in-out, transform 0.1s ease-in-out;
+  color: #212529;
 }
 @media (prefers-reduced-motion: reduce) {
   .form-floating > label {
