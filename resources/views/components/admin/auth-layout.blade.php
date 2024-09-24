@@ -1,4 +1,4 @@
-<x-header class="bg-dark sb-nav-fixed" style="--bs-bg-opacity: .95;"/>
+<x-admin.header class="bg-dark sb-nav-fixed" style="--bs-bg-opacity: .95;"/>
     <div id="layoutAuthentication">
         <div id="layoutAuthentication_content">
             <main>
@@ -15,5 +15,5 @@
             </main>
         </div>
     </div>
-    <x-footer/>
-<x-foot/>
+    <x-admin.footer/>
+<x-admin.foot/>

@@ -1,4 +1,4 @@
-<x-auth-layout>
+<x-admin.auth-layout>
     <x-slot:column_size>5</x-slot:column_size>
     <x-slot:header>Login</x-slot:header>
         <div class="card-body">
@@ -7,12 +7,12 @@
                 <div class="form-floating mb-3">
                     <input class="form-control text-dark" id="inputEmail" name="email" type="email" name="email" value="{{ $email ?? old('email') }}" required/>
                     <label for="inputEmail">Email address</label>
-                    <x-form-error name="email"></x-form-error>
+                    <x-admin.form-error name="email"></x-admin.form-error>
                 </div>
                 <div class="form-floating mb-3">
                     <input class="form-control text-dark" id="inputPassword" name="password" type="password" required />
                     <label for="inputPassword">Password</label>
-                    <x-form-error name="password"></x-form-error>
+                    <x-admin.form-error name="password"></x-admin.form-error>
                 </div>
                 <div class="form-check mb-3 text-muted">
                     <input class="form-check-input" id="remember" name="remember" type="checkbox" value="" />
@@ -27,4 +27,4 @@
         <div class="card-footer text-center py-3">
             <div class="small text-"><a href="/register" class="text-muted">Need an account? Sign up!</a></div>
         </div>
-</x-auth-layout>
+</x-admin.auth-layout>

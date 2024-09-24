@@ -1,68 +1,68 @@
-<x-dashboard-layout>
+<x-admin.dashboard-layout>
     <x-slot:heading>User Overview</x-slot:heading>
     <x-slot:heading_child>{{ $client->first_name }} {{ $client->last_name }}</x-slot:heading_child>
         <div class="row">
             <!-- Left Column -->
             <div class="col-md-6">
-                <x-card-table-info> {{-- Client Info Card --}}
+                <x-admin.card-table-info> {{-- Client Info Card --}}
                     <x-slot:heading>{{ $client->email }}</x-slot:heading>
                     <x-slot:heading_child>User ID: {{ $client->id }}</x-slot>
-                        <x-card-table-info-tr>
+                        <x-admin.card-table-info-tr>
                             <x-slot:heading>Name</x-slot:heading>
                             {{ $client->first_name }} {{ $client->last_name}}
-                        </x-card-table-info-tr>
-                        <x-card-table-info-tr>
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
                             <x-slot:heading>Email</x-slot:heading>
                             {{ $client->email }}
-                        </x-card-table-info-tr>
-                        <x-card-table-info-tr>
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
                             <x-slot:heading>Phone Number</x-slot:heading>
                             {{ $client->phone_number }}
-                        </x-card-table-info-tr>
-                        <x-card-table-info-tr>
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
                             <x-slot:heading>Birthday</x-slot:heading>
                             {{ $client->birthday }}
-                        </x-card-table-info-tr>
-                        <x-card-table-info-tr>
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
                             <x-slot:heading>Gender</x-slot:heading>
                             {{ $client->gender }}
-                        </x-card-table-info-tr>
-                        <x-card-table-info-tr>
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
                             <x-slot:heading>Client Type</x-slot:heading>
                             {{ $client->client_type }}
-                        </x-card-table-info-tr>
-                        <x-card-table-info-tr>
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
                             <x-slot:heading>Client Status</x-slot:heading>
                             {{ $client->client_status }}
-                        </x-card-table-info-tr>
-                        <x-card-table-info-tr>
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
                             <x-slot:heading>Created At</x-slot:heading>
                             {{ $client->created_at }}
-                        </x-card-table-info-tr>
-                        <x-card-table-info-tr>
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
                             <x-slot:heading>Address Line 1</x-slot:heading>
                             {{ $client->addresses->first()->address_line_1 }}
-                        </x-card-table-info-tr>
-                        <x-card-table-info-tr>
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
                             <x-slot:heading>Address Line 2</x-slot:heading>
                             {{ $client->addresses->first()->address_line_2 }}
-                        </x-card-table-info-tr>
-                        <x-card-table-info-tr>
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
                             <x-slot:heading>City</x-slot:heading>
                             {{ $client->addresses->first()->city }}
-                        </x-card-table-info-tr>
-                        <x-card-table-info-tr>
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
                             <x-slot:heading>Province</x-slot:heading>
                             {{ $client->addresses->first()->province }}
-                        </x-card-table-info-tr>
-                        <x-card-table-info-tr>
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
                             <x-slot:heading>Postal Code</x-slot:heading>
                             {{ $client->addresses->first()->postal_code }}
-                        </x-card-table-info-tr>
-                </x-card-table-info>        
+                        </x-admin.card-table-info-tr>
+                </x-admin.card-table-info>        
                 
                 <!-- Compliance Records Card -->
-                <x-card-table-list>
+                <x-admin.card-table-list>
                     <x-slot:heading>Compliance Record</x-slot:heading>
                     <x-slot:table_row>
                         <th class="col-3">Document Type</th>
@@ -83,7 +83,7 @@
                         </tr>
                     @endforeach
                     <x-slot:button><a href="{{ url('clients/'.$client->id.'/compliance-records')}}" class="btn btn-success">Show All</a></x-slot:button>
-                </x-card-table-list>
+                </x-admin.card-table-list>
             </div>
             
             <!-- Right Column -->
@@ -94,28 +94,28 @@
                     </div>
                 </div>
                 {{-- Financial Card --}}
-                <x-card-table-info>
+                <x-admin.card-table-info>
                     <x-slot:heading>Financial Details</x-slot:heading>
-                    <x-card-table-info-tr>
+                    <x-admin.card-table-info-tr>
                         <x-slot:heading>Total Amount Borrowed</x-slot:heading>
                         {{ $client->financial_details->total_loan_amount_borrowed }}
-                    </x-card-table-info-tr>
-                    <x-card-table-info-tr>
+                    </x-admin.card-table-info-tr>
+                    <x-admin.card-table-info-tr>
                         <x-slot:heading>Repayment Status</x-slot:heading>
                         {{ $client->financial_details->loan_repayment_status  }}
-                    </x-card-table-info-tr>
-                    <x-card-table-info-tr>
+                    </x-admin.card-table-info-tr>
+                    <x-admin.card-table-info-tr>
                         <x-slot:heading>Income</x-slot:heading>
                         {{ $client->financial_details->income }}
-                    </x-card-table-info-tr>
-                    <x-card-table-info-tr>
+                    </x-admin.card-table-info-tr>
+                    <x-admin.card-table-info-tr>
                         <x-slot:heading>Credit Score</x-slot:heading>
                         {{ $client->financial_details->credit_score  }}
-                    </x-card-table-info-tr>
+                    </x-admin.card-table-info-tr>
                     <x-slot:button>
                         <a href="{{ url('clients/'.$client->id.'/financial-details/'.$client->financial_details->id)}}" class="btn btn-success">Show Loans</a>
                     </x-slot:button>
-                </x-card-table-info>
+                </x-admin.card-table-info>
             </div>
         </div>
-</x-dashboard-layout>
+</x-admin.dashboard-layout>

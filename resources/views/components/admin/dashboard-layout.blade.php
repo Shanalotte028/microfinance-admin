@@ -1,6 +1,6 @@
-<x-header/>
-    <x-nav-bar/>
-    <x-nav-side/>
+<x-admin.header/>
+    <x-admin.nav-bar/>
+    <x-admin.nav-side/>
         <div id="layoutSidenav_content"  class="bg-dark" style="--bs-bg-opacity: .95;">
             <main>
                 <div class="container-fluid px-4">
@@ -11,7 +11,7 @@
                     {{ $slot }}
                 </div>
             </main>
-            <x-footer/>
+            <x-admin.footer/>
         </div>
     </div>
-<x-foot/>
+<x-admin.foot/>

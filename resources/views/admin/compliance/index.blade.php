@@ -1,9 +1,9 @@
-<x-dashboard-layout>
+<x-admin.dashboard-layout>
     <x-slot:heading>
         Compliance Records
     </x-slot:heading>
         <div class="row">
-            <x-card-table-list>
+            <x-admin.card-table-list>
                 <x-slot:heading>Compliance Record List</x-slot:heading>
                     <x-slot:table_row>
                             <th>Document Type</th>
@@ -23,6 +23,6 @@
                                     </td>
                                 </tr>
                             @endforeach
-            </x-card-table-list>
+            </x-admin.card-table-list>
         </div>
-</x-dashboard-layout>
+</x-admin.dashboard-layout>

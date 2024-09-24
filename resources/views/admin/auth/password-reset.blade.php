@@ -1,4 +1,4 @@
-<x-auth-layout>
+<x-admin.auth-layout>
     <x-slot:column_size>5</x-slot:column_size>
         <x-slot:header>Reset Password</x-slot:header>
             <div class="card-body">
@@ -9,21 +9,21 @@
                     <div class="form-floating mb-3">
                         <input class="form-control text-dark" id="inputEmail" name="email" type="email" name="email" value="{{ $email ?? old('email') }}" required autofocus/>
                         <label for="inputEmail">Email address</label>
-                        <x-form-error name="email"></x-form-error>
+                        <x-admin.form-error name="email"></x-admin.form-error>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mb-md-0">
                                 <input class="form-control" id="password" name="password" type="password" required/>
                                 <label for="password">Password</label>
-                                <x-form-error name="password"></x-form-error>
+                                <x-admin.form-error name="password"></x-admin.form-error>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mb-md-0">
                                 <input class="form-control" id="password_confirmation" name="password_confirmation" type="password" required/>
                                 <label for="password_confirmation">Confirm Password</label>
-                                <x-form-error name="password_confirmation"></x-form-error>
+                                <x-admin.form-error name="password_confirmation"></x-admin.form-error>
                             </div>
                         </div>
                     </div>
@@ -32,4 +32,4 @@
                     </div>   
                 </form>
             </div>
-    </x-auth-layout>
+    </x-admin.auth-layout>

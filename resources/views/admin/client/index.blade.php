@@ -1,11 +1,11 @@
-<x-dashboard-layout>
+<x-admin.dashboard-layout>
     <x-slot:heading>
         Client
     </x-slot:heading>
     <x-slot:heading_child>
         Client List
     </x-slot:heading_child>
-            <x-table-data>
+            <x-admin.table-data>
                 <x-slot:heading>
                     Clients
                 </x-slot:heading>
@@ -46,5 +46,5 @@
                             </tr>
                     @endforeach
                 </tbody>
-            </x-table-data>
-</x-dashboard-layout>
+            </x-admin.table-data>
+</x-admin.dashboard-layout>
