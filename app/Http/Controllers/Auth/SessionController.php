@@ -13,7 +13,7 @@ class SessionController extends Controller
     use ThrottlesLogins;
 
     public function create(){
-        return view("auth.login");
+        return view("admin/auth.login");
     }
 
     public function store(Request $request){

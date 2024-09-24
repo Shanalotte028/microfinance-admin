@@ -17,7 +17,7 @@ Route::middleware(['auth'])->group(function () {
     // Dashboard
     Route::get('/', function (User $user) {
         $currentUser = $user->is(Auth::user()); 
-        return view('dashboard', ['user' => $currentUser]);
+        return view('admin/dashboard', ['user' => $currentUser]);
     })->name('dashboard');
 
     // Clients

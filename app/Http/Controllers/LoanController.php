@@ -30,6 +30,6 @@ class LoanController extends Controller
         
 
         // Pass the client, compliance, and KYC record to the view
-        return view('loan.show', compact('client', 'financial', 'loan'));
+        return view('admin/loan.show', compact('client', 'financial', 'loan'));
     }
 }

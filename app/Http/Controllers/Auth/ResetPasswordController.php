@@ -11,7 +11,7 @@ class ResetPasswordController extends Controller
 {
     //
     public function create(Request $request, $token=null){
-        return view('auth.password-reset')->with(
+        return view('admin/auth.password-reset')->with(
             ['token' => $token, 'email' => $request->email]
         );
     }

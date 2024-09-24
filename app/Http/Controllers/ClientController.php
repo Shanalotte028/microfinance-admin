@@ -12,10 +12,10 @@ class ClientController extends Controller
 
         $clients = Client::all();
 
-        return view('client.index', compact('clients'));
+        return view('admin/client.index', compact('clients'));
     }
 
     public function show(Client $client){
-        return view('client.show',['client'=> $client]);
+        return view('admin/client.show',['client'=> $client]);
     }
 }

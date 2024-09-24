@@ -26,6 +26,6 @@ class KycController extends Controller
         }
 
         // Pass the client, compliance, and KYC record to the view
-        return view('kyc.show', compact('client', 'compliance', 'kyc'));
+        return view('admin/kyc.show', compact('client', 'compliance', 'kyc'));
     }
 }

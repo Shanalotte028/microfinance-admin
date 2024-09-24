@@ -9,7 +9,7 @@ class ComplianceController extends Controller
 {
     //
     public function index(Client $client){
-        return view('compliance.index', compact('client'));
+        return view('admin/compliance.index', compact('client'));
     }
 
     public function show($client_id, $compliance_id)
@@ -25,6 +25,6 @@ class ComplianceController extends Controller
             abort(404);
         }
 
-        return view('compliance.show', compact('client', 'compliance'));
+        return view('admin/compliance.show', compact('client', 'compliance'));
     }
 }

@@ -21,6 +21,6 @@ class FinancialController extends Controller
             abort(404);
         }
 
-        return view('financial.show', compact('client', 'financial'));
+        return view('admin/financial.show', compact('client', 'financial'));
     }
 }
