@@ -19,7 +19,7 @@
                 <li><a class="dropdown-item text-muted" href="#!">Activity Log</a></li>
                 <li><hr class="dropdown-divider" /></li>
                 <li>
-                    <form action="/logout" method="POST">
+                    <form action="{{ route('admin.logout') }}" method="POST">
                     @csrf
                     <button class="dropdown-item text-muted" type="submit">Logout</button></li>
                 </form>

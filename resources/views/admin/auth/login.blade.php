@@ -2,7 +2,7 @@
     <x-slot:column_size>5</x-slot:column_size>
     <x-slot:header>Login</x-slot:header>
         <div class="card-body">
-            <form method="post" action="/login">
+            <form method="post" action="{{ route('admin.login.post') }}">
                 @csrf
                 <div class="form-floating mb-3">
                     <input class="form-control text-dark" id="inputEmail" name="email" type="email" name="email" value="{{ $email ?? old('email') }}" required/>
@@ -25,6 +25,6 @@
             </form>
         </div>
         <div class="card-footer text-center py-3">
-            <div class="small text-"><a href="/register" class="text-muted">Need an account? Sign up!</a></div>
+            <div class="small text-"><a href="register" class="text-muted">Need an account? Sign up!</a></div>
         </div>
 </x-admin.auth-layout>

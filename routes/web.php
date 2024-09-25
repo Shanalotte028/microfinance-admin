@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 // Admin Routes
 
 // Routes for authenticated users
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['admin-auth'])->group(function () {
     // Dashboard
     Route::get('/admin', function (User $user) {
         $currentUser = $user->is(Auth::user()); 
@@ -23,8 +23,8 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboard');
 
     // Clients
-    Route::get('admin/clients', [ClientController::class, 'index']);
-    Route::get('admin/clients/{client}', [ClientController::class, 'show']);
+    Route::get('admin/clients', [ClientController::class, 'index'])->name('admin.client.all');
+    Route::get('admin/clients/{client}', [ClientController::class, 'show'])->name('admin.client.one');
     
     // Compliances
     Route::get('admin/clients/{client}/compliance-records', [ComplianceController::class, 'index']);
@@ -40,18 +40,18 @@ Route::middleware(['auth'])->group(function () {
     Route::get('admin/clients/{client}/financial-details/{financial}/loans/{loan}', [LoanController::class, 'show']);
     
     // Logout
-    Route::post('admin/logout', [SessionController::class, 'destroy']);
+    Route::post('admin/logout', [SessionController::class, 'destroy'])->name('admin.logout');
 });
 
 // Routes for guest users
 Route::middleware(['guest'])->group(function () {
     // Login
-    Route::get('admin/login', [SessionController::class, 'create'])->name('login');
-    Route::post('admin/login', [SessionController::class, 'store'])->middleware('throttle:5,1');
+    Route::get('admin/login', [SessionController::class, 'create'])->name('admin.login');
+    Route::post('admin/login', [SessionController::class, 'store'])->middleware('throttle:5,1')->name('admin.login.post');
     
     // Registration
-    Route::get('admin/register', [UserRegistrationController::class, 'create']);
-    Route::post('admin/register', [UserRegistrationController::class, 'store']);
+    Route::get('admin/register', [UserRegistrationController::class, 'create'])->name('admin.register');
+    Route::post('admin/register', [UserRegistrationController::class, 'store'])->name('admin.register.post');
     
     // Password Reset
     Route::get('admin/password/reset', [ForgotPasswordController::class, 'create'])->name('password.request');

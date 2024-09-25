@@ -1,7 +1,7 @@
 <x-admin.auth-layout>
     <x-slot:header>Create Account</x-slot:header>
         <div class="card-body">
-            <form method="POST" action="/register">
+            <form method="POST" action="{{ route('admin.register.post') }}">
                 @csrf
                 <div class="row mb-3">
                     <div class="col-md-6">
@@ -46,7 +46,7 @@
                             <select class="form-control" name="role" id="role" required>
                                 <option value="" disabled selected class="text-dark">Role</option>
                                 <option value="Staff">Staff</option>
-                                <option value="Staff Manager">Staff Manager</option>
+                                <option value="Manager">Manager</option>
                                 <option value="Admin">Admin</option>
                             </select>
                             <x-admin.form-error name="role"></x-admin.form-error>
@@ -58,6 +58,6 @@
             </form>
         </div>
         <div class="card-footer text-center py-3">
-            <div class="small"><a href="/login" class="text-muted">Have an account? Go to login</a></div>
+            <div class="small"><a href="{{ route('admin.login') }}" class="text-muted">Have an account? Go to login</a></div>
         </div>
 </x-admin.auth-layout>                     

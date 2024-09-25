@@ -41,7 +41,7 @@
                                 <td>{{ $client->phone_number }}</td>
                                 <td>{{ $client->created_at }}</td>
                                 <td>
-                                    <a href="{{ url('clients/' . $client->id) }}" class="btn btn-success">View</a> <!-- View button -->
+                                    <a href="{{ url('admin/clients/' . $client->id) }}" class="btn btn-success">View</a> <!-- View button -->
                                 </td>
                             </tr>
                     @endforeach

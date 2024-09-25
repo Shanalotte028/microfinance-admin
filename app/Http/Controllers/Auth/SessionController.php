@@ -17,7 +17,7 @@ class SessionController extends Controller
     }
 
     public function store(Request $request){
-        $validatedAttributes = request()->validate([
+        $validatedAttributes = $request->validate([
             "email" => ['email', 'string', 'required'],
             'password' => ['required', 'string'],
         ]);
@@ -41,7 +41,7 @@ class SessionController extends Controller
         request()->session()->invalidate();
         request()->session()->regenerateToken();
         
-        return redirect()->route('login');
+        return redirect()->route('admin.login');
     }
 
 

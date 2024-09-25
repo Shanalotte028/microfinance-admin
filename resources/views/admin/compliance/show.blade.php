@@ -46,7 +46,7 @@
                             <td>{{ $kyc->uploaded_at }}</td>
                             <td>{{ $kyc->verified_at ?? 'n/a' }}</td>
                             <td>{{ $kyc->verified_by ?? 'n/a' }}</td>
-                            <td><a href="{{ url('clients/'.$client->id.'/compliance-records/'.$compliance->id.'/kyc-records/'.$kyc->id) }}" class="btn btn-success">View</a></td>
+                            <td><a href="{{ url('admin/clients/'.$client->id.'/compliance-records/'.$compliance->id.'/kyc-records/'.$kyc->id) }}" class="btn btn-success">View</a></td>
                             </tr>
                             @endforeach
                 </x-admin.card-table-list>
