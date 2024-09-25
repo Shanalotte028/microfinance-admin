@@ -65,5 +65,9 @@ Route::middleware(['guest'])->group(function () {
 
 
 Route::get('/client', function(){
-    return('client.index');
-});
+    return view('client/index');
+})->name('client.index');
+
+Route::get('/client/compliance', function(){
+    return view('client/compliance');
+})->name('client.compliance');
