@@ -66,17 +66,22 @@ Route::middleware(['guest'])->group(function () {
 
 // Client Routes
 
+Route::middleware(['client-auth'])->group(function(){
+    Route::get('/client', function(){
+        return view('client/index');
+    })->name('client.index');
+    
+    Route::get('/client/compliance', function(){
+        return view('client/compliance');
+    })->name('client.compliance');
 
-Route::get('/client', function(){
-    return view('client/index');
-})->name('client.index');
+    Route::post('client/logout', [ClientSessionController::class, 'destroy'])->name('client.logout');
+});
 
-Route::get('/client/compliance', function(){
-    return view('client/compliance');
-})->name('client.compliance');
-
+Route::middleware(['guest'])->group(function () {
 Route::get('client/register', [ClientUserRegistrationController::class, 'create'])->name('client.register');
 Route::post('client/register', [ClientUserRegistrationController::class, 'store'])->name('client.register.post');
 
 Route::get('client/login', [ClientSessionController::class, 'create'])->name('client.login');
 Route::post('client/login', [ClientSessionController::class, 'store'])->middleware('throttle:5,1')->name('client.login.post');
+});

@@ -24,7 +24,7 @@ class ClientSessionController extends Controller
 
         $remember = $request->has('remember');
 
-        if (!Auth::attempt($validatedAttributes, $remember)) {
+        if (!Auth::guard('client')->attempt($validatedAttributes, $remember)) {
             throw ValidationException::withMessages([
                 'email' => 'Wrong Credentials'
             ]);

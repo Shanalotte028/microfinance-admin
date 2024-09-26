@@ -18,6 +18,11 @@
 @import '@/assets/vendor/glightbox/css/glightbox.min.css';
 @import '@/assets/vendor/swiper/swiper-bundle.min.css';
 
+.btn{
+  width: 100%;
+}
+
+
 :root {
   --default-font: "Roboto",  system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --heading-font: "Raleway",  sans-serif;
@@ -162,6 +167,7 @@ h6 {
   overflow-y: auto;
   z-index: 997;
   border-right: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
+  height: 100vh;
   }
   
   .header.header-show {
