@@ -20,6 +20,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        User::create([
+        'first_name' => 'Mark',
+        'last_name' => 'Alde',
+        'email' => 'aldemark28@gmail.com',
+        'role' => 'admin',
+        'access_level' => 'admin',
+        'password' => 'adminadmin1234',
+        ]);
+
         Client::factory()
             ->count(100) // Creates 10 clients
             ->create()

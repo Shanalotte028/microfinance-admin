@@ -16,13 +16,30 @@ return new class extends Migration
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
+            $table->string('password')->nullable();
             $table->string('email');
             $table->string('phone_number');
             $table->date('birthday');
             $table->enum('gender', ['Male','Female','Other']);
             $table->enum('client_type', ['Individual','Business']);
-            $table->enum('client_status', ['Active','Inactive','Suspended','Closed']);
+            $table->enum('client_status', ['Active','Inactive','Suspended','Closed'])->nullable();
+            $table->rememberToken()->nullable();
             $table->timestamps();
+        });
+
+        Schema::create('client_password_reset_tokens', function (Blueprint $table) {
+            $table->string('email')->primary();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
+        });
+
+        Schema::create('client_sessions', function (Blueprint $table) {
+            $table->string('id')->primary();
+            $table->foreignId('client_id')->nullable()->index();
+            $table->string('ip_address', 45)->nullable();
+            $table->text('user_agent')->nullable();
+            $table->longText('payload');
+            $table->integer('last_activity')->index();
         });
 
         Schema::create('addresses', function (Blueprint $table) {

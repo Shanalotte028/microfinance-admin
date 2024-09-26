@@ -8,6 +8,9 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\SessionController;
 use App\Http\Controllers\Auth\UserRegistrationController;
+use App\Http\Controllers\ClientAuth\ClientSessionController;
+use App\Http\Controllers\ClientAuth\ClientUserRegistrationController;
+use App\Models\Client;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -71,3 +74,9 @@ Route::get('/client', function(){
 Route::get('/client/compliance', function(){
     return view('client/compliance');
 })->name('client.compliance');
+
+Route::get('client/register', [ClientUserRegistrationController::class, 'create'])->name('client.register');
+Route::post('client/register', [ClientUserRegistrationController::class, 'store'])->name('client.register.post');
+
+Route::get('client/login', [ClientSessionController::class, 'create'])->name('client.login');
+Route::post('client/login', [ClientSessionController::class, 'store'])->middleware('throttle:5,1')->name('client.login.post');
