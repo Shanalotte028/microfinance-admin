@@ -8,7 +8,6 @@
       <x-slot:id>compliance</x-slot:id>
       <x-slot:title>Compliance</x-slot:title>
         <p>Use this page as a starter for your own custom pages.</p>
-      </div>
     </x-client.section>
     <!-- /Starter Section Section -->
   </main>
