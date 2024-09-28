@@ -167,7 +167,6 @@ h6 {
   overflow-y: auto;
   z-index: 997;
   border-right: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
-  height: 100vh;
   }
   
   .header.header-show {

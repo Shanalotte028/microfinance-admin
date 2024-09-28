@@ -32,7 +32,7 @@ class ClientSessionController extends Controller
 
         request()->session()->regenerate();
 
-        return redirect()->route('client.index');
+        return redirect()->route('client.dashboard');
     }
 
     public function destroy(){

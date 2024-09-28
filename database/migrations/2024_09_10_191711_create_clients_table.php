@@ -22,7 +22,7 @@ return new class extends Migration
             $table->date('birthday');
             $table->enum('gender', ['Male','Female','Other']);
             $table->enum('client_type', ['Individual','Business']);
-            $table->enum('client_status', ['Active','Inactive','Suspended','Closed'])->nullable();
+            $table->enum('client_status', ['Verified','Unverified'])->nullable();
             $table->rememberToken()->nullable();
             $table->timestamps();
         });

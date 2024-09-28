@@ -53,11 +53,11 @@
                     <div class="col-md-6">
                         <div class="form-floating mb-3">
                             <select class="form-control" id="client_type" name="client_type" required>
-                                <option value="" disabled selected>Client Type</option>
+                                <option value="" disabled selected>Account Type</option>
                                 <option value="Individual">Individual</option>
                                 <option value="Business">Business</option>
                             </select>
-                            <label for="client_type">Client Type</label>
+                            <label for="client_type">Account Type</label>
                             <x-admin.form-error name="client_type"></x-admin.form-error>
                         </div>
                     </div>

@@ -33,9 +33,6 @@ Route::middleware(['admin-auth'])->group(function () {
     Route::get('admin/clients/{client}/compliance-records', [ComplianceController::class, 'index']);
     Route::get('admin/clients/{client}/compliance-records/{compliance}', [ComplianceController::class, 'show']);
     
-    // KYC
-    Route::get('admin/clients/{client}/compliance-records/{compliance}/kyc-records/{kyc}', [KycController::class, 'show']);
-    
     // Financial
     Route::get('admin/clients/{client}/financial-details/{financial}', [FinancialController::class, 'show']);
     
@@ -68,12 +65,10 @@ Route::middleware(['guest'])->group(function () {
 
 Route::middleware(['client-auth'])->group(function(){
     Route::get('/client', function(){
-        return view('client/index');
-    })->name('client.index');
+        return view('client/dashboard');
+    })->name('client.dashboard');
     
-    Route::get('/client/compliance', function(){
-        return view('client/compliance');
-    })->name('client.compliance');
+    Route::get('client/compliance', [ComplianceController::class, 'create'])->name('client.compliance.create');
 
     Route::post('client/logout', [ClientSessionController::class, 'destroy'])->name('client.logout');
 });

@@ -6,6 +6,7 @@
             <x-admin.card-table-list>
                 <x-slot:heading>Compliance Record List</x-slot:heading>
                     <x-slot:table_row>
+                            <th>ID</th>
                             <th>Document Type</th>
                             <th>Document Status</th>
                             <th>Submission Date</th>
@@ -14,6 +15,7 @@
                     </x-slot:table_row>
                     @foreach ($client->compliance_records as $compliance)
                                 <tr>
+                                    <td>{{ $compliance->id }}</td>
                                     <td>{{ $compliance->document_type }}</td>
                                     <td>{{ $compliance->document_status }}</td>
                                     <td>{{ $compliance->submission_date }}</td>

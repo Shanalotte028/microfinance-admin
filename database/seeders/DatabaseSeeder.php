@@ -6,7 +6,6 @@ use App\Models\Address;
 use App\Models\Client;
 use App\Models\Compliance;
 use App\Models\Financial;
-use App\Models\Kyc;
 use App\Models\Loan;
 use App\Models\Risk;
 use App\Models\User;
@@ -26,6 +25,18 @@ class DatabaseSeeder extends Seeder
         'email' => 'aldemark28@gmail.com',
         'role' => 'admin',
         'access_level' => 'admin',
+        'password' => 'adminadmin1234',
+        ]);
+
+        Client::create([
+        'first_name'=> 'Kram',
+        'last_name' => 'Trash',
+        'email' => 'kramtrash@gmail.com',
+        'phone_number' => '09103475330',
+        'birthday' => '2001-11-28',
+        'gender' => 'Male',
+        'client_type' => 'Individual',
+        'client_status' => 'Unverified',
         'password' => 'adminadmin1234',
         ]);
 
@@ -56,12 +67,6 @@ class DatabaseSeeder extends Seeder
                 $compliances = Compliance::factory()
                     ->count(2) // 2 compliance records per client
                     ->create(['client_id' => $client->id]);
-
-                $compliances->each(function ($compliance) {
-                        Kyc::factory()
-                            ->count(3)
-                            ->create(['compliance_id' => $compliance->id]);
-                    });
 
                 // Seed risk assessments for each client
                 Risk::factory()

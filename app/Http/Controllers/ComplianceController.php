@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 class ComplianceController extends Controller
 {
     //
+
+    public function create(){
+        return view('client/compliance');
+    }
+
     public function index(Client $client){
         return view('admin/compliance.index', compact('client'));
     }

@@ -4,7 +4,7 @@
       <h1 class="mb-2 mb-lg-0">{{ $slot }}</h1>
       <nav class="breadcrumbs">
         <ol>
-          <li><a href="{{ route('client.index') }}">Home</a></li>
+          <li><a href="{{ route('client.dashboard') }}">Home</a></li>
           <li class="current">{{ $slot }}</li>
         </ol>
       </nav>

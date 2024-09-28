@@ -2,10 +2,14 @@
     <x-slot:heading>
         Compliance Record
     </x-slot:heading>
-        <div class="row">
-            <div class="col-md-4"> {{-- left column --}}
+        <div class="row justify-content-center">
+            <div class="col-md-8 pt-3 px-5">
                 <x-admin.card-table-info>
                     <x-slot:heading>{{ $compliance->document_type }}</x-slot:heading>
+                    <x-admin.card-table-info-tr>
+                        <x-slot:heading>ID</x-slot:heading>
+                        {{ $compliance->id }}
+                    </x-admin.card-table-info-tr>
                     <x-admin.card-table-info-tr>
                         <x-slot:heading>Document Type</x-slot:heading>
                         {{ $compliance->document_type }}
@@ -26,30 +30,10 @@
                         <x-slot:heading>Remarks</x-slot:heading>
                         {{ $compliance->remarks ?? 'n/a'}}
                     </x-admin.card-table-info-tr>
-                </x-admin.card-table-info>
-            </div>
-            <div class="col-md-8"> {{-- right column --}}
-                <x-admin.card-table-list>
-                    <x-slot:heading>KYC Records</x-slot:heading>
-                        <x-slot:table_row>
-                            <th>Document Type</th>
-                            <th>Verification Status</th>
-                            <th>Uploaded At</th>
-                            <th>Verified At</th>
-                            <th>Verified By</th>
-                            <th>Action</th>
-                        </x-slot:table_row>
-                            @foreach ($compliance->kyc_records as $kyc)
-                            <tr>
-                            <td>{{ $kyc->document_type }}</td>
-                            <td>{{ $kyc->verification_status }}</td>
-                            <td>{{ $kyc->uploaded_at }}</td>
-                            <td>{{ $kyc->verified_at ?? 'n/a' }}</td>
-                            <td>{{ $kyc->verified_by ?? 'n/a' }}</td>
-                            <td><a href="{{ url('admin/clients/'.$client->id.'/compliance-records/'.$compliance->id.'/kyc-records/'.$kyc->id) }}" class="btn btn-success">View</a></td>
-                            </tr>
-                            @endforeach
-                </x-admin.card-table-list>
+                    <x-slot:button>
+                        <a href="" class="btn btn-success">Approve</a>
+                    </x-slot:button>
+                </x-admin.card-table-info>          
             </div>
         </div>
 </x-admin.dashboard-layout>

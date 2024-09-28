@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable; // Correct usage for authentication
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 
-
-class Client extends Model
+class Client extends Authenticatable implements AuthenticatableContract
 {
     use HasFactory;
 
@@ -19,46 +19,36 @@ class Client extends Model
         'gender',
         'client_type',
         'client_status',
-        'password'
+        'password',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
 
-    public function addresses(){
+    public function addresses()
+    {
         return $this->hasMany(Address::class);
     }
     
-    // Compliances
-    public function compliance_records(){
-        return  $this->hasMany(Compliance::class);
+    public function compliance_records()
+    {
+        return $this->hasMany(Compliance::class);
     }
-    //financials
-    public function financial_details(){
+
+    public function financial_details()
+    {
         return $this->hasOne(Financial::class);
     }
-    //risks
-    public function risk_assessments(){
+
+    public function risk_assessments()
+    {
         return $this->hasMany(Risk::class);
     }
 }
