@@ -2,7 +2,7 @@
     <x-slot:column_size>5</x-slot:column_size>
         <x-slot:header>Reset Password</x-slot:header>
             <div class="card-body">
-                <form method="post" action="{{ route('password.update') }}">
+                <form method="post" action="{{ route('client.password.update') }}">
                     @csrf
                     <p class="text-center">Please type here your email to reset your password.</p>
                     <input type="hidden" name="token" value="{{ $token }}">

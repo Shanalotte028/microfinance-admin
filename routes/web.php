@@ -1,4 +1,5 @@
 <?php
+
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ComplianceController;
 use App\Http\Controllers\FinancialController;
@@ -8,6 +9,8 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\SessionController;
 use App\Http\Controllers\Auth\UserRegistrationController;
+use App\Http\Controllers\ClientAuth\ClientForgotPasswordController;
+use App\Http\Controllers\ClientAuth\ClientResetPasswordController;
 use App\Http\Controllers\ClientAuth\ClientSessionController;
 use App\Http\Controllers\ClientAuth\ClientUserRegistrationController;
 use App\Models\Client;
@@ -79,4 +82,10 @@ Route::post('client/register', [ClientUserRegistrationController::class, 'store'
 
 Route::get('client/login', [ClientSessionController::class, 'create'])->name('client.login');
 Route::post('client/login', [ClientSessionController::class, 'store'])->middleware('throttle:5,1')->name('client.login.post');
+
+// Password Reset
+Route::get('client/password/reset', [ClientForgotPasswordController::class, 'create'])->name('client.password.request');
+Route::post('client/password/email', [ClientForgotPasswordController::class, 'store'])->name('client.password.email');
+Route::get('client/password/reset/{token}', [ClientResetPasswordController::class, 'create'])->name('client.password.reset');
+Route::post('client/reset', [ClientResetPasswordController::class, 'update'])->name('client.password.update');
 });

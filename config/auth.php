@@ -1,5 +1,7 @@
 <?php
 
+use App\Services\ClientPasswordBroker;
+
 return [
 
     /*
@@ -39,8 +41,7 @@ return [
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
-        ],
-        
+        ], 
         'admin' => [
         'driver' => 'session',
         'provider' => 'users',
@@ -110,6 +111,13 @@ return [
             'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
             'expire' => 60,
             'throttle' => 60,
+        ],
+
+        'clients' => [
+        'provider' => 'clients',
+        'table' => 'client_password_reset_tokens',
+        'expire' => 60,
+        'throttle' => 60,
         ],
     ],
 

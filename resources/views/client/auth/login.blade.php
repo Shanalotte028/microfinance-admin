@@ -20,7 +20,7 @@
                 </div>
                 <div class="mt-4 mb-0 text-center">
                     <button class="btn btn-success w-50 d-block mx-auto mb-2" type="submit">Login</button>
-                    <a class="small text-muted d-block mt-2" href="{{ route('password.request') }}">Forgot Password?</a>
+                    <a class="small text-muted d-block mt-2" href="{{ route('client.password.request') }}">Forgot Password?</a>
                 </div>
             </form>
         </div>
