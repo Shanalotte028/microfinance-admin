@@ -33,8 +33,9 @@ Route::middleware(['admin-auth'])->group(function () {
     Route::get('admin/clients/{client}', [ClientController::class, 'show'])->name('admin.client.one');
     
     // Compliances
+    Route::get('admin/compliances', [ComplianceController::class, 'compliance'])->name('admin.compliances');
     Route::get('admin/clients/{client}/compliance-records', [ComplianceController::class, 'index']);
-    Route::get('admin/clients/{client}/compliance-records/{compliance}', [ComplianceController::class, 'show']);
+    Route::get('admin/clients/{client}/compliance-records/{compliance}', [ComplianceController::class, 'show'])->name('admin.compliance-one');
     
     // Financial
     Route::get('admin/clients/{client}/financial-details/{financial}', [FinancialController::class, 'show']);

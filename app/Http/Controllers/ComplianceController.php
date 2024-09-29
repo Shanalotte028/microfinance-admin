@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
+use App\Models\Compliance;
 use Illuminate\Http\Request;
 
 class ComplianceController extends Controller
@@ -11,6 +12,11 @@ class ComplianceController extends Controller
 
     public function create(){
         return view('client/compliance');
+    }
+
+    public function compliance(){
+        $compliances = Compliance::select('id', 'client_id','document_type', 'document_status', 'submission_date', 'approval_date', 'remarks' )->get();
+        return view('admin/compliance.showall', compact('compliances'));
     }
 
     public function index(Client $client){
