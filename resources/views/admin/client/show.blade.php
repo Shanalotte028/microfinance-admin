@@ -5,7 +5,7 @@
             <!-- Left Column -->
             <div class="col-md-6">
                 <x-admin.card-table-info> {{-- Client Info Card --}}
-                    <x-slot:heading>{{ $client->email }}</x-slot:heading>
+                    <x-slot:heading>{{ $client->email }} <a class="btn btn-success" href="{{ url('admin/clients/'.$client->id.'/edit') }}">Edit Client</a></x-slot:heading>
                     <x-slot:heading_child>User ID: {{ $client->id }}</x-slot>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Name</x-slot:heading>

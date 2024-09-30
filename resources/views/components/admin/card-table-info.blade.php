@@ -1,7 +1,7 @@
 <div class="card mb-4">
     <div class="card-body">
-        <h4 class="text-light">{{ $heading ?? '' }}</h4>
-        <h5 class="text-light mb-4">{{ $heading_child ?? ''}}</h5>
+        <h4 class="text-light d-flex justify-content-between">{{ $heading ?? '' }}</h4>
+        <h5 class="text-light mb-4 ">{{ $heading_child ?? ''}}</h5>
         <table class="table table-striped table-borderless">
             <tbody>
                 {{ $slot }}

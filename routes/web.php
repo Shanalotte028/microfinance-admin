@@ -31,6 +31,8 @@ Route::middleware(['admin-auth'])->group(function () {
     // Clients
     Route::get('admin/clients', [ClientController::class, 'index'])->name('admin.client.all');
     Route::get('admin/clients/{client}', [ClientController::class, 'show'])->name('admin.client.one');
+    Route::get('admin/clients/{client}/edit', [ClientController::class, 'edit'])->name('admin.client.edit');
+    Route::patch('admin/clients/{client}', [ClientController::class, 'update'])->name('admin.client.update');
     
     // Compliances
     Route::get('admin/compliances', [ComplianceController::class, 'compliance'])->name('admin.compliances');
