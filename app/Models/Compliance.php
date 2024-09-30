@@ -22,7 +22,4 @@ class Compliance extends Model
     public function client(){
         return $this->belongsTo(Client::class);
     }
-    public function kyc_records(){
-        return $this->hasMany(Kyc::class);
-    }
 }

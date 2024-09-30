@@ -7,8 +7,16 @@
                 <x-admin.card-table-info>
                     <x-slot:heading>{{ $compliance->document_type }}</x-slot:heading>
                     <x-admin.card-table-info-tr>
-                        <x-slot:heading>ID</x-slot:heading>
+                        <x-slot:heading>Compliance Record ID</x-slot:heading>
                         {{ $compliance->id }}
+                    </x-admin.card-table-info-tr>
+                    <x-admin.card-table-info-tr>
+                        <x-slot:heading>Client ID</x-slot:heading>
+                        {{ $compliance->client_id }}
+                    </x-admin.card-table-info-tr>
+                    <x-admin.card-table-info-tr>
+                        <x-slot:heading>Client Email</x-slot:heading>
+                        {{ $compliance->client->email }}
                     </x-admin.card-table-info-tr>
                     <x-admin.card-table-info-tr>
                         <x-slot:heading>Document Type</x-slot:heading>

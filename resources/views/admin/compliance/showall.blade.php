@@ -11,8 +11,9 @@
                 </x-slot:heading>
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>Compliance ID</th>
                         <th>Client ID</th>
+                        <th>Client Email</th>
                         <th>Document Type</th>
                         <th>Document Status</th>
                         <th>Submission Date</th>
@@ -22,8 +23,9 @@
                 </thead>
                 <tfoot>
                     <tr>
-                        <th>ID</th>
-                        <th>First Name</th>
+                        <th>Compliance ID</th>
+                        <th>Client ID</th>
+                        <th>Client Email</th>
                         <th>Document Type</th>
                         <th>Document Status</th>
                         <th>Submission Date</th>
@@ -31,17 +33,18 @@
                         <th>Action</th>
                     </tr>
                 </tfoot>
-                <tbody>                              
+                <tbody>                             
                     @foreach ($compliances as $compliance )
                             <tr>
                                 <td>{{ $compliance->id }}</td>
                                 <td>{{ $compliance->client_id }}</td>
+                                <td>{{ optional($compliance->client)->email ?? 'n/a' }}</td>
                                 <td>{{ $compliance->document_type }}</td>
                                 <td>{{ $compliance->document_status }}</td>
                                 <td>{{ $compliance->submission_date }}</td>
                                 <td>{{ $compliance->approval_date ?? 'n/a'}}</td>
                                 <td>
-                                    <a href="{{ url('admin/clients/'.$compliance->client_id.'/compliance-records/'.$compliance->id) }}" class="btn btn-success">View</a> <!-- View button -->
+                                    <a href="{{ url('admin/clients/'.$compliance->client->id.'/compliance-records/'.$compliance->id) }}" class="btn btn-success">View</a> <!-- View button -->
                                 </td>
                             </tr>
                     @endforeach
