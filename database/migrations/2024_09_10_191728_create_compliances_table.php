@@ -16,7 +16,7 @@ return new class extends Migration
     {
         Schema::create('compliance_records', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Client::class);
+            $table->foreignIdFor(Client::class)->constrained()->onDelete('cascade');;
             $table->string('document_type');
             $table->enum('document_status', ['pending','approved','rejected']);
             $table->dateTime('submission_date');

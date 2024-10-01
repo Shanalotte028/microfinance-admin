@@ -15,10 +15,10 @@
                     </x-slot:table_row>
                     @foreach ($client->compliance_records as $compliance)
                                 <tr>
-                                    <td>{{ $compliance->id }}</td>
-                                    <td>{{ $compliance->document_type }}</td>
-                                    <td>{{ $compliance->document_status }}</td>
-                                    <td>{{ $compliance->submission_date }}</td>
+                                    <td>{{ $compliance->id ?? 'n/a'}}</td>
+                                    <td>{{ $compliance->document_type ?? 'n/a' }}</td>
+                                    <td>{{ $compliance->document_status ?? 'n/a'}}</td>
+                                    <td>{{ $compliance->submission_date ?? 'n/a'}}</td>
                                     <td>{{ $compliance->approval_date ?? 'n/a' }}</td>
                                     <td>
                                         <a href="{{ url('admin/clients/'.$client->id.'/compliance-records/'.$compliance->id) }}" class="btn btn-success">View</a> <!-- View button -->

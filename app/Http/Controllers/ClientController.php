@@ -20,6 +20,14 @@ class ClientController extends Controller
         return view('admin/client.edit', ['client'=>$client]);
     }
 
+    public function destroy(Request $request, $id){
+
+        $client = Client::findOrFail($id);
+        $client->delete();
+        
+        return redirect()->route('admin.client.all')->with('success', 'Client deleted successfully!');
+    }
+
     public function update(Request $request, $id){
 
         $validatedData = $request->validate([

@@ -33,6 +33,7 @@ Route::middleware(['admin-auth'])->group(function () {
     Route::get('admin/clients/{client}', [ClientController::class, 'show'])->name('admin.client.one');
     Route::get('admin/clients/{client}/edit', [ClientController::class, 'edit'])->name('admin.client.edit');
     Route::patch('admin/clients/{client}', [ClientController::class, 'update'])->name('admin.client.update');
+    Route::delete('admin/clients/{client}', [ClientController::class, 'destroy'])->name('admin.client.destroy');
     
     // Compliances
     Route::get('admin/compliances', [ComplianceController::class, 'compliance'])->name('admin.compliances');

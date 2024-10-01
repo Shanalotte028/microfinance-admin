@@ -41,23 +41,23 @@
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Address Line 1</x-slot:heading>
-                            {{ $client->addresses->first()->address_line_1 }}
+                            {{ $client->addresses->first()->address_line_1 ?? 'n/a' }}
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Address Line 2</x-slot:heading>
-                            {{ $client->addresses->first()->address_line_2 }}
+                            {{ $client->addresses->first()->address_line_2 ?? 'n/a' }}
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>City</x-slot:heading>
-                            {{ $client->addresses->first()->city }}
+                            {{ $client->addresses->first()->city ?? 'n/a' }}
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Province</x-slot:heading>
-                            {{ $client->addresses->first()->province }}
+                            {{ $client->addresses->first()->province ?? 'n/a' }}
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Postal Code</x-slot:heading>
-                            {{ $client->addresses->first()->postal_code }}
+                            {{ $client->addresses->first()->postal_code ?? 'n/a' }}
                         </x-admin.card-table-info-tr>
                 </x-admin.card-table-info>        
                 
@@ -73,16 +73,18 @@
                     </x-slot:table_row>
                     @foreach ($client->compliance_records->take(2) as $compliance)
                         <tr>
-                            <td>{{ $compliance->document_type }}</td>
-                            <td>{{ $compliance->document_status }}</td>
-                            <td>{{ $compliance->submission_date }}</td>
+                            <td>{{ $compliance->document_type ?? 'n/a' }}</td>
+                            <td>{{ $compliance->document_status ?? 'n/a' }}</td>
+                            <td>{{ $compliance->submission_date ?? 'n/a' }}</td>
                             <td>{{ $compliance->approval_date ?? 'n/a' }}</td>
                             <td>
                                 <a href="{{ url('admin/clients/'.$client->id.'/compliance-records/'.$compliance->id) }}" class="btn btn-success">View</a> <!-- View button -->
                             </td>
                         </tr>
                     @endforeach
-                    <x-slot:button><a href="{{ url('admin/clients/'.$client->id.'/compliance-records')}}" class="btn btn-success">Show All</a></x-slot:button>
+                    <x-slot:button>
+                        <a href="{{ url('admin/clients/'.$client->id.'/compliance-records')}}" class="btn btn-success">Show All</a>
+                    </x-slot:button>
                 </x-admin.card-table-list>
             </div>
             
@@ -98,22 +100,24 @@
                     <x-slot:heading>Financial Details</x-slot:heading>
                     <x-admin.card-table-info-tr>
                         <x-slot:heading>Total Amount Borrowed</x-slot:heading>
-                        {{ $client->financial_details->total_loan_amount_borrowed }}
+                        {{ $client->financial_details->total_loan_amount_borrowed ?? 'n/a' }}
                     </x-admin.card-table-info-tr>
                     <x-admin.card-table-info-tr>
                         <x-slot:heading>Repayment Status</x-slot:heading>
-                        {{ $client->financial_details->loan_repayment_status  }}
+                        {{ $client->financial_details->loan_repayment_status ?? 'n/a'  }}
                     </x-admin.card-table-info-tr>
                     <x-admin.card-table-info-tr>
                         <x-slot:heading>Income</x-slot:heading>
-                        {{ $client->financial_details->income }}
+                        {{ $client->financial_details->income ?? 'n/a' }}
                     </x-admin.card-table-info-tr>
                     <x-admin.card-table-info-tr>
                         <x-slot:heading>Credit Score</x-slot:heading>
-                        {{ $client->financial_details->credit_score  }}
+                        {{ $client->financial_details->credit_score ?? 'n/a'  }}
                     </x-admin.card-table-info-tr>
                     <x-slot:button>
-                        <a href="{{ url('admin/clients/'.$client->id.'/financial-details/'.$client->financial_details->id)}}" class="btn btn-success">Show Loans</a>
+                        @if(isset($client->financial_details) && isset($client->financial_details->id))
+                            <a href="{{ url('admin/clients/'.$client->id.'/financial-details/'.$client->financial_details->id)}}" class="btn btn-success">Show Loans</a>
+                        @endif
                     </x-slot:button>
                 </x-admin.card-table-info>
             </div>
