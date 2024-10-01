@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('financial_details', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Client::class);
+            $table->foreignIdFor(Client::class)->constrained()->onDelete('cascade');;
             $table->decimal('total_loan_amount_borrowed',15,2)->default(0);
             $table->enum('loan_repayment_status', ['on-time','overdue','deliquent']);
             $table->decimal('income',15,2)->default(0); // Verified or self-reported income.
