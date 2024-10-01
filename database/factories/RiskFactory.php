@@ -18,9 +18,11 @@ class RiskFactory extends Factory
     public function definition(): array
     {
         return [
-            'risk_score'=> fake()->numberBetween(1,100),
+            'client_id' => Client::factory(),
+            'risk_score'=> fake()->numberBetween(50,100),
+            'risk_level'=> fake()->randomElement(['low','medium','high']),
             'recommendation'=> fake()->sentence(2),
-            'client_id' => Client::factory()
+            'assessment_date' => fake()->date(),      
         ];
     }
 }

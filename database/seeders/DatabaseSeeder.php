@@ -2,8 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\Address;
 use App\Models\Client;
 use App\Models\Compliance;
+use App\Models\Financial;
+use App\Models\Loan;
 use App\Models\Risk;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -16,13 +19,59 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create 100 clients with associated risks and compliances
-        Client::factory(100)->create()->each(function ($client) {
-            // Create risks for each client
-            Risk::factory(1)->create(['client_id' => $client->id]);
+        User::create([
+        'first_name' => 'Mark',
+        'last_name' => 'Alde',
+        'email' => 'aldemark28@gmail.com',
+        'role' => 'admin',
+        'access_level' => 'admin',
+        'password' => 'adminadmin1234',
+        ]);
 
-            // Create compliances for each client
-            Compliance::factory(1)->create(['client_id' => $client->id]);
-        });
+        Client::create([
+        'first_name'=> 'Kram',
+        'last_name' => 'Trash',
+        'email' => 'kramtrash@gmail.com',
+        'phone_number' => '09103475330',
+        'birthday' => '2001-11-28',
+        'gender' => 'Male',
+        'client_type' => 'Individual',
+        'client_status' => 'Unverified',
+        'password' => 'adminadmin1234',
+        ]);
+
+        Client::factory()
+            ->count(100) // Creates 10 clients
+            ->create()
+            ->each(function ($client) {
+                // Seed addresses for each client
+                Address::factory()
+                    ->count(1)
+                    ->create(['client_id' => $client->id]);
+
+                // Seed financial details for each client
+                $financialDetails = Financial::factory()
+                    ->create(['client_id' => $client->id]);
+
+                // Seed loans for each financial record
+                Loan::factory()
+                    ->count(3) // 3 loans per financial record
+                    ->create(['financial_id' => $financialDetails->id]);
+
+                // Calculate and save total loan amount borrowed
+                $totalLoanAmount = Loan::where('financial_id', $financialDetails->id)->sum('loan_amount');
+                $financialDetails->total_loan_amount_borrowed = $totalLoanAmount;
+                $financialDetails->save();
+
+                // Seed compliance records for each client
+                $compliances = Compliance::factory()
+                    ->count(2) // 2 compliance records per client
+                    ->create(['client_id' => $client->id]);
+
+                // Seed risk assessments for each client
+                Risk::factory()
+                    ->count(2) // 2 risk assessments per client
+                    ->create(['client_id' => $client->id]);
+            });
     }
 }

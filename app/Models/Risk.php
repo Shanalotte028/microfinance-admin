@@ -8,8 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Risk extends Model
 {
     use HasFactory;
-
-    protected $fillable = ['risk_score','recommendation'];
+    protected $table = 'risk_assessments';
+    protected $fillable = [
+        'risk_score',
+        'risk_level',
+        'recommendation',
+        'assessment_date',
+    ];
 
     public function client(){
         return $this->belongsTo(Client::class);

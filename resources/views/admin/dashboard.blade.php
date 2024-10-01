@@ -1,0 +1,10 @@
+<x-admin.dashboard-layout>
+    <x-slot:heading>Dashboard</x-slot:heading>
+        <x-admin.cards/>
+        <x-admin.charts/>
+        <x-admin.table-data>
+            <x-slot:heading>
+                Example
+            </x-slot:heading>
+        </x-admin.table-data>
+</x-admin.dashboard-layout>
