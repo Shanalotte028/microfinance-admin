@@ -25,6 +25,10 @@ class User extends Authenticatable
         'password',
     ];
 
+    public function isAdmin() {
+        return $this->access_level === 'admin'; // Assuming access_level is how you differentiate
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

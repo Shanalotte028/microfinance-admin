@@ -24,7 +24,7 @@ class SessionController extends Controller
 
         $remember = $request->has('remember');
 
-        if (!Auth::guard('admin')->attempt($validatedAttributes, $remember)) {
+        if (!Auth::attempt($validatedAttributes, $remember)) {
             throw ValidationException::withMessages([
                 'email' => 'Wrong Credentials'
             ]);
@@ -41,7 +41,7 @@ class SessionController extends Controller
         request()->session()->invalidate();
         request()->session()->regenerateToken();
         
-        return redirect()->route('admin.login');
+        return redirect()->route('login');
     }
 
 
