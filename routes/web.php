@@ -3,7 +3,6 @@
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ComplianceController;
 use App\Http\Controllers\FinancialController;
-use App\Http\Controllers\KycController;
 use App\Http\Controllers\LoanController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
@@ -19,21 +18,25 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
 // Admin Routes
-
 // Routes for authenticated users
-Route::middleware(['admin-auth'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     // Dashboard
-    Route::get('/admin', function (User $user) {
-        $currentUser = $user->is(Auth::user()); 
-        return view('admin/dashboard', ['user' => $currentUser]);
+    Route::get('/admin', function (User $user) { 
+        return view('admin/dashboard');
     })->name('dashboard');
 
     // Clients
     Route::get('admin/clients', [ClientController::class, 'index'])->name('admin.client.all');
     Route::get('admin/clients/{client}', [ClientController::class, 'show'])->name('admin.client.one');
     Route::get('admin/clients/{client}/edit', [ClientController::class, 'edit'])->name('admin.client.edit');
-    Route::patch('admin/clients/{client}', [ClientController::class, 'update'])->name('admin.client.update');
-    Route::delete('admin/clients/{client}', [ClientController::class, 'destroy'])->name('admin.client.destroy');
+
+    Route::patch('admin/clients/{client}', [ClientController::class, 'update'])
+    ->can('update','client')
+    ->name('admin.client.update');
+
+    Route::delete('admin/clients/{client}', [ClientController::class, 'destroy'])
+    ->can('delete','client')
+    ->name('admin.client.destroy');
     
     // Compliances
     Route::get('admin/compliances', [ComplianceController::class, 'compliance'])->name('admin.compliances');
@@ -53,7 +56,7 @@ Route::middleware(['admin-auth'])->group(function () {
 // Routes for guest users
 Route::middleware(['guest'])->group(function () {
     // Login
-    Route::get('admin/login', [SessionController::class, 'create'])->name('admin.login');
+    Route::get('admin/login', [SessionController::class, 'create'])->name('login');
     Route::post('admin/login', [SessionController::class, 'store'])->middleware('throttle:5,1')->name('admin.login.post');
     
     // Registration

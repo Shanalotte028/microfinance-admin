@@ -36,8 +36,8 @@ class AppServiceProvider extends ServiceProvider
                 // Default URL if it's neither a client nor an admin
                 return url('password/reset', $token) . '?email=' . urlencode($user->email);
             }
-
-            Model::preventLazyLoading();
         });
+
+        Model::preventLazyLoading();
     }
 }

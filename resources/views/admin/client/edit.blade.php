@@ -114,16 +114,17 @@
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Postal Code</x-slot:heading>
-
                             <div class="col-sm-8">
                             <input type="text" class="form-control" name="postal_code" value="{{ $client->addresses->first()->postal_code ?? ''  }}">
                             </div>
                             <x-admin.form-error name="postal_code"></x-admin.form-error>
-
+                            @can('update',$client)
                             <div class="text-end mt-4 pe-4">
                                 <button class="btn btn-success" type="submit"> Update Client</button>
                             </div>
+                            @endcan 
                         </form>
+                        @can('delete',$client)
                         <form action="{{ route('admin.client.destroy', $client->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this client?');">
                             @csrf
                             @method('DELETE')
@@ -131,6 +132,7 @@
                             <button type="submit" class="btn btn-danger">Delete Client</button>
                             </div>
                         </form>
+                        @endcan
                         </x-admin.card-table-info-tr>                                   
                 </x-admin.card-table-info>        
             </div>
