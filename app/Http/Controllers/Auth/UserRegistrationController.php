@@ -42,6 +42,6 @@ class UserRegistrationController extends Controller
         ]));
 
         // Redirect with a success message
-        return redirect()->route('admin.login')->with('status', 'Registration successful. Please login.');
+        return redirect()->route('login')->with('status', 'Registration successful. Please login.');
     }
 }
