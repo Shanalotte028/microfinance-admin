@@ -83,7 +83,7 @@ Route::middleware(['client-auth'])->group(function(){
     Route::post('client/logout', [ClientSessionController::class, 'destroy'])->name('client.logout');
 });
 
-Route::middleware(['guest'])->group(function () {
+Route::middleware(['client-guest'])->group(function () {
 Route::get('client/register', [ClientUserRegistrationController::class, 'create'])->name('client.register');
 Route::post('client/register', [ClientUserRegistrationController::class, 'store'])->name('client.register.post');
 
