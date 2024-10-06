@@ -19,12 +19,7 @@ class ClientUserRegistrationController extends Controller
     {
         // Validate input
         $validatedAttributes = $request->validate([
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'lowercase', 'max:255', 'unique:clients,email'],
-            'phone_number' => ['required', 'string', 'min:10', 'max:15', 'unique:clients,phone_number'], // Adjust min/max as needed
-            'birthday' => ['required', 'date', 'before:today'], // Ensures valid date and not a future date
-            'gender' => ['required', 'string', 'in:Male,Female,Other'], // Limits to predefined values
             'client_type' => ['required', 'string', 'in:Individual,Business'], // Limits to predefined values
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
