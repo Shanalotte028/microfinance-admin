@@ -10,10 +10,16 @@ class ComplianceController extends Controller
 {
     //
 
-    public function create(){
+    public function compliance_records(){
         return view('client/compliance');
     }
 
+    public function create(){
+        return view('client/create');
+    }
+
+
+    // Compliance Sidebar
     public function compliance(){
         $compliances = Compliance::with('client:id,email')
                     ->select('id', 'client_id','document_type', 'document_status', 'submission_date', 'approval_date')               

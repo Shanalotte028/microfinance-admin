@@ -13,6 +13,13 @@
  
  @import '@/assets/vendor/bootstrap-icons/bootstrap-icons.css';
 
+/* Custom CSS to adjust the label position for file input */
+.custom-file-label {
+  margin-top: -5px;
+  padding-left: 5px;
+}
+
+
 :root {
   --bs-blue: #0d6efd;
   --bs-indigo: #6610f2;
@@ -2063,7 +2070,7 @@ progress {
   border-style: solid;
   border-width: 0;
   border-inline-end-width: 1px;
-  border-radius: 0;
+  border-radius: 30px;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 @media (prefers-reduced-motion: reduce) {

@@ -6,9 +6,13 @@
     <!-- Starter Section Section -->
     <x-client.section>
       <x-slot:id>compliance</x-slot:id>
-      <x-slot:title>Compliance</x-slot:title>
-        <p>Use this page as a starter for your own custom pages.</p>
-    </x-client.section>
+      <x-slot:title>Compliance Records</x-slot:title>
+        <div class="d-flex justify-content-end">
+          <div class="col-sm-2">
+            <a class="btn btn-success" href="{{ route('client.compliance.create') }}">Apply</a>
+          </div>
+        </div>
+      </x-client.section>
     <!-- /Starter Section Section -->
   </main>
 </x-client.layout>
