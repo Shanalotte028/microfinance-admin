@@ -13,6 +13,8 @@ use App\Http\Controllers\ClientAuth\ClientResetPasswordController;
 use App\Http\Controllers\ClientAuth\ClientSessionController;
 use App\Http\Controllers\ClientAuth\ClientUserRegistrationController;
 use App\Models\Client;
+use App\Models\Compliance;
+use App\Models\Loan;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -21,8 +23,13 @@ use Illuminate\Support\Facades\Auth;
 // Routes for authenticated users
 Route::middleware(['auth'])->group(function () {
     // Dashboard
-    Route::get('/admin', function (User $user) { 
-        return view('admin/dashboard');
+    Route::get('/admin', function () {
+        // Fetch total registered users
+        $totalUsers = Client::count();
+        // Fetch total pending loans (assuming you have a status field for loans)
+        $pendingLoans = Loan::where('loan_status', 'defaulted')->count();
+        $pendingCompliance = Compliance::where('document_status', 'pending')->count(); 
+        return view('admin/dashboard', compact('totalUsers', 'pendingLoans', 'pendingCompliance'));
     })->name('dashboard');
 
     // Clients
