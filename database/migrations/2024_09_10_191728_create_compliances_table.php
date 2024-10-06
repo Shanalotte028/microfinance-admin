@@ -18,7 +18,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Client::class)->constrained()->onDelete('cascade');;
             $table->string('document_type');
-            $table->enum('document_status', ['pending','approved','rejected']);
+            $table->enum('document_status', ['pending','approved','rejected'])->default('pending');
             $table->dateTime('submission_date');
             $table->dateTime('approval_date')->nullable(); // When the document was approved/rejected.
             $table->text('remarks')->nullable(); //Any additional comments or reasons for rejection.

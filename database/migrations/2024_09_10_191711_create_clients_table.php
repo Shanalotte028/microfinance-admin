@@ -21,8 +21,12 @@ return new class extends Migration
             $table->string('phone_number');
             $table->date('birthday');
             $table->enum('gender', ['Male','Female','Other']);
+            $table->string('nationality');
+            $table->string('marital_status');
+            $table->string('income_source');
+            $table->string('tin_number');
             $table->enum('client_type', ['Individual','Business']);
-            $table->enum('client_status', ['Verified','Unverified'])->nullable();
+            $table->enum('client_status', ['Verified','Unverified'])->default('Unverified');
             $table->rememberToken()->nullable();
             $table->timestamps();
         });
