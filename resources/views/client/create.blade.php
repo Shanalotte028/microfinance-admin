@@ -118,21 +118,34 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-floating mb-3">
-                                <input class="form-control" id="city" name="city" required />
+                                <select class="form-control" id="city" name="city" required>
+                                    <option value="" disabled selected>Select City</option>
+                                    <option value="Caloocan City">Caloocan City</option>
+                                    <option value="Quezon City">Quezon City</option>
+                                </select>
                                 <label for="city">City</label>
                                 <x-admin.form-error name="city"></x-admin.form-error>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3">
-                                <input class="form-control" id="province" name="province" required />
-                                <label for="province">Province</label>
+                                <div class="form-floating mb-3">
+                                    <select class="form-control" id="province" name="province" required>
+                                        <option value="" disabled selected>Select Province</option>
+                                        <option value="Metro Manila">Metro Manila</option>
+                                    </select>
+                                    <label for="province">Province</label>
                                 <x-admin.form-error name="province"></x-admin.form-error>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="form-floating mb-3">
-                        <input class="form-control" id="postal_code" name="postal_code" required />
+                    <div class="form-floating mb-3 col-md-6">
+                        <select class="form-control" id="postal_code" name="postal_code" required>
+                            <option value="" disabled selected>Select Postal Code</option>
+                            <option value="1001">1001</option>
+                            <option value="1001">1002</option>
+                        </select>
                         <label for="postal_code">Postal Code</label>
                         <x-admin.form-error name="postal_code"></x-admin.form-error>
                     </div>
@@ -156,21 +169,32 @@
                                 <x-admin.form-error name="address_proof_upload"></x-admin.form-error>
                             </div>
                         </div>
-                    </div>         
+                    </div> 
+                            
                     <button type="button" class="btn btn-secondary" onclick="prevStep(2)">Back</button>
                     <button type="button" class="btn btn-primary" onclick="nextStep(2)">Next</button>
                 </div>
                 <div id="step-3" class="form-step d-none">
                     <h5>Financial Information</h5>
-                    <div class="form-floating mb-3">
-                        <input class="form-control" id="source_of_income" name="source_of_income" required />
-                        <label for="source_of_income">Source of Income</label>
-                        <x-admin.form-error name="source_of_income"></x-admin.form-error>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input class="form-control" id="tin_number" name="tin_number" required />
-                        <label for="tin_number">TIN Number</label>
-                        <x-admin.form-error name="tin_number"></x-admin.form-error>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <select class="form-control" id="source_of_income" name="source_of_income" required>
+                                    <option value="" disabled selected>Select Source of Income</option>
+                                    <option value="Employment Income">Employment Income</option>
+                                    <option value="Business Income">Business Income</option>
+                                </select>
+                                <label for="source_of_income">Source of Income</label>
+                                <x-admin.form-error name="source_of_income"></x-admin.form-error>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input class="form-control" id="tin_number" name="tin_number" required />
+                                <label for="tin_number">TIN Number</label>
+                                <x-admin.form-error name="tin_number"></x-admin.form-error>
+                            </div>
+                        </div>
                     </div>
                     <h5>Proof of Income</h5>
                     <div class="row">
@@ -220,7 +244,7 @@
                 }
             });
 
-            if (valid) {
+            if (!valid) {
                 currentStep++;
                 showStep(currentStep);
             }
