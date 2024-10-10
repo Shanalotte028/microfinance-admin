@@ -23,6 +23,10 @@ class ClientFactory extends Factory
             'phone_number' => $this->faker->phoneNumber(),
             'birthday' => $this->faker->date($format = 'Y-m-d', $max = 'now'),
             'gender' => $this->faker->randomElement(['Male', 'Female', 'Other']),
+            'nationality' => 'Filipino',
+            'marital_status' => $this->faker->randomElement(['Single', 'Married']),
+            'source_of_income' => $this->faker->randomElement(['Employment Income', 'Business Income']),
+            'tin_number' => $this->faker->phoneNumber(),
             'client_type' => $this->faker->randomElement(['Individual', 'Business']),
             'client_status' => 'Verified',
         ];

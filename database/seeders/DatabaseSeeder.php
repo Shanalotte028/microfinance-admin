@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
         'last_name' => 'Alde',
         'email' => 'aldemark28@gmail.com',
         'role' => 'admin',
-        'access_level' => 'admin',
+        'access_level' => 'Admin',
         'password' => 'adminadmin1234',
         ]);
 
@@ -35,6 +35,10 @@ class DatabaseSeeder extends Seeder
         'phone_number' => '09103475330',
         'birthday' => '2001-11-28',
         'gender' => 'Male',
+        'nationality' => 'Filipino',
+        'marital_status' => 'Single',
+        'source_of_income' => 'Employment Income',
+        'tin_number' => '123456789101',
         'client_type' => 'Individual',
         'client_status' => 'Unverified',
         'password' => 'adminadmin1234',

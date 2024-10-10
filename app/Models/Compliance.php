@@ -12,6 +12,7 @@ class Compliance extends Model
     protected $table = 'compliance_records';
     
     protected $fillable = [
+        'client_id',
         'document_type',
         'document_status',
         'submission_date',

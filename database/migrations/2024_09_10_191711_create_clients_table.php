@@ -14,15 +14,19 @@ return new class extends Migration
     {
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
-            $table->string('first_name');
-            $table->string('last_name');
+            $table->string('first_name')->nullable();
+            $table->string('last_name')->nullable();
             $table->string('password')->nullable();
-            $table->string('email');
-            $table->string('phone_number');
-            $table->date('birthday');
-            $table->enum('gender', ['Male','Female','Other']);
-            $table->enum('client_type', ['Individual','Business']);
-            $table->enum('client_status', ['Verified','Unverified'])->nullable();
+            $table->string('email')->nullable();
+            $table->string('phone_number')->nullable();
+            $table->date('birthday')->nullable();
+            $table->enum('gender', ['Male','Female','Other'])->nullable();
+            $table->string('nationality')->nullable();
+            $table->string('marital_status')->nullable();
+            $table->string('source_of_income')->nullable();
+            $table->string('tin_number')->nullable();
+            $table->enum('client_type', ['Individual','Business'])->nullable();
+            $table->enum('client_status', ['Verified','Unverified'])->default('Unverified');
             $table->rememberToken()->nullable();
             $table->timestamps();
         });
@@ -46,7 +50,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Client::class)->constrained()->onDelete('cascade');;
             $table->string('address_line_1'); // Primary street address.
-            $table->string('address_line_2'); // Additional address info (e.g., apartment number).
+            $table->string('address_line_2')->nullable(); // Additional address info (e.g., apartment number).
             $table->string('city');
             $table->string('province');
             $table->string('postal_code');

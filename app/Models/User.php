@@ -26,7 +26,7 @@ class User extends Authenticatable
     ];
 
     public function isAdmin() {
-        return $this->access_level === 'admin'; // Assuming access_level is how you differentiate
+        return $this->access_level === 'Admin'; // Assuming access_level is how you differentiate
     }
 
     /**
