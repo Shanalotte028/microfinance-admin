@@ -31,6 +31,6 @@ class ClientUserRegistrationController extends Controller
         Client::create($validatedAttributes);
 
         // Redirect with a success message
-        return redirect()->route('client.login')->with('status', 'Registration successful. Please login.');
+        return redirect()->route('client.login')->with('success', 'Registration successful. Please login.');
     }
 }

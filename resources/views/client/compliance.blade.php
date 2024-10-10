@@ -14,5 +14,9 @@
         </div>
       </x-client.section>
     <!-- /Starter Section Section -->
+    <!-- Include the success pop-up component -->
+    <x-client.success-popup />
   </main>
+
+ 
 </x-client.layout>
