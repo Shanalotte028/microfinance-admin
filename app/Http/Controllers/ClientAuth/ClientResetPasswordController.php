@@ -37,7 +37,7 @@ class ClientResetPasswordController extends Controller
         );
 
         return $response == Password::PASSWORD_RESET
-                    ? redirect()->route('client.login')->with('status', __($response))  // Redirect to client login
+                    ? redirect()->route('client.login')->with('success', __($response))  // Redirect to client login
                     : back()->withErrors(['email' => __($response)]);
     }
 }

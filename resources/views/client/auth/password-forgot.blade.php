@@ -15,4 +15,5 @@
                 </div>   
             </form>
         </div>
+        <x-client.success-popup/>
 </x-admin.auth-layout>

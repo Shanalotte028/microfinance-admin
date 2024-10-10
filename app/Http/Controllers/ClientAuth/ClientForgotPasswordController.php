@@ -29,7 +29,7 @@ class ClientForgotPasswordController extends Controller
 
         // Return response based on whether the email was successfully sent
         return $status === Password::RESET_LINK_SENT
-                    ? back()->with(['status' => __($status)])  // Email sent successfully
+                    ? back()->with(['success' => __($status)])  // Email sent successfully
                     : back()->withErrors(['email' => __($status)]);  // Failed to send email
     }
 }
