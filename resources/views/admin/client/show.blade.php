@@ -28,6 +28,22 @@
                             {{ $client->gender }}
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
+                            <x-slot:heading>Nationality</x-slot:heading>
+                            {{ $client->nationality }}
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
+                            <x-slot:heading>Marital Status</x-slot:heading>
+                            {{ $client->marital_status }}
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
+                            <x-slot:heading>Source of Income</x-slot:heading>
+                            {{ $client->source_of_income }}
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
+                            <x-slot:heading>Tin Number</x-slot:heading>
+                            {{ $client->tin_number }}
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
                             <x-slot:heading>Client Type</x-slot:heading>
                             {{ $client->client_type }}
                         </x-admin.card-table-info-tr>
