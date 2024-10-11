@@ -33,5 +33,6 @@
   <!-- Preloader -->
   <div id="preloader"></div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.10/typed.js"></script>
 </body>
 </html>
