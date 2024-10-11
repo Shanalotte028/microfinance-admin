@@ -3,7 +3,7 @@
     <div class="modal-dialog">
       <div class="modal-content custom-dark-modal"> <!-- Add custom class here -->
         <div class="modal-header no-divider"> <!-- Remove divider class -->
-          <h5 class="modal-title" id="successModalLabel">Success</h5>
+          <h5 class="modal-title text-light" id="successModalLabel">Success</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> <!-- Red close button -->
         </div>
         <div class="modal-body no-divider">
@@ -39,18 +39,6 @@
       .no-divider {
           border-bottom: none;
           border-top: none; /* Remove bottom border in header */
-      }
-
-      /* Make the close button red */
-      .btn-close.btn-close-red {
-          background-color: red;
-          opacity: 0.7;
-      }
-      
-      /* Optional: Change close button hover/focus state */
-      .btn-close.btn-close-red:hover,
-      .btn-close.btn-close-red:focus {
-          background-color: green; /* Darken on hover */
       }
   </style>
 @endif
