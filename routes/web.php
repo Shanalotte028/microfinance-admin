@@ -88,7 +88,7 @@ Route::middleware(['client-auth'])->group(function(){
     //Compliance Route
     Route::get('client/compliance', [ComplianceController::class, 'compliance_records'])->name('client.compliance.compliance_records');
     Route::get('client/compliance/create',[ComplianceController::class, 'create'])->name('client.compliance.create');
-    Route::post('client/compliance/',[ComplianceController::class, 'store'])->name('client.compliance.store');
+    Route::post('client/compliance/',[ComplianceController::class, 'kyc'])->name('client.compliance.store');
 
     //Destroy Session
     Route::post('client/logout', [ClientSessionController::class, 'destroy'])->name('client.logout');
