@@ -15,13 +15,15 @@ class ComplianceController extends Controller
     //
 
     public function compliance_records(){
-        return view('client/compliance');
+        $client = Auth::guard('client')->user();
+        $compliances = Compliance::where('client_id', $client->id)->get();
+        return view('client/compliance',compact('compliances'));
     }
 
     public function create(){
         return view('client/create');
     }
-    public function store(Request $request){
+    public function kyc(Request $request){
         //dd($request->all());
         $validatedData = $request->validate([
             'first_name' => 'required|string|max:255',
@@ -84,6 +86,7 @@ class ComplianceController extends Controller
         // Create compliance records for each document
         Compliance::create([
             'client_id' => $client->id,
+            'compliance_type' => 'KYC',
             'document_type' => $validatedData['identification_proof'],
             'document_path' => $identificationProofPath,
             'document_status' => 'pending',
@@ -92,6 +95,7 @@ class ComplianceController extends Controller
 
         Compliance::create([
             'client_id' => $client->id,
+            'compliance_type' => 'KYC',
             'document_type' => $validatedData['address_proof'],
             'document_path' => $addressProofPath,
             'document_status' => 'pending',
@@ -100,6 +104,7 @@ class ComplianceController extends Controller
 
         Compliance::create([
             'client_id' => $client->id,
+            'compliance_type' => 'KYC',
             'document_type' => $validatedData['income_proof'],
             'document_path' => $incomeProofPath,
             'document_status' => 'pending',

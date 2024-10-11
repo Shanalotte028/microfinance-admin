@@ -2,7 +2,7 @@
     <x-slot:header>KYC FORM</x-slot:header>
     <div class="card mb-4">
         <div class="card-body">
-            <form id="kyc-form" method="POST" action="{{ route('client.compliance.store') }}" enctype="multipart/form-data">
+            <form id="kyc-form" method="POST" action="{{ route('client.compliance.kyc') }}" enctype="multipart/form-data">
                 @csrf
                 <div id="step-1" class="form-step">
                     <h5>Personal Information</h5>
@@ -79,9 +79,9 @@
                             <div class="form-floating mb-3">
                                 <select class="form-control" id="identification_proof" name="identification_proof" required>
                                     <option value="" disabled {{ old('identification_proof') == '' ? 'selected' : '' }}>Select Document Type</option>
-                                    <option value="Proof of Identification" {{ old('identification_proof') == 'Passport' ? 'selected' : '' }}>Passport</option>
-                                    <option value="Proof of Identification" {{ old('identification_proof') == 'National ID' ? 'selected' : '' }}>National ID</option>
-                                    <option value="Proof of Identification" {{ old('identification_proof') == "Driver's License" ? 'selected' : '' }}>Driver's License</option>
+                                    <option value="Passport" {{ old('identification_proof') == 'Passport' ? 'selected' : '' }}>Passport</option>
+                                    <option value="National ID" {{ old('identification_proof') == 'National ID' ? 'selected' : '' }}>National ID</option>
+                                    <option value="Driver's ID" {{ old('identification_proof') == "Driver's License" ? 'selected' : '' }}>Driver's License</option>
                                 </select>
                                 <label for="identification_proof">Document Type</label>
                                 <x-admin.form-error name="identification_proof"></x-admin.form-error>
@@ -157,8 +157,8 @@
                             <div class="form-floating mb-3">
                                 <select class="form-control" id="address_proof" name="address_proof" required>
                                     <option value="" disabled {{ old('address_proof') == '' ? 'selected' : '' }}>Select Document Type</option>
-                                    <option value="Proof of Address" {{ old('address_proof') == 'Proof of Address' ? 'selected' : '' }}>Utility Bills</option>
-                                    <option value="Proof of Address" {{ old('address_proof') == 'Proof of Address' ? 'selected' : '' }}>Rental Agreement</option>
+                                    <option value="Utility Bills" {{ old('address_proof') == 'Utility Bills' ? 'selected' : '' }}>Utility Bills</option>
+                                    <option value="Rental Agreement" {{ old('address_proof') == 'Rental Agreement' ? 'selected' : '' }}>Rental Agreement</option>
                                 </select>
                                 <label for="address_proof">Document Type</label>
                                 <x-admin.form-error name="address_proof"></x-admin.form-error>
@@ -206,8 +206,8 @@
                             <div class="form-floating mb-3">
                                 <select class="form-control" id="income_proof" name="income_proof" required>
                                     <option value="" disabled {{ old('income_proof') == '' ? 'selected' : '' }}>Select Document Type</option>
-                                    <option value="Proof of Income" {{ old('income_proof') == 'Bank Statements' ? 'selected' : '' }}>Bank Statements</option>
-                                    <option value="Proof of Income" {{ old('income_proof') == 'Employment Verification Letter' ? 'selected' : '' }}>Employment Verification Letter</option>
+                                    <option value="Bank Statements" {{ old('income_proof') == 'Bank Statements' ? 'selected' : '' }}>Bank Statements</option>
+                                    <option value="Employement Verification Letter" {{ old('income_proof') == 'Employment Verification Letter' ? 'selected' : '' }}>Employment Verification Letter</option>
                                 </select>
                                 <label for="income_proof">Document Type</label>
                                 <x-admin.form-error name="income_proof"></x-admin.form-error>

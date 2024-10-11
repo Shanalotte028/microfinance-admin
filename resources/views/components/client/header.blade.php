@@ -15,7 +15,7 @@
         <li><a href='{{ route('client.compliance.compliance_records') }}'><i class="bi bi-folder navicon"></i>Compliance</a></li>
         <form action='{{ route('client.logout') }}' method="POST">
           @csrf
-        <li><button type='submit' class="btn btn-success"><i class="bi bi-box-arrow-left navicon"></i>Log-Out</button></li>
+        <li><button type='submit' class="btn btn-success custom-button"><i class="bi bi-box-arrow-left navicon"></i>Log-Out</button></li>
         </form>
       </ul>
     </nav>
