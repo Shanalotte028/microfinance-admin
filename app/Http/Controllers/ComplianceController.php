@@ -118,7 +118,7 @@ class ComplianceController extends Controller
     // Compliance Sidebar
     public function compliance(){
         $compliances = Compliance::with('client:id,email')
-                    ->select('id', 'client_id','document_type', 'document_status', 'submission_date', 'approval_date')               
+                    ->select('id', 'client_id','compliance_type','document_type', 'document_status', 'submission_date', 'approval_date')               
                     ->get();
 
         return view('admin/compliance.showall', compact('compliances'));

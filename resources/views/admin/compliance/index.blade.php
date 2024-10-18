@@ -7,6 +7,7 @@
                 <x-slot:heading>Compliance Record List</x-slot:heading>
                     <x-slot:table_row>
                             <th>ID</th>
+                            <th>Compliance Type</th>
                             <th>Document Type</th>
                             <th>Document Status</th>
                             <th>Submission Date</th>
@@ -16,6 +17,7 @@
                     @foreach ($client->compliance_records as $compliance)
                                 <tr>
                                     <td>{{ $compliance->id ?? 'n/a'}}</td>
+                                    <td>{{ $compliance->compliance_type }}</td>
                                     <td>{{ $compliance->document_type ?? 'n/a' }}</td>
                                     <td>{{ $compliance->document_status ?? 'n/a'}}</td>
                                     <td>{{ $compliance->submission_date ?? 'n/a'}}</td>

@@ -14,6 +14,7 @@
                         <th>Compliance ID</th>
                         <th>Client ID</th>
                         <th>Client Email</th>
+                        <th>Compliance Type</th>
                         <th>Document Type</th>
                         <th>Document Status</th>
                         <th>Submission Date</th>
@@ -26,6 +27,7 @@
                         <th>Compliance ID</th>
                         <th>Client ID</th>
                         <th>Client Email</th>
+                        <th>Compliance Type</th>
                         <th>Document Type</th>
                         <th>Document Status</th>
                         <th>Submission Date</th>
@@ -39,6 +41,7 @@
                                 <td>{{ $compliance->id }}</td>
                                 <td>{{ $compliance->client_id }}</td>
                                 <td>{{ optional($compliance->client)->email ?? 'n/a' }}</td>
+                                <td>{{ $compliance->compliance_type }}</td>
                                 <td>{{ $compliance->document_type }}</td>
                                 <td>{{ $compliance->document_status }}</td>
                                 <td>{{ $compliance->submission_date }}</td>

@@ -19,6 +19,10 @@
                         {{ $compliance->client->email }}
                     </x-admin.card-table-info-tr>
                     <x-admin.card-table-info-tr>
+                        <x-slot:heading>Compliance Type</x-slot:heading>
+                        {{ $compliance->compliance_type }}
+                    </x-admin.card-table-info-tr>
+                    <x-admin.card-table-info-tr>
                         <x-slot:heading>Document Type</x-slot:heading>
                         {{ $compliance->document_type }}
                     </x-admin.card-table-info-tr>
