@@ -95,15 +95,15 @@ Route::middleware(['client-auth'])->group(function(){
 });
 
 Route::middleware(['client-guest'])->group(function () {
-Route::get('client/register', [ClientUserRegistrationController::class, 'create'])->name('client.register');
-Route::post('client/register', [ClientUserRegistrationController::class, 'store'])->name('client.register.post');
+    Route::get('client/register', [ClientUserRegistrationController::class, 'create'])->name('client.register');
+    Route::post('client/register', [ClientUserRegistrationController::class, 'store'])->name('client.register.post');
 
-Route::get('client/login', [ClientSessionController::class, 'create'])->name('client.login');
-Route::post('client/login', [ClientSessionController::class, 'store'])->middleware('throttle:5,1')->name('client.login.post');
+    Route::get('client/login', [ClientSessionController::class, 'create'])->name('client.login');
+    Route::post('client/login', [ClientSessionController::class, 'store'])->middleware('throttle:5,1')->name('client.login.post');
 
-// Password Reset
-Route::get('client/password/reset', [ClientForgotPasswordController::class, 'create'])->name('client.password.request');
-Route::post('client/password/email', [ClientForgotPasswordController::class, 'store'])->name('client.password.email');
-Route::get('client/password/reset/{token}', [ClientResetPasswordController::class, 'create'])->name('client.password.reset');
-Route::post('client/reset', [ClientResetPasswordController::class, 'update'])->name('client.password.update');
+    // Password Reset
+    Route::get('client/password/reset', [ClientForgotPasswordController::class, 'create'])->name('client.password.request');
+    Route::post('client/password/email', [ClientForgotPasswordController::class, 'store'])->name('client.password.email');
+    Route::get('client/password/reset/{token}', [ClientResetPasswordController::class, 'create'])->name('client.password.reset');
+    Route::post('client/reset', [ClientResetPasswordController::class, 'update'])->name('client.password.update');
 });

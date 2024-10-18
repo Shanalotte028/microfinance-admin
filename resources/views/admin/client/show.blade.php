@@ -138,4 +138,5 @@
                 </x-admin.card-table-info>
             </div>
         </div>
+        <x-client.success-popup/>
 </x-admin.dashboard-layout>

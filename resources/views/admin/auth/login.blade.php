@@ -27,4 +27,5 @@
         <div class="card-footer text-center py-3">
             <div class="small text-"><a href="register" class="text-muted">Need an account? Sign up!</a></div>
         </div>
+        <x-client.success-popup/>
 </x-admin.auth-layout>

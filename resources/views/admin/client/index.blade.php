@@ -47,4 +47,5 @@
                     @endforeach
                 </tbody>
             </x-admin.table-data>
+            <x-client.success-popup/>
 </x-admin.dashboard-layout>
