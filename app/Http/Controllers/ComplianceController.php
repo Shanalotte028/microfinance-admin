@@ -78,11 +78,11 @@ class ComplianceController extends Controller
             'postal_code' => $validatedData['postal_code'],
         ]);
 
-    // Handle file uploads for compliance records
+        // Handle file uploads for compliance records
         $identificationProofPath = $request->file('identification_proof_upload')->store('documents/identifications');
         $addressProofPath = $request->file('address_proof_upload')->store('documents/address_proofs');
         $incomeProofPath = $request->file('income_proof_upload')->store('documents/income_proofs');
-
+        Log::info('Document Path:', ['path' => $identificationProofPath]);
         // Create compliance records for each document
         Compliance::create([
             'client_id' => $client->id,
@@ -118,7 +118,7 @@ class ComplianceController extends Controller
     // Compliance Sidebar
     public function compliance(){
         $compliances = Compliance::with('client:id,email')
-                    ->select('id', 'client_id','document_type', 'document_status', 'submission_date', 'approval_date')               
+                    ->select('id', 'client_id','compliance_type','document_type', 'document_status', 'submission_date', 'approval_date')               
                     ->get();
 
         return view('admin/compliance.showall', compact('compliances'));
@@ -137,10 +137,6 @@ class ComplianceController extends Controller
         $compliance = $client->compliance_records()->find($compliance_id); // Use ->() to ensure it's treated as a query builder
     
         // If the compliance record is not found in the client's records, throw a 404
-        if (!$compliance) {
-            abort(404);
-        }
-    
-        return view('admin/compliance.show', compact('client', 'compliance'));
+        return view('admin/compliance.show', compact('compliance'));
     }
 }

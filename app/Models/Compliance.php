@@ -15,6 +15,7 @@ class Compliance extends Model
         'client_id',
         'compliance_type',
         'document_type',
+        'document_path',
         'document_status',
         'submission_date',
         'approval_date',

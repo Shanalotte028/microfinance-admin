@@ -75,7 +75,7 @@ class ClientController extends Controller
         }
     
         // Redirect back with success message
-        return redirect()->route('admin.client.one', $client)->with('success', 'Client and Address updated successfully!');
+        return redirect()->route('admin.client.one', $client)->with('success', 'Client Information updated successfully!');
     }
     
 

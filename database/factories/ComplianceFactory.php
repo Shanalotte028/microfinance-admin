@@ -21,7 +21,8 @@ class ComplianceFactory extends Factory
         return [
             'client_id' => Client::factory(),
             'compliance_type' => $this->faker->randomElement(['KYC','Other Compliance']),
-            'document_type'=> $this->faker->randomElement(['ID Proof', 'Income Proof', 'Citizenship Proof']),     
+            'document_type'=> $this->faker->randomElement(['ID Proof', 'Income Proof', 'Citizenship Proof']),
+            'document_path'=> fake()->imageUrl($width = 640, $height = 480),    
             'document_status'=> 'pending',
             'submission_date'=> fake()->date(),
             'approval_date'=> null,
