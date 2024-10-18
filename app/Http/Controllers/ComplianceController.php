@@ -137,6 +137,6 @@ class ComplianceController extends Controller
         $compliance = $client->compliance_records()->find($compliance_id); // Use ->() to ensure it's treated as a query builder
     
         // If the compliance record is not found in the client's records, throw a 404
-        return view('admin/compliance.show', compact('compliance'));
+        return view('admin/compliance.show', compact('client', 'compliance'));
     }
 }

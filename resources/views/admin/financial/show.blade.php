@@ -42,7 +42,7 @@
                                 <td>{{ $loan->interest_rate }}</td>
                                 <td>{{ $loan->start_date }}</td>
                                 <td>{{ $loan->end_date }}</td>
-                                <td><a href="{{ url('admin/clients/'.$client->id.'/financial-details/'.$financial->id.'/loans/'.$loan->id) }}" class="btn btn-success">View</a></td>
+                                <td><a href="{{ url('/clients/'.$client->id.'/financial-details/'.$financial->id.'/loans/'.$loan->id) }}" class="btn btn-success">View</a></td>
                                 </tr>
                             @endforeach
                 </x-admin.card-table-list>

@@ -23,7 +23,7 @@
                                     <td>{{ $compliance->submission_date ?? 'n/a'}}</td>
                                     <td>{{ $compliance->approval_date ?? 'n/a' }}</td>
                                     <td>
-                                        <a href="{{ url('admin/clients/'.$client->id.'/compliance-records/'.$compliance->id) }}" class="btn btn-success">View</a> <!-- View button -->
+                                        <a href="{{ url('/clients/'.$client->id.'/compliance-records/'.$compliance->id) }}" class="btn btn-success">View</a> <!-- View button -->
                                     </td>
                                 </tr>
                             @endforeach

@@ -94,12 +94,12 @@
                             <td>{{ $compliance->submission_date ?? 'n/a' }}</td>
                             <td>{{ $compliance->approval_date ?? 'n/a' }}</td>
                             <td>
-                                <a href="{{ url('admin/clients/'.$client->id.'/compliance-records/'.$compliance->id) }}" class="btn btn-success">View</a> <!-- View button -->
+                                <a href="{{ url('/clients/'.$client->id.'/compliance-records/'.$compliance->id) }}" class="btn btn-success">View</a> <!-- View button -->
                             </td>
                         </tr>
                     @endforeach
                     <x-slot:button>
-                        <a href="{{ url('admin/clients/'.$client->id.'/compliance-records')}}" class="btn btn-success">Show All</a>
+                        <a href="{{ url('/clients/'.$client->id.'/compliance-records')}}" class="btn btn-success">Show All</a>
                     </x-slot:button>
                 </x-admin.card-table-list>
             </div>
@@ -132,7 +132,7 @@
                     </x-admin.card-table-info-tr>
                     <x-slot:button>
                         @if(isset($client->financial_details) && isset($client->financial_details->id))
-                            <a href="{{ url('admin/clients/'.$client->id.'/financial-details/'.$client->financial_details->id)}}" class="btn btn-success">Show Loans</a>
+                            <a href="{{ url('/clients/'.$client->id.'/financial-details/'.$client->financial_details->id)}}" class="btn btn-success">Show Loans</a>
                         @endif
                     </x-slot:button>
                 </x-admin.card-table-info>
