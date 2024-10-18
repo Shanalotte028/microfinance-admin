@@ -8,6 +8,7 @@ use App\Models\Compliance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\File;
 
 class ComplianceController extends Controller
@@ -79,9 +80,9 @@ class ComplianceController extends Controller
         ]);
 
         // Handle file uploads for compliance records
-        $identificationProofPath = $request->file('identification_proof_upload')->store('documents/identifications');
-        $addressProofPath = $request->file('address_proof_upload')->store('documents/address_proofs');
-        $incomeProofPath = $request->file('income_proof_upload')->store('documents/income_proofs');
+        $identificationProofPath = $request->file('identification_proof_upload')->store('documents/identifications', 'public');
+        $addressProofPath = $request->file('address_proof_upload')->store('documents/address_proofs', 'public');
+        $incomeProofPath = $request->file('income_proof_upload')->store('documents/income_proofs', 'public');
         Log::info('Document Path:', ['path' => $identificationProofPath]);
         // Create compliance records for each document
         Compliance::create([
@@ -137,6 +138,6 @@ class ComplianceController extends Controller
         $compliance = $client->compliance_records()->find($compliance_id); // Use ->() to ensure it's treated as a query builder
     
         // If the compliance record is not found in the client's records, throw a 404
-        return view('admin/compliance.show', compact('compliance'));
+        return view('admin/compliance.show', compact('client', 'compliance'));
     }
 }

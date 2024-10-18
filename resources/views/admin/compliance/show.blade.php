@@ -66,7 +66,7 @@
                 @if(in_array($fileExtension, ['jpg', 'jpeg', 'png']))
                     <img src="{{ Storage::url($compliance->document_path) }}" class="img-fluid">
                 @elseif($fileExtension === 'pdf')
-                    <a href="{{ Storage::url($compliance->document_path) }}" target="_blank">View PDF</a>
+                    <embed src="{{ Storage::url($compliance->document_path) }}" type="application/pdf" width="100%" height="600px" />
                 @else
                     <a href="{{ Storage::url($compliance->document_path) }}" download>Download {{ ucfirst($compliance->document_type) }}</a>
                 @endif

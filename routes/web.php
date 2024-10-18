@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Auth;
 // Routes for authenticated users
 Route::middleware(['auth'])->group(function () {
     // Dashboard
-    Route::get('/admin', function () {
+    Route::get('/', function () {
         // Fetch total registered users
         $totalUsers = Client::count();
         // Fetch total pending loans (assuming you have a status field for loans)
@@ -33,31 +33,31 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboard');
 
     // Clients
-    Route::get('admin/clients', [ClientController::class, 'index'])->name('admin.client.all');
-    Route::get('admin/clients/{client}', [ClientController::class, 'show'])->name('admin.client.one');
-    Route::get('admin/clients/{client}/edit', [ClientController::class, 'edit'])->name('admin.client.edit');
+    Route::get('/clients', [ClientController::class, 'index'])->name('admin.client.all');
+    Route::get('/clients/{client}', [ClientController::class, 'show'])->name('admin.client.one');
+    Route::get('/clients/{client}/edit', [ClientController::class, 'edit'])->name('admin.client.edit');
 
-    Route::patch('admin/clients/{client}', [ClientController::class, 'update'])
+    Route::patch('/clients/{client}', [ClientController::class, 'update'])
     ->can('update','client')
     ->name('admin.client.update');
 
-    Route::delete('admin/clients/{client}', [ClientController::class, 'destroy'])
+    Route::delete('/clients/{client}', [ClientController::class, 'destroy'])
     ->can('delete','client')
     ->name('admin.client.destroy');
     
     // Compliances
-    Route::get('admin/compliances', [ComplianceController::class, 'compliance'])->name('admin.compliances');
-    Route::get('admin/clients/{client}/compliance-records', [ComplianceController::class, 'index']);
-    Route::get('admin/clients/{client}/compliance-records/{compliance}', [ComplianceController::class, 'show'])->name('admin.compliance-one');
+    Route::get('/compliances', [ComplianceController::class, 'compliance'])->name('admin.compliances');
+    Route::get('/clients/{client}/compliance-records', [ComplianceController::class, 'index']);
+    Route::get('/clients/{client}/compliance-records/{compliance}', [ComplianceController::class, 'show'])->name('admin.compliance-one');
     
     // Financial
-    Route::get('admin/clients/{client}/financial-details/{financial}', [FinancialController::class, 'show']);
+    Route::get('/clients/{client}/financial-details/{financial}', [FinancialController::class, 'show']);
     
     // Loans
-    Route::get('admin/clients/{client}/financial-details/{financial}/loans/{loan}', [LoanController::class, 'show']);
+    Route::get('/clients/{client}/financial-details/{financial}/loans/{loan}', [LoanController::class, 'show']);
     
     // Logout
-    Route::post('admin/logout', [SessionController::class, 'destroy'])->name('admin.logout');
+    Route::post('/logout', [SessionController::class, 'destroy'])->name('admin.logout');
 });
 
 // Routes for guest users
