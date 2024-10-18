@@ -10,9 +10,12 @@
                     <label for="inputEmail">Email address</label>
                     <x-admin.form-error name="email"></x-admin.form-error>
                 </div>
-                <div class="mt-4 mb-0 text-center">
-                    <button class="btn btn-success w-50 d-block mx-auto mb-2" type="submit">Enter</button>
-                </div>   
+                <div class="row mt-4 mb-0">
+                    <div class="col-12 text-end">
+                        <a class="btn btn-secondary me-2" href="{{ route('login') }}">Cancel</a>
+                        <button class="btn btn-success" type="submit">Enter</button>
+                    </div>
+                </div>  
             </form>
         </div>
         <x-client.success-popup/>
