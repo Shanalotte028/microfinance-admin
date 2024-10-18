@@ -9,51 +9,51 @@
                     <x-slot:heading_child>User ID: {{ $client->id }}</x-slot>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Name</x-slot:heading>
-                            {{ $client->first_name }} {{ $client->last_name}}
+                            {{ $client->first_name }} {{ $client->last_name ?? 'n/a'}}
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Email</x-slot:heading>
-                            {{ $client->email }}
+                            {{ $client->email ?? 'n/a'}}
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Phone Number</x-slot:heading>
-                            {{ $client->phone_number }}
+                            {{ $client->phone_number ?? 'n/a'}}
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Birthday</x-slot:heading>
-                            {{ $client->birthday }}
+                            {{ $client->birthday ?? 'n/a'}}
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Gender</x-slot:heading>
-                            {{ $client->gender }}
+                            {{ $client->gender ?? 'n/a'}}
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Nationality</x-slot:heading>
-                            {{ $client->nationality }}
+                            {{ $client->nationality ?? 'n/a' }}
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Marital Status</x-slot:heading>
-                            {{ $client->marital_status }}
+                            {{ $client->marital_status ?? 'n/a' }}
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Source of Income</x-slot:heading>
-                            {{ $client->source_of_income }}
+                            {{ $client->source_of_income ?? 'n/a' }}
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Tin Number</x-slot:heading>
-                            {{ $client->tin_number }}
+                            {{ $client->tin_number ?? 'n/a' }}
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Client Type</x-slot:heading>
-                            {{ $client->client_type }}
+                            {{ $client->client_type ?? 'n/a' }}
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Client Status</x-slot:heading>
-                            {{ $client->client_status }}
+                            {{ $client->client_status ?? 'n/a' }}
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Created At</x-slot:heading>
-                            {{ $client->created_at }}
+                            {{ $client->created_at ?? 'n/a' }}
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Address Line 1</x-slot:heading>

@@ -32,15 +32,7 @@ class DatabaseSeeder extends Seeder
         'first_name'=> 'Kram',
         'last_name' => 'Trash',
         'email' => 'kramtrash@gmail.com',
-        'phone_number' => '09103475330',
-        'birthday' => '2001-11-28',
-        'gender' => 'Male',
-        'nationality' => 'Filipino',
-        'marital_status' => 'Single',
-        'source_of_income' => 'Employment Income',
-        'tin_number' => '123456789101',
         'client_type' => 'Individual',
-        'client_status' => 'Unverified',
         'password' => 'adminadmin1234',
         ]);
 
