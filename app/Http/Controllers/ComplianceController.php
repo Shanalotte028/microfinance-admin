@@ -22,7 +22,16 @@ class ComplianceController extends Controller
     }
 
     public function create(){
-        return view('client/create');
+        $client = Auth::guard('client')->user();
+
+        // Check if the user already has a pending or approved KYC request
+        $kycCount = Compliance::where('client_id', $client->id)->where('compliance_type', 'KYC')->count();
+
+        if ($kycCount >= 3) {
+            return redirect()->back()->with('success', 'You have already applied for all three KYC documents.');
+        }
+        // Show the KYC application form
+        return view('client/create', compact('client'));
     }
     public function kyc(Request $request){
         //dd($request->all());
@@ -114,6 +123,26 @@ class ComplianceController extends Controller
 
         return redirect()->route('client.compliance.compliance_records')->with('success', 'Client and compliance records saved successfully.');
     }
+
+    public function approve(Client $client, Compliance $compliance) {
+        $compliance->update([
+            'document_status' => 'approved', // Comma added here
+            'approval_date' => now() // Sets the current date and time
+        ]);
+    
+        $approvedKycCount = Compliance::where('client_id', $client->id)
+            ->whereIn('compliance_type', ['kyc_identification', 'kyc_address_proof', 'kyc_income_proof'])
+            ->where('document_status', 'approved')
+            ->count();
+    
+        if ($approvedKycCount >= 3) { // If 3 KYC documents have been approved
+            // Mark the client as verified
+            $client->update(['client_status'=> 'Verified']);
+        }
+    
+        return redirect()->route('admin.compliance.index', ['client' => $client->id])->with('success', 'Compliance document approved successfully.');
+    }
+    
 
 
     // Compliance Sidebar

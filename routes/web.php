@@ -47,8 +47,9 @@ Route::middleware(['auth'])->group(function () {
     
     // Compliances
     Route::get('/compliances', [ComplianceController::class, 'compliance'])->name('admin.compliances');
-    Route::get('/clients/{client}/compliance-records', [ComplianceController::class, 'index']);
+    Route::get('/clients/{client}/compliance-records', [ComplianceController::class, 'index'])->name('admin.compliance.index');
     Route::get('/clients/{client}/compliance-records/{compliance}', [ComplianceController::class, 'show'])->name('admin.compliance-one');
+    Route::patch('/clients/{client}/compliance-records/{compliance}', [ComplianceController::class, 'approve'])->name('admin.compliance.approve');
     
     // Financial
     Route::get('/clients/{client}/financial-details/{financial}', [FinancialController::class, 'show']);

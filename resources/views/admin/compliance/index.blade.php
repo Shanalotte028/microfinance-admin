@@ -29,4 +29,5 @@
                             @endforeach
             </x-admin.card-table-list>
         </div>
+<x-client.success-popup></x-client.success-popup>
 </x-admin.dashboard-layout>
