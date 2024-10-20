@@ -1,8 +1,8 @@
 <x-admin.dashboard-layout>
+    <x-slot:back><a href="{{ route('admin.compliance.index', ['client' => $client->id]) }}" class="text-white"><i class="bi bi-arrow-left larger-icon"></i></a></x-slot:back>
     <x-slot:heading>
         Compliance Record
     </x-slot:heading>
-    
     <div class="row">
         {{-- compliance file column --}} 
         <div class="col-md-6 p-4">

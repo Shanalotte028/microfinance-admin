@@ -1,10 +1,7 @@
 <x-admin.dashboard-layout>
     <x-slot:heading>
-        Client
+        Clients List
     </x-slot:heading>
-    <x-slot:heading_child>
-        Client List
-    </x-slot:heading_child>
             <x-admin.table-data>
                 <x-slot:heading>
                     Clients

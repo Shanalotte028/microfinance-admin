@@ -19,6 +19,10 @@
   padding-left: 5px;
 }
 
+.larger-icon {
+  font-size: 2rem; /* Adjust the size as needed */
+}
+
 
 :root {
   --bs-blue: #0d6efd;

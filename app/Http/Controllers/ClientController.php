@@ -27,7 +27,7 @@ class ClientController extends Controller
     public function destroy(Request $request, Client $client){
         $client->delete();
 
-        return redirect()->route('admin.client.all')->with('success', 'Client deleted successfully!');
+        return redirect()->route('admin.client.index')->with('success', 'Client deleted successfully!');
     }
 
     public function update(Request $request, Client $client)
@@ -75,7 +75,7 @@ class ClientController extends Controller
         }
     
         // Redirect back with success message
-        return redirect()->route('admin.client.one', $client)->with('success', 'Client Information updated successfully!');
+        return redirect()->route('admin.client.show', $client)->with('success', 'Client Information updated successfully!');
     }
     
 

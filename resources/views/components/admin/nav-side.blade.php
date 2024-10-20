@@ -15,7 +15,7 @@
                     </a>
                     <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                         <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" href="{{ route('admin.client.all') }}">List Clients</a>
+                            <a class="nav-link" href="{{ route('admin.client.index') }}">List Clients</a>
                         </nav>
                         <nav class="sb-sidenav-menu-nested nav">
                             <a class="nav-link" href="{{ route('admin.compliances') }}">Compliance Records</a>

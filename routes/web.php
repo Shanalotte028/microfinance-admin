@@ -33,8 +33,8 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboard');
 
     // Clients
-    Route::get('/clients', [ClientController::class, 'index'])->name('admin.client.all');
-    Route::get('/clients/{client}', [ClientController::class, 'show'])->name('admin.client.one');
+    Route::get('/clients', [ClientController::class, 'index'])->name('admin.client.index');
+    Route::get('/clients/{client}', [ClientController::class, 'show'])->name('admin.client.show');
     Route::get('/clients/{client}/edit', [ClientController::class, 'edit'])->name('admin.client.edit');
 
     Route::patch('/clients/{client}', [ClientController::class, 'update'])
@@ -48,14 +48,14 @@ Route::middleware(['auth'])->group(function () {
     // Compliances
     Route::get('/compliances', [ComplianceController::class, 'compliance'])->name('admin.compliances');
     Route::get('/clients/{client}/compliance-records', [ComplianceController::class, 'index'])->name('admin.compliance.index');
-    Route::get('/clients/{client}/compliance-records/{compliance}', [ComplianceController::class, 'show'])->name('admin.compliance-one');
+    Route::get('/clients/{client}/compliance-records/{compliance}', [ComplianceController::class, 'show'])->name('admin.compliance.show');
     Route::patch('/clients/{client}/compliance-records/{compliance}', [ComplianceController::class, 'approve'])->name('admin.compliance.approve');
     
     // Financial
-    Route::get('/clients/{client}/financial-details/{financial}', [FinancialController::class, 'show']);
+    Route::get('/clients/{client}/financial-details/{financial}', [FinancialController::class, 'show'])->name('admin.financial.show');
     
     // Loans
-    Route::get('/clients/{client}/financial-details/{financial}/loans/{loan}', [LoanController::class, 'show']);
+    Route::get('/clients/{client}/financial-details/{financial}/loans/{loan}', [LoanController::class, 'show'])->name('admin.loan.show');
     
     // Logout
     Route::post('/logout', [SessionController::class, 'destroy'])->name('admin.logout');

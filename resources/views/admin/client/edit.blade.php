@@ -1,4 +1,5 @@
 <x-admin.dashboard-layout>
+    <x-slot:back><a href="{{ route('admin.client.show', ['client'=> $client->id]) }}" class="text-white"><i class="bi bi-arrow-left larger-icon"></i></a></x-slot:back>
     <x-slot:heading>Edit Client</x-slot:heading>
     <x-slot:heading_child>{{ $client->first_name }} {{ $client->last_name }}</x-slot:heading_child>
         <div class="row">
