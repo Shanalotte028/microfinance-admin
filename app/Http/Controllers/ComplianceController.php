@@ -28,7 +28,7 @@ class ComplianceController extends Controller
         $kycCount = Compliance::where('client_id', $client->id)->where('compliance_type', 'KYC')->count();
 
         if ($kycCount >= 3) {
-            return redirect()->back()->with('success', 'You have already applied for all three KYC documents.');
+            return redirect()->back()->with('success', 'You have already applied for KYC documents.');
         }
         // Show the KYC application form
         return view('client/create', compact('client'));

@@ -85,6 +85,10 @@ Route::middleware(['client-auth'])->group(function(){
     Route::get('/client', function(){
         return view('client/dashboard');
     })->name('client.dashboard');
+
+    //Profile update
+    Route::get('client/profile', [ClientController::class, 'profile'])->name('client.profile');
+    Route::patch('client/profile/{client}', [ClientController::class, 'profileUpdate'])->name('client.profile.update');
     
     //Compliance Route
     Route::get('client/compliance', [ComplianceController::class, 'compliance_records'])->name('client.compliance.compliance_records');
