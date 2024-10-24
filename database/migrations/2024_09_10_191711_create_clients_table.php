@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('tin_number')->nullable();
             $table->enum('client_type', ['Individual','Business'])->nullable();
             $table->enum('client_status', ['Verified','Unverified'])->default('Unverified');
+            $table->string('blocked')->default('No');
             $table->rememberToken()->nullable();
             $table->timestamps();
         });
@@ -39,7 +40,7 @@ return new class extends Migration
 
         Schema::create('client_sessions', function (Blueprint $table) {
             $table->string('id')->primary();
-            $table->foreignId('client_id')->nullable()->index();
+            $table->foreignId('user_id')->nullable()->index();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->longText('payload');

@@ -17,6 +17,10 @@
                             {{ $client->email ?? 'n/a'}}
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
+                            <x-admin.card-table-info-tr>
+                                <x-slot:heading>Blocked</x-slot:heading>
+                                {{ $client->blocked ?? 'n/a'}}
+                            </x-admin.card-table-info-tr>
                             <x-slot:heading>Phone Number</x-slot:heading>
                             {{ $client->phone_number ?? 'n/a'}}
                         </x-admin.card-table-info-tr>

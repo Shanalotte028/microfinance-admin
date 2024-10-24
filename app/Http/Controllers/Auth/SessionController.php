@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
+use Illuminate\Support\Facades\Log;
 
 class SessionController extends Controller
 {
@@ -17,6 +18,8 @@ class SessionController extends Controller
     }
 
     public function store(Request $request){
+
+        Log::info('Current session cookie: ' . config('session.cookie'));
         $validatedAttributes = $request->validate([
             "email" => ['email', 'string', 'required'],
             'password' => ['required', 'string'],
@@ -36,7 +39,7 @@ class SessionController extends Controller
     }
 
     public function destroy(){
-        Auth::logout();
+        Auth::guard('web')->logout();
 
         request()->session()->invalidate();
         request()->session()->regenerateToken();

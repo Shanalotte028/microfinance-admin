@@ -20,6 +20,17 @@ class ClientController extends Controller
         $client = Auth::guard('client')->user();
         return view('client/profile', compact('client'));
     }
+
+    public function toggleBlock(Client $client){
+    // Toggle the blocked status between 'yes' and 'no'
+    $client->blocked = ($client->blocked === 'Yes') ? 'No' : 'Yes';
+    $client->save();
+
+    // Prepare a success message based on the new status
+    $message = $client->blocked === 'Yes' ? 'Client has been blocked successfully.' : 'Client has been unblocked successfully.';
+    
+    return redirect()->back()->with('success', $message);
+    }
     
     public function show(Client $client){
         return view('admin/client.show',['client'=> $client]);

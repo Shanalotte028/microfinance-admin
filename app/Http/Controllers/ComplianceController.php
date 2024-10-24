@@ -131,7 +131,7 @@ class ComplianceController extends Controller
         ]);
     
         $approvedKycCount = Compliance::where('client_id', $client->id)
-            ->whereIn('compliance_type', ['kyc_identification', 'kyc_address_proof', 'kyc_income_proof'])
+            ->where('compliance_type', 'KYC')
             ->where('document_status', 'approved')
             ->count();
     

@@ -31,7 +31,7 @@ Route::middleware(['auth'])->group(function () {
         $pendingCompliance = Compliance::where('document_status', 'pending')->count(); 
         return view('admin/dashboard', compact('totalUsers', 'pendingLoans', 'pendingCompliance'));
     })->name('dashboard');
-
+    
     // Clients
     Route::get('/clients', [ClientController::class, 'index'])->name('admin.client.index');
     Route::get('/clients/{client}', [ClientController::class, 'show'])->name('admin.client.show');
@@ -44,6 +44,8 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/clients/{client}', [ClientController::class, 'destroy'])
     ->can('delete','client')
     ->name('admin.client.destroy');
+    //block client
+    Route::patch('/clients/{client}/toggle-block', [ClientController::class, 'toggleBlock'])->name('clients.toggleBlock');
     
     // Compliances
     Route::get('/compliances', [ComplianceController::class, 'compliance'])->name('admin.compliances');
@@ -56,7 +58,7 @@ Route::middleware(['auth'])->group(function () {
     
     // Loans
     Route::get('/clients/{client}/financial-details/{financial}/loans/{loan}', [LoanController::class, 'show'])->name('admin.loan.show');
-    
+
     // Logout
     Route::post('/logout', [SessionController::class, 'destroy'])->name('admin.logout');
 });
