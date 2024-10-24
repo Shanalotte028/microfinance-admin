@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ClientVerified;
+use App\Mail\ComplianceApproved;
 use App\Models\Address;
 use App\Models\Client;
 use App\Models\Compliance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\File;
 
@@ -130,6 +133,8 @@ class ComplianceController extends Controller
             'approval_date' => now() // Sets the current date and time
         ]);
     
+        Mail::to($client->email)->send(new ComplianceApproved($client, $compliance));
+
         $approvedKycCount = Compliance::where('client_id', $client->id)
             ->where('compliance_type', 'KYC')
             ->where('document_status', 'approved')
@@ -138,6 +143,7 @@ class ComplianceController extends Controller
         if ($approvedKycCount >= 3) { // If 3 KYC documents have been approved
             // Mark the client as verified
             $client->update(['client_status'=> 'Verified']);
+            Mail::to($client->email)->send(new ClientVerified($client));
         }
     
         return redirect()->route('admin.compliance.index', ['client' => $client->id])->with('success', 'Compliance document approved successfully.');
