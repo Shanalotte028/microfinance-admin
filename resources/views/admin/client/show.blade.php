@@ -17,10 +17,10 @@
                             {{ $client->email ?? 'n/a'}}
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
-                            <x-admin.card-table-info-tr>
-                                <x-slot:heading>Blocked</x-slot:heading>
-                                {{ $client->blocked ?? 'n/a'}}
-                            </x-admin.card-table-info-tr>
+                            <x-slot:heading>Blocked</x-slot:heading>
+                            {{ $client->blocked ?? 'n/a'}}
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
                             <x-slot:heading>Phone Number</x-slot:heading>
                             {{ $client->phone_number ?? 'n/a'}}
                         </x-admin.card-table-info-tr>
@@ -111,7 +111,34 @@
             <div class="col-md-6">
                 <div class="card bg-dark text-white mb-4"> {{-- Risk Mitigation --}}
                     <div class="card-body">
-                        <h1 class="mb-4">Risk Mitigation</h1>
+                        <h4 class="mb-4">Risk Assessment</h4>
+                        @php
+                            $riskScore = $client->risk_assessments->first()->risk_score ?? ''; // Assuming risk_score is available
+                            $riskCategory = '';
+
+                            if($riskScore === ''){
+                                $riskCategory = '';
+                                $bgClass = 'bg-light';
+                            }else if ($riskScore <= 33) {
+                                $riskCategory = 'Low Risk';
+                                $bgClass = 'bg-success';
+                            } elseif ($riskScore <= 66) {
+                                $riskCategory = 'Medium Risk';
+                                $bgClass = 'bg-warning';
+                            } else{
+                                $riskCategory = 'High Risk';
+                                $bgClass = 'bg-danger';
+                            }
+                        @endphp
+
+                        <div class="progress" style="height: 35px; width: 100%; border-radius: 20px;">
+                            <div class="progress-bar {{ $bgClass }}" role="progressbar" style="width: {{ $riskScore }}%;" aria-valuenow="{{ $riskScore }}" aria-valuemin="0" aria-valuemax="100">
+                                {{ $riskCategory }}: {{ $riskScore }}
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <p>Assessment Date: {{ $client->risk_assessments->first()->assessment_date ?? '' }}</p>
+                        </div>  
                     </div>
                 </div>
                 {{-- Financial Card --}}

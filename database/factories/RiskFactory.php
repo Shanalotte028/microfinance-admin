@@ -17,12 +17,32 @@ class RiskFactory extends Factory
      */
     public function definition(): array
     {
+        $risk_score = $this->faker->numberBetween(0, 100);
+
         return [
             'client_id' => Client::factory(),
-            'risk_score'=> fake()->numberBetween(50,100),
-            'risk_level'=> fake()->randomElement(['low','medium','high']),
+            'risk_score'=> $risk_score,
+            'risk_level'=> $this->getRiskLevel($risk_score),
             'recommendation'=> fake()->sentence(2),
             'assessment_date' => fake()->date(),      
         ];
+    }
+
+
+    /**
+     * Determine the risk level based on the risk score.
+     *
+     * @param int $risk_score
+     * @return string
+     */
+    private function getRiskLevel(int $risk_score): string
+    {
+        if ($risk_score <= 33) {
+            return 'low';
+        } elseif ($risk_score <= 66) {
+            return 'medium';
+        } else {
+            return 'high';
+        }
     }
 }
