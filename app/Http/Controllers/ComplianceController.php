@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\ClientVerified;
 use App\Mail\ComplianceApproved;
+use App\Mail\KycConfirmationEmail;
 use App\Models\Address;
 use App\Models\Client;
 use App\Models\Compliance;
@@ -123,6 +124,16 @@ class ComplianceController extends Controller
             'document_status' => 'pending',
             'submission_date' => now()
         ]);
+
+        // Prepare the email data
+        $documentTypes = [
+            'identification_proof' => $validatedData['identification_proof'],
+            'address_proof' => $validatedData['address_proof'],
+            'income_proof' => $validatedData['income_proof'],
+        ];
+
+    // Send the KYC confirmation email
+        Mail::to($client->email)->send(new KycConfirmationEmail($client, $documentTypes));
 
         return redirect()->route('client.compliance.compliance_records')->with('success', 'Client and compliance records saved successfully.');
     }
