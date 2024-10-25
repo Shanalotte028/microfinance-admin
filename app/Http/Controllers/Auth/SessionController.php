@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Password;
 
 class SessionController extends Controller
 {
@@ -18,8 +19,6 @@ class SessionController extends Controller
     }
 
     public function store(Request $request){
-
-        Log::info('Current session cookie: ' . config('session.cookie'));
         $validatedAttributes = $request->validate([
             "email" => ['email', 'string', 'required'],
             'password' => ['required', 'string'],
@@ -31,6 +30,17 @@ class SessionController extends Controller
             throw ValidationException::withMessages([
                 'email' => 'Wrong Credentials'
             ]);
+        }
+
+        $user = Auth::user();
+       
+        if ($user->password_reset_required) { // Assuming you have this boolean column in your User model
+            // Generate a password reset token
+            $token = app('auth.password.broker')->createToken($user);
+
+            Auth::logout();
+
+            return redirect()->route('password.reset', ['token'=>$token,'email' => $user->email]); // Route to the password reset page
         }
 
         request()->session()->regenerate();

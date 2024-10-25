@@ -59,6 +59,11 @@ Route::middleware(['auth'])->group(function () {
     // Loans
     Route::get('/clients/{client}/financial-details/{financial}/loans/{loan}', [LoanController::class, 'show'])->name('admin.loan.show');
 
+     // account creation
+    Route::get('admin/create', [UserRegistrationController::class, 'create'])->name('admin.accountCreate');
+    Route::post('admin/create', [UserRegistrationController::class, 'store'])->name('admin.accountCreate.post');
+
+    Route::get('admin/password/reset', [ResetPasswordController::class, 'showResetForm'])->name('password.reset.auth');
     // Logout
     Route::post('/logout', [SessionController::class, 'destroy'])->name('admin.logout');
 });
@@ -68,10 +73,6 @@ Route::middleware(['guest'])->group(function () {
     // Login
     Route::get('admin/login', [SessionController::class, 'create'])->name('login');
     Route::post('admin/login', [SessionController::class, 'store'])->middleware('throttle:5,1')->name('admin.login.post');
-    
-    // Registration
-    Route::get('admin/register', [UserRegistrationController::class, 'create'])->name('admin.register');
-    Route::post('admin/register', [UserRegistrationController::class, 'store'])->name('admin.register.post');
     
     // Password Reset
     Route::get('admin/password/reset', [ForgotPasswordController::class, 'create'])->name('password.request');

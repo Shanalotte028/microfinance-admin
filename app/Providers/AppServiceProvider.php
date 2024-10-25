@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Gate;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -36,6 +37,10 @@ class AppServiceProvider extends ServiceProvider
                 // Default URL if it's neither a client nor an admin
                 return url('password/reset', $token) . '?email=' . urlencode($user->email);
             }
+        });
+
+        Gate::define('admin', function ($user) {
+            return $user->isAdmin(); // Calls the isAdmin method on the User model
         });
 
         Model::preventLazyLoading();
