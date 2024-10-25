@@ -8,7 +8,6 @@ import '../assets/demo/chart-pie-demo'
 
 
 window.addEventListener('DOMContentLoaded', event => {
-    console.log('DOM fully loaded and parsed');
     // Toggle the side navigation
     const sidebarToggle = document.body.querySelector('#sidebarToggle');
     if (sidebarToggle) {

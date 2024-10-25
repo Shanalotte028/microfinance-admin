@@ -37,5 +37,7 @@
                     Pending Compliance
                 </x-slot:heading>
             </x-admin.cards>
+
+            <x-admin.charts/>
     </div>
 </x-admin.dashboard-layout>
