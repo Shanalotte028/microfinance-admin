@@ -16,16 +16,13 @@
                 </div>
                 <div class="form-check mb-3 text-muted">
                     <input class="form-check-input" id="remember" name="remember" type="checkbox" value="" />
-                    <label class="form-check-label" for="remember">Remember Password</label>
+                    <label class="form-check-label" for="remember">Remember me</label>
                 </div>
                 <div class="mt-4 mb-0 text-center">
                     <button class="btn btn-success w-50 d-block mx-auto mb-2" type="submit">Login</button>
                     <a class="small text-muted d-block mt-2" href="{{ route('password.request') }}">Forgot Password?</a>
                 </div>
             </form>
-        </div>
-        <div class="card-footer text-center py-3">
-            <div class="small text-"><a href="register" class="text-muted">Need an account? Sign up!</a></div>
         </div>
         <x-client.success-popup/>
 </x-admin.auth-layout>

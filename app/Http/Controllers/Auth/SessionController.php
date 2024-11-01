@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Password;
 
 class SessionController extends Controller
 {
@@ -30,13 +32,24 @@ class SessionController extends Controller
             ]);
         }
 
+        $user = Auth::user();
+       
+        if ($user->password_reset_required) { // Assuming you have this boolean column in your User model
+            // Generate a password reset token
+            $token = app('auth.password.broker')->createToken($user);
+
+            Auth::logout();
+
+            return redirect()->route('password.reset', ['token'=>$token,'email' => $user->email]); // Route to the password reset page
+        }
+
         request()->session()->regenerate();
 
         return redirect()->route('dashboard');
     }
 
     public function destroy(){
-        Auth::logout();
+        Auth::guard('web')->logout();
 
         request()->session()->invalidate();
         request()->session()->regenerateToken();

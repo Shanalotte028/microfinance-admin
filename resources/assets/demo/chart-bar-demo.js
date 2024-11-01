@@ -25,17 +25,19 @@ if(ctx){ var myLineChart = new Chart(ctx, {
           display: false
         },
         ticks: {
+          fontColor: '#FFFFFF',
           maxTicksLimit: 6
         }
       }],
       yAxes: [{
         ticks: {
+          fontColor: '#FFFFFF',
           min: 0,
           max: 15000,
           maxTicksLimit: 5
         },
         gridLines: {
-          display: true
+          display: false
         }
       }],
     },

@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ClientVerified;
+use App\Mail\ComplianceApproved;
+use App\Mail\KycConfirmationEmail;
 use App\Models\Address;
 use App\Models\Client;
 use App\Models\Compliance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\File;
 
@@ -22,7 +26,16 @@ class ComplianceController extends Controller
     }
 
     public function create(){
-        return view('client/create');
+        $client = Auth::guard('client')->user();
+
+        // Check if the user already has a pending or approved KYC request
+        $kycCount = Compliance::where('client_id', $client->id)->where('compliance_type', 'KYC')->count();
+
+        if ($kycCount >= 3) {
+            return redirect()->back()->with('success', 'You have already applied for KYC documents.');
+        }
+        // Show the KYC application form
+        return view('client/create', compact('client'));
     }
     public function kyc(Request $request){
         //dd($request->all());
@@ -112,8 +125,41 @@ class ComplianceController extends Controller
             'submission_date' => now()
         ]);
 
+        // Prepare the email data
+        $documentTypes = [
+            'identification_proof' => $validatedData['identification_proof'],
+            'address_proof' => $validatedData['address_proof'],
+            'income_proof' => $validatedData['income_proof'],
+        ];
+
+    // Send the KYC confirmation email
+        Mail::to($client->email)->send(new KycConfirmationEmail($client, $documentTypes));
+
         return redirect()->route('client.compliance.compliance_records')->with('success', 'Client and compliance records saved successfully.');
     }
+
+    public function approve(Client $client, Compliance $compliance) {
+        $compliance->update([
+            'document_status' => 'approved', // Comma added here
+            'approval_date' => now() // Sets the current date and time
+        ]);
+    
+        Mail::to($client->email)->send(new ComplianceApproved($client, $compliance));
+
+        $approvedKycCount = Compliance::where('client_id', $client->id)
+            ->where('compliance_type', 'KYC')
+            ->where('document_status', 'approved')
+            ->count();
+    
+        if ($approvedKycCount >= 3) { // If 3 KYC documents have been approved
+            // Mark the client as verified
+            $client->update(['client_status'=> 'Verified']);
+            Mail::to($client->email)->send(new ClientVerified($client));
+        }
+    
+        return redirect()->route('admin.compliance.index', ['client' => $client->id])->with('success', 'Compliance document approved successfully.');
+    }
+    
 
 
     // Compliance Sidebar

@@ -1,4 +1,5 @@
 <x-admin.dashboard-layout>
+    <x-slot:back><a href="{{ route('admin.client.show', ['client' => $client->id]) }}" class="text-white"><i class="bi bi-arrow-left larger-icon"></i></a></x-slot:back>
     <x-slot:heading>
         Financial Details
     </x-slot:heading>
@@ -42,7 +43,7 @@
                                 <td>{{ $loan->interest_rate }}</td>
                                 <td>{{ $loan->start_date }}</td>
                                 <td>{{ $loan->end_date }}</td>
-                                <td><a href="{{ url('/clients/'.$client->id.'/financial-details/'.$financial->id.'/loans/'.$loan->id) }}" class="btn btn-success">View</a></td>
+                                <td><a href="{{ route('admin.loan.show', ['client'=>$client->id,'financial'=>$financial->id,'loan'=>$loan->id]) }}" class="btn btn-success">View</a></td>
                                 </tr>
                             @endforeach
                 </x-admin.card-table-list>

@@ -1,7 +1,7 @@
 <x-admin.auth-layout>
     <x-slot:header>Create Account</x-slot:header>
         <div class="card-body">
-            <form method="POST" action="{{ route('admin.register.post') }}">
+            <form method="POST" action="{{ route('admin.accountCreate.post') }}">
                 @csrf
                 <div class="row mb-3">
                     <div class="col-md-6">
@@ -25,22 +25,6 @@
                     <x-admin.form-error name="email"></x-admin.form-error>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-md-6">
-                        <div class="form-floating mb-3 mb-md-0">
-                            <input class="form-control" id="password" name="password" type="password" required/>
-                            <label for="password">Password</label>
-                            <x-admin.form-error name="password"></x-admin.form-error>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-floating mb-3 mb-md-0">
-                            <input class="form-control" id="password_confirmation" name="password_confirmation" type="password" required/>
-                            <label for="password_confirmation">Confirm Password</label>
-                            <x-admin.form-error name="password_confirmation"></x-admin.form-error>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mb-3">
                     <div class="col-md-4">
                         <div class="form-group">
                             <select class="form-control" name="role" id="role" required>
@@ -56,8 +40,5 @@
                     <div class="d-grid"><button class="btn btn-success btn-block" type="submit">Create Account</button></div>
                 </div>
             </form>
-        </div>
-        <div class="card-footer text-center py-3">
-            <div class="small"><a href="{{ route('login') }}" class="text-muted">Have an account? Go to login</a></div>
         </div>
 </x-admin.auth-layout>                     

@@ -90,6 +90,17 @@ body {
   color: var(--default-color);
   background-color: var(--background-color);
   font-family: var(--default-font);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+}
+
+main {
+  flex-grow: 1;
+  /* Ensure main takes up all available space */
+  display: flex;
+  flex-direction: column;
 }
 
 a {
@@ -359,6 +370,7 @@ h6 {
 # Global Footer
 --------------------------------------------------------------*/
 .footer {
+  margin-top: auto;
   color: var(--default-color);
   background-color: var(--background-color);
   font-size: 14px;
@@ -500,6 +512,7 @@ section,
   background-color: var(--background-color);
   padding: 60px 0;
   overflow: clip;
+  flex-grow: 1;
 }
 
 /*--------------------------------------------------------------
@@ -1133,6 +1146,29 @@ section,
 
 .contact .php-email-form button[type=submit]:hover {
   background: color-mix(in srgb, var(--accent-color), transparent 25%);
+}
+
+.contact .php-email-form select {
+  font-size: 14px; /* Match input field font size */
+  padding: 10px 15px; /* Similar padding to input fields */
+  box-shadow: none;
+  border-radius: 0; /* Match the input field */
+  color: var(--default-color); /* Text color */
+  background-color: var(--surface-color); /* Background color */
+  border: 1px solid color-mix(in srgb, var(--default-color), transparent 80%); /* Border styling similar to inputs */
+}
+
+.contact .php-email-form select:focus {
+  border-color: var(--accent-color); /* Highlight border on focus */
+}
+
+.contact .php-email-form select option {
+  color: var(--default-color); /* Text color for the options */
+}
+
+/* Placeholder-style color for the default selected option (if needed) */
+.contact .php-email-form select option[value=""] {
+  color: color-mix(in srgb, var(--default-color), transparent 70%);
 }
 
 /*--------------------------------------------------------------

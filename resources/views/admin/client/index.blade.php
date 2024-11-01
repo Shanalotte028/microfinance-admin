@@ -1,10 +1,7 @@
 <x-admin.dashboard-layout>
     <x-slot:heading>
-        Client
+        Clients List
     </x-slot:heading>
-    <x-slot:heading_child>
-        Client List
-    </x-slot:heading_child>
             <x-admin.table-data>
                 <x-slot:heading>
                     Clients
@@ -42,7 +39,16 @@
                                 <td>{{ $client->created_at }}</td>
                                 <td>
                                     <a href="{{ url('/clients/' . $client->id) }}" class="btn btn-success">View</a> <!-- View button -->
+                                    <form action="{{ route('clients.toggleBlock', $client->id) }}" method="POST" style="display:inline;">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="btn btn-{{ $client->blocked === 'Yes' ? 'danger' : 'primary' }}" 
+                                                onclick="return confirm('Are you sure you want to {{ $client->blocked === 'Yes' ? 'unblock' : 'block' }} this client?');">
+                                            {{ $client->blocked === 'Yes' ? 'Unblock' : 'Block' }}
+                                        </button>
+                                    </form>
                                 </td>
+
                             </tr>
                     @endforeach
                 </tbody>

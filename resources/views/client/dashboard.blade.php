@@ -8,7 +8,7 @@
 
       <div class="container" data-aos="fade-up" data-aos-delay="100">
         <h2>Company Name</h2>
-        <p><span class="typed" data-typed-items="Hi there!, User Name, Welcome to, Company name">User Name</span><span class="typed-cursor typed-cursor--blink" aria-hidden="true"></span><span class="typed-cursor typed-cursor--blink" aria-hidden="true"></span></p>
+        <p><span class="typed" data-typed-items="Hi there!, {{ Auth::guard('client')->user()->first_name }} {{ Auth::guard('client')->user()->last_name }}, Welcome to, Company name">User Name</span><span class="typed-cursor typed-cursor--blink" aria-hidden="true"></span><span class="typed-cursor typed-cursor--blink" aria-hidden="true"></span></p>
       </div>
 
     </section><!-- /Hero Section -->

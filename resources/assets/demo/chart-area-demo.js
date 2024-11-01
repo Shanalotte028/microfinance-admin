@@ -1,6 +1,6 @@
 // Set new default font family and font color to mimic Bootstrap's default styling
 Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-Chart.defaults.global.defaultFontColor = '#292b2c';
+Chart.defaults.global.defaultFontColor = '#FFFFFF';
 
 // Area Chart Example
 var ctx = document.getElementById("myAreaChart");
@@ -33,17 +33,19 @@ if(ctx){ var myLineChart = new Chart(ctx, {
           display: false
         },
         ticks: {
+          fontColor: '#FFFFFF',
           maxTicksLimit: 7
         }
       }],
       yAxes: [{
         ticks: {
+          fontColor: '#FFFFFF',
           min: 0,
           max: 40000,
           maxTicksLimit: 5
         },
         gridLines: {
-          color: "rgba(0, 0, 0, .125)",
+          display: false
         }
       }],
     },

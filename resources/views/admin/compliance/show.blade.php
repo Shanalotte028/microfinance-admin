@@ -1,58 +1,9 @@
 <x-admin.dashboard-layout>
+    <x-slot:back><a href="{{ route('admin.compliance.index', ['client' => $client->id]) }}" class="text-white"><i class="bi bi-arrow-left larger-icon"></i></a></x-slot:back>
     <x-slot:heading>
         Compliance Record
     </x-slot:heading>
-    
     <div class="row">
-        {{-- compliance info column --}} 
-        <div class="col-md-6 p-4">
-            @if(is_null($compliance))
-                <p>No KYC documents available.</p>
-            @else
-                <x-admin.card-table-info>
-                    <x-slot:heading>{{ $compliance->compliance_type }}</x-slot:heading>
-                    <x-admin.card-table-info-tr>
-                        <x-slot:heading>Compliance Record ID</x-slot:heading>
-                        {{ $compliance->id }}
-                    </x-admin.card-table-info-tr>
-                    <x-admin.card-table-info-tr>
-                        <x-slot:heading>Client ID</x-slot:heading>
-                        {{ $compliance->client_id }}
-                    </x-admin.card-table-info-tr>
-                    <x-admin.card-table-info-tr>
-                        <x-slot:heading>Client Email</x-slot:heading>
-                        {{ $compliance->client->email }}
-                    </x-admin.card-table-info-tr>
-                    <x-admin.card-table-info-tr>
-                        <x-slot:heading>Compliance Type</x-slot:heading>
-                        {{ $compliance->compliance_type }}
-                    </x-admin.card-table-info-tr>
-                    <x-admin.card-table-info-tr>
-                        <x-slot:heading>Document Type</x-slot:heading>
-                        {{ $compliance->document_type }}
-                    </x-admin.card-table-info-tr>
-                    <x-admin.card-table-info-tr>
-                        <x-slot:heading>Document Status</x-slot:heading>
-                        {{ $compliance->document_status }}
-                    </x-admin.card-table-info-tr>
-                    <x-admin.card-table-info-tr>
-                        <x-slot:heading>Submission Date</x-slot:heading>
-                        {{ $compliance->submission_date }}
-                    </x-admin.card-table-info-tr>
-                    <x-admin.card-table-info-tr>
-                        <x-slot:heading>Approval Date</x-slot:heading>
-                        {{ $compliance->approval_date ?? 'n/a' }}
-                    </x-admin.card-table-info-tr>
-                    <x-admin.card-table-info-tr>
-                        <x-slot:heading>Remarks</x-slot:heading>
-                        {{ $compliance->remarks ?? 'n/a'}}
-                    </x-admin.card-table-info-tr>
-                    <x-slot:button>
-                        <a href="" class="btn btn-success">Approve</a>
-                    </x-slot:button>
-                </x-admin.card-table-info>
-            @endif          
-        </div>
         {{-- compliance file column --}} 
         <div class="col-md-6 p-4">
             @if(is_null($compliance))
@@ -73,9 +24,69 @@
             </x-admin.card-table-info>
             @endif
         </div>
-    </div>
 
+        {{-- compliance info column --}} 
+        <div class="col-md-6 p-4">
+            @if(is_null($compliance))
+                <p>No KYC documents available.</p>
+            @else
+                <form action="{{ route('admin.compliance.approve', ['client' => $client->id, 'compliance' => $compliance->id]) }}" method="POST" onsubmit="return confirmApproval();">
+                    @csrf
+                    @method('PATCH')
+        
+                    <x-admin.card-table-info>
+                        <x-slot:heading>{{ $compliance->compliance_type }}</x-slot:heading>
+                        <x-admin.card-table-info-tr>
+                            <x-slot:heading>Compliance Record ID</x-slot:heading>
+                            {{ $compliance->id }}
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
+                            <x-slot:heading>Client ID</x-slot:heading>
+                            {{ $compliance->client_id }}
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
+                            <x-slot:heading>Client Email</x-slot:heading>
+                            {{ $compliance->client->email }}
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
+                            <x-slot:heading>Compliance Type</x-slot:heading>
+                            {{ $compliance->compliance_type }}
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
+                            <x-slot:heading>Document Type</x-slot:heading>
+                            {{ $compliance->document_type }}
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
+                            <x-slot:heading>Document Status</x-slot:heading>
+                            {{ $compliance->document_status }}
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
+                            <x-slot:heading>Submission Date</x-slot:heading>
+                            {{ $compliance->submission_date }}
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
+                            <x-slot:heading>Approval Date</x-slot:heading>
+                            {{ $compliance->approval_date ?? 'n/a' }}
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
+                            <x-slot:heading>Remarks</x-slot:heading>
+                            {{ $compliance->remarks ?? 'n/a'}}
+                        </x-admin.card-table-info-tr>
+                        @if ($compliance->document_status !=='approved')
+                            <x-slot:button>
+                                <button class="btn btn-success" type="submit">Approve</button>
+                            </x-slot:button>
+                        @endif
+                    </x-admin.card-table-info>
+                </form>
+            @endif          
+        </div>        
+    </div>
     <script>
+        
+        function confirmApproval() {
+            return confirm('Are you sure you want to approve this compliance document?');
+        }
         document.addEventListener("DOMContentLoaded", function () {
             // Check if the document type is PDF
             @if($fileExtension === 'pdf')

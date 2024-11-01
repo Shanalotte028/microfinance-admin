@@ -1,4 +1,5 @@
 <x-admin.dashboard-layout>
+    <x-slot:back><a href="{{ route('admin.client.show', ['client' => $client->id]) }}" class="text-white"><i class="bi bi-arrow-left larger-icon"></i></a></x-slot:back>
     <x-slot:heading>
         Compliance Records
     </x-slot:heading>
@@ -29,4 +30,5 @@
                             @endforeach
             </x-admin.card-table-list>
         </div>
+<x-client.success-popup></x-client.success-popup>
 </x-admin.dashboard-layout>

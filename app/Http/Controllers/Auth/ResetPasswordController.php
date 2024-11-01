@@ -16,7 +16,13 @@ class ResetPasswordController extends Controller
         );
     }
 
-    public function update(){
+    public function showResetForm(Request $request, $token=null){
+        return view('admin/auth.password-reset')->with(
+            ['token' => $token, 'email' => $request->email]
+        );
+    }
+
+    public function update(Request $request){
         request()->validate([
             'email' => 'required|email',
             'password' => ['required','confirmed',RulesPassword::defaults()],
@@ -24,9 +30,10 @@ class ResetPasswordController extends Controller
         ]);
 
         $response = Password::reset(
-            request()->only('email', 'password', 'password_confirmation', 'token'),
+            $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
                 $user->password = bcrypt($password);
+                $user->password_reset_required = false;
                 $user->save();
             }
         );

@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
         'role' => 'admin',
         'access_level' => 'Admin',
         'password' => 'adminadmin1234',
+        'password_reset_required' => false,
         ]);
 
         Client::create([
