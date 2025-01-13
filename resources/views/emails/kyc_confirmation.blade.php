@@ -31,7 +31,7 @@
         <p>If you have any questions or need further assistance, please do not hesitate to contact us.</p>
         <p>Thank you for your cooperation.</p>
 
-        <p>Best regards,<br>{{ config('app.name') }}<br>Customer Support Team</p>
+        <p>Best regards,<br>Ascenders Business Services<br>Customer Support Team</p>
     </div>
 </body>
 </html>
