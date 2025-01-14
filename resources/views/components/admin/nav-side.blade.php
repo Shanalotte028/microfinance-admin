@@ -8,39 +8,12 @@
                         Home
                     </a>
                     <div class="sb-sidenav-menu-heading">Client Management</div>
-                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseClients" aria-expanded="false" aria-controls="collapseClients">
-                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                        Clients
-                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                    </a>
-                    <div class="collapse" id="collapseClients" aria-labelledby="headingClients" data-bs-parent="#sidenavAccordion">
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" href="{{ route('admin.client.index') }}">List Clients</a>
-                        </nav>
-                    </div>
+                    <x-admin.nav-item id="collapseClients" heading="Clients" label="List Clients" route="{{ route('admin.client.index') }}" icon="fas fa-columns" />
                     <div class="sb-sidenav-menu-heading">Compliance Management</div>
-                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseCompliances" aria-expanded="false" aria-controls="collapseCompliances">
-                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                        Compliances
-                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                    </a>
-                    <div class="collapse" id="collapseCompliances" aria-labelledby="headingCompliances" data-bs-parent="#sidenavAccordion">
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" href="{{ route('admin.compliances') }}">Compliance Records</a>
-                        </nav>
-                    </div>
+                    <x-admin.nav-item id="collapseCompliances" heading="Compliances"  label="Compliance Records" route="{{ route('admin.compliances') }}" icon="fas fa-columns" />
                     @can('admin')
                     <div class="sb-sidenav-menu-heading">Account Management</div>
-                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseAccount" aria-expanded="false" aria-controls="collapseAccount">
-                        <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                        Account Management
-                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                    </a>
-                    <div class="collapse" id="collapseAccount" aria-labelledby="headingAccount" data-bs-parent="#sidenavAccordion">
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" href="{{ route('admin.accountCreate') }}">Create Account</a>
-                        </nav>
-                    </div>
+                    <x-admin.nav-item id="collapseAccount" heading="Account Management"  label="Create Account" route="{{ route('admin.accountCreate') }}" icon="fas fa-columns" />
                     @endcan
                 </div>
             </div>
