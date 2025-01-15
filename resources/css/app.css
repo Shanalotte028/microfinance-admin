@@ -2012,8 +2012,9 @@ progress {
   color: #212529;
 }
 
+/* Default styles for .form-control and .datatable-input */
 .form-control, .datatable-input {
-  display: block;
+ /*  display: block; */
   width: 100%;
   padding: 0.375rem 0.75rem;
   font-size: 1rem;
@@ -2024,11 +2025,23 @@ progress {
   background-clip: padding-box;
   border: 1px solid #ced4da;
   -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none;
+  -moz-appearance: none;
+  appearance: none;
   border-radius: 0.375rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
+
+/* Media query for smaller screens (max-width: 576px) */
+@media (max-width: 576px) {
+  .form-control, .datatable-input {
+    margin-top: 10px;
+    font-size: 0.8rem;   /* Smaller font size */
+    padding: 0.5rem 0.5rem; /* Reduced padding */
+    border-radius: 0.7rem; /* Smaller border radius */
+  }
+}
+
+/* No transition when reduced motion is enabled */
 @media (prefers-reduced-motion: reduce) {
   .form-control, .datatable-input {
     transition: none;
@@ -4240,10 +4253,16 @@ textarea.form-control-lg {
   border-top: 0;
 }
 
+
 .card-body {
+  position: relative;
   flex: 1 1 auto;
   padding: var(--bs-card-spacer-y) var(--bs-card-spacer-x);
   color: var(--bs-card-color);
+
+  /* Allow scrollbars when content overflows */
+  overflow: auto;  /* Add scrollbars when needed */
+  max-width: 100%;  /* Ensure content doesn't overflow horizontally */
 }
 
 .card-title {
@@ -4537,6 +4556,14 @@ textarea.form-control-lg {
   color: var(--bs-breadcrumb-item-active-color);
 }
 
+.pagination-container {
+  display: flex;
+  justify-content: center; /* Center the pagination */
+  flex-wrap: wrap; /* Allow wrapping inside the container */
+  max-width: 100%; /* Prevent horizontal overflow */
+  overflow: hidden; /* Hide overflow if content overflows */
+}
+
 .pagination, .datatable-pagination ul {
   --bs-pagination-padding-x: 0.75rem;
   --bs-pagination-padding-y: 0.375rem;
@@ -4558,10 +4585,18 @@ textarea.form-control-lg {
   --bs-pagination-disabled-color: #6c757d;
   --bs-pagination-disabled-bg: #fff;
   --bs-pagination-disabled-border-color: #dee2e6;
-  display: flex;
+  flex-wrap: wrap; /* Enable wrapping for pagination items */
   padding-left: 0;
   list-style: none;
   cursor: pointer;
+  display: flex;
+  margin: 10px;
+}
+
+.page-item {
+  flex: 1 1 auto; /* Allow items to shrink or grow */
+  text-align: center; /* Center-align text */
+  min-width: 50px; /* Avoid items becoming too small */
 }
 
 .page-link, .datatable-pagination a {
@@ -4575,17 +4610,20 @@ textarea.form-control-lg {
   border: var(--bs-pagination-border-width) solid var(--bs-pagination-border-color);
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
+
 @media (prefers-reduced-motion: reduce) {
   .page-link, .datatable-pagination a {
     transition: none;
   }
 }
+
 .page-link:hover, .datatable-pagination a:hover {
   z-index: 2;
   color: var(--bs-pagination-hover-color);
   background-color: var(--bs-pagination-hover-bg);
   border-color: var(--bs-pagination-hover-border-color);
 }
+
 .page-link:focus, .datatable-pagination a:focus {
   z-index: 3;
   color: var(--bs-pagination-focus-color);
@@ -4593,12 +4631,14 @@ textarea.form-control-lg {
   outline: 0;
   box-shadow: var(--bs-pagination-focus-box-shadow);
 }
+
 .page-link.active, .datatable-pagination a.active, .active > .page-link, .datatable-pagination .active > a {
   z-index: 3;
   color: var(--bs-pagination-active-color);
   background-color: var(--bs-pagination-active-bg);
   border-color: var(--bs-pagination-active-border-color);
 }
+
 .page-link.disabled, .datatable-pagination a.disabled, .disabled > .page-link, .datatable-pagination .disabled > a {
   color: var(--bs-pagination-disabled-color);
   pointer-events: none;
@@ -4609,10 +4649,12 @@ textarea.form-control-lg {
 .page-item:not(:first-child) .page-link, .page-item:not(:first-child) .datatable-pagination a, .datatable-pagination .page-item:not(:first-child) a, .datatable-pagination li:not(:first-child) .page-link, .datatable-pagination li:not(:first-child) a {
   margin-left: -1px;
 }
+
 .page-item:first-child .page-link, .page-item:first-child .datatable-pagination a, .datatable-pagination .page-item:first-child a, .datatable-pagination li:first-child .page-link, .datatable-pagination li:first-child a {
   border-top-left-radius: var(--bs-pagination-border-radius);
   border-bottom-left-radius: var(--bs-pagination-border-radius);
 }
+
 .page-item:last-child .page-link, .page-item:last-child .datatable-pagination a, .datatable-pagination .page-item:last-child a, .datatable-pagination li:last-child .page-link, .datatable-pagination li:last-child a {
   border-top-right-radius: var(--bs-pagination-border-radius);
   border-bottom-right-radius: var(--bs-pagination-border-radius);
@@ -4631,6 +4673,10 @@ textarea.form-control-lg {
   --bs-pagination-font-size: 0.875rem;
   --bs-pagination-border-radius: 0.25rem;
 }
+
+
+
+
 
 .badge {
   --bs-badge-padding-x: 0.65em;
@@ -11143,8 +11189,7 @@ body {
   background-color: #212529;
   border-color: #6c757d;
   color: #f8f9fa;
-  cursor:pointer;
-  
+  cursor: pointer;
 }
 
 .datatable-info {
