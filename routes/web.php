@@ -12,6 +12,7 @@ use App\Http\Controllers\ClientAuth\ClientForgotPasswordController;
 use App\Http\Controllers\ClientAuth\ClientResetPasswordController;
 use App\Http\Controllers\ClientAuth\ClientSessionController;
 use App\Http\Controllers\ClientAuth\ClientUserRegistrationController;
+use App\Http\Controllers\SettingsController;
 use App\Models\Client;
 use App\Models\Compliance;
 use App\Models\Loan;
@@ -66,6 +67,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('admin/password/reset', [ResetPasswordController::class, 'showResetForm'])->name('password.reset.auth');
     // Logout
     Route::post('/logout', [SessionController::class, 'destroy'])->name('admin.logout');
+
+    //settings
+    Route::get('admin/settings', [SettingsController::class, 'settings'])->name('admin.settings');
+    Route::get('admin/profile', [SettingsController::class, 'profile'])->name('admin.profile');
+    Route::patch('admin/profile', [SettingsController::class, 'profileUpdate'])->name('admin.profile.update');
 });
 
 // Routes for guest users
@@ -73,17 +79,15 @@ Route::middleware(['guest'])->group(function () {
     // Login
     Route::get('admin/login', [SessionController::class, 'create'])->name('login');
     Route::post('admin/login', [SessionController::class, 'store'])->middleware('throttle:5,1')->name('admin.login.post');
-    
-    // Password Reset
-    Route::get('admin/password/reset', [ForgotPasswordController::class, 'create'])->name('password.request');
-    Route::post('admin/password/email', [ForgotPasswordController::class, 'store'])->name('password.email');
-    Route::get('admin/password/reset/{token}', [ResetPasswordController::class, 'create'])->name('password.reset');
-    Route::post('admin/reset', [ResetPasswordController::class, 'update'])->name('password.update');
 });
 
+// Password Reset
+Route::get('admin/password/reset', [ForgotPasswordController::class, 'create'])->name('password.request');
+Route::post('admin/password/email', [ForgotPasswordController::class, 'store'])->name('password.email');
+Route::get('admin/password/reset/{token}', [ResetPasswordController::class, 'create'])->name('password.reset');
+Route::post('admin/reset', [ResetPasswordController::class, 'update'])->name('password.update');
 
 // Client Routes
-
 Route::middleware(['client-auth'])->group(function(){
     Route::get('/client', function(){
         return view('client/dashboard');
