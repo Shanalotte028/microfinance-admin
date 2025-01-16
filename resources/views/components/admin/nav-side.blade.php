@@ -12,8 +12,19 @@
                     <div class="sb-sidenav-menu-heading">Compliance Management</div>
                     <x-admin.nav-item id="collapseCompliances" heading="Compliances"  label="Compliance Records" route="{{ route('admin.compliances') }}" icon="fas fa-columns" />
                     @can('admin')
-                    <div class="sb-sidenav-menu-heading">Account Management</div>
-                    <x-admin.nav-item id="collapseAccount" heading="Account Management"  label="Create Account" route="{{ route('admin.accountCreate') }}" icon="fas fa-columns" />
+                    <div class="sb-sidenav-menu-heading">User Management</div>
+                    <!-- Dropdown menu for User Management -->
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseAccount" aria-expanded="false" aria-controls="collapseAccount">
+                        <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                        User Management
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="collapseAccount" aria-labelledby="headingAccount" data-bs-parent="#sidenavAccordion">
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" href="{{ route('admin.user.index') }}">List Users</a>
+                            <a class="nav-link" href="{{ route('admin.accountCreate') }}">Create User</a>
+                        </nav>
+                    </div>
                     @endcan
                 </div>
             </div>

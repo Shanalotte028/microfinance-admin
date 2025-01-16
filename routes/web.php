@@ -13,6 +13,7 @@ use App\Http\Controllers\ClientAuth\ClientResetPasswordController;
 use App\Http\Controllers\ClientAuth\ClientSessionController;
 use App\Http\Controllers\ClientAuth\ClientUserRegistrationController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\UserController;
 use App\Models\Client;
 use App\Models\Compliance;
 use App\Models\Loan;
@@ -72,6 +73,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('admin/settings', [SettingsController::class, 'settings'])->name('admin.settings');
     Route::get('admin/profile', [SettingsController::class, 'profile'])->name('admin.profile');
     Route::patch('admin/profile', [SettingsController::class, 'profileUpdate'])->name('admin.profile.update');
+
+    Route::get('admin/users', [UserController::class, 'index'])->name('admin.user.index');
 });
 
 // Routes for guest users
