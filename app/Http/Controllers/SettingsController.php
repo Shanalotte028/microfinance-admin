@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\AuditHelper;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,6 +17,7 @@ class SettingsController extends Controller
     public function profileUpdate(Request $request){
        /** @var \App\Models\User $user */
         $user = Auth::user();
+        $oldData = $user->toArray();
 
         $validatedData = $request->validate([
             'first_name' => 'required|string|max:255',
@@ -25,6 +27,12 @@ class SettingsController extends Controller
 
         // Fill the validated data into the user model
         $user->update($validatedData);
+
+        AuditHelper::log('Account Creation', 
+        'User Management', 
+        "User $user->id ($user->email) updated his profile", 
+        $oldData, 
+        $user->toArray());
 
         return back()->with('success', 'Profile updated successfully!');
     }
