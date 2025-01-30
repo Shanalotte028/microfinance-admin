@@ -13,7 +13,7 @@
             <ul class="dropdown-menu dropdown-menu-end bg-dark" aria-labelledby="navbarDropdown">
                 <li><a class="dropdown-item text-muted" href="{{ route('admin.profile') }}">Profile</a></li>
                 <li><a class="dropdown-item text-muted" href="{{ route('admin.settings') }}">Settings</a></li>
-                <li><a class="dropdown-item text-muted" href="#!">Activity Log</a></li>
+                <li><a class="dropdown-item text-muted" href="{{ route('admin.activity-log') }}">Activity Log</a></li>
                 <li><hr class="dropdown-divider" /></li>
                 <li>
                     <form action="{{ route('admin.logout') }}" method="POST">
