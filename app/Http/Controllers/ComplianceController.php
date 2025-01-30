@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\AuditHelper;
 use App\Mail\ClientVerified;
 use App\Mail\ComplianceApproved;
 use App\Mail\KycConfirmationEmail;
@@ -139,6 +140,7 @@ class ComplianceController extends Controller
     }
 
     public function approve(Client $client, Compliance $compliance) {
+        $userAdmin = Auth::user();
         $compliance->update([
             'document_status' => 'approved', // Comma added here
             'approval_date' => now() // Sets the current date and time
@@ -156,6 +158,10 @@ class ComplianceController extends Controller
             $client->update(['client_status'=> 'Verified']);
             Mail::to($client->email)->send(new ClientVerified($client));
         }
+
+        AuditHelper::log('Approve',
+        'Compliance Management', 
+        "User $userAdmin->id ($userAdmin->email) approved Client ID number: $client->id, $compliance->document_type");
     
         return redirect()->route('admin.compliance.index', ['client' => $client->id])->with('success', 'Compliance document approved successfully.');
     }
