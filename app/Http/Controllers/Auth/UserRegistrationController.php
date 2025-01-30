@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Helpers\AuditHelper;
 use App\Http\Controllers\Controller;
 use App\Mail\UserPasswordMail;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -21,6 +23,7 @@ class UserRegistrationController extends Controller
     }
 
     public function store(Request $request){
+        $userAdmin = Auth::user();
         // Check if the user has admin permissions
         if (Gate::denies('admin')) {
             abort(403);
@@ -52,6 +55,12 @@ class UserRegistrationController extends Controller
         ]));
         
         Mail::to($user->email)->send(new UserPasswordMail($randomPassword));
+
+        AuditHelper::log('Account Creation', 
+        'User Management', 
+        "User $userAdmin->id ($userAdmin->email) created account for $user->first_name $user->last_name ($user->email)", 
+        null, 
+        $user->toArray());
 
         // Redirect with a success message
         return redirect()->route('dashboard')->with('success', 'Account Creation successful.');
