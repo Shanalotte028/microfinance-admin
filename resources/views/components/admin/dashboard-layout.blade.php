@@ -1,7 +1,7 @@
 <x-admin.header/>
     <x-admin.nav-bar/>
     <x-admin.nav-side/>
-        <div id="layoutSidenav_content"  class="bg-dark" style="--bs-bg-opacity: .95;">
+        <div id="layoutSidenav_content"  class="bg-dark-low">
             <main>
                 <div class="container-fluid px-4">
                     <div class="d-flex align-items-center gap-2">

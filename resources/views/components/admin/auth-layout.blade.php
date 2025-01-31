@@ -1,4 +1,4 @@
-<x-admin.header class="bg-dark sb-nav-fixed" style="--bs-bg-opacity: .95;"/>
+<x-admin.header class="bg-dark-low sb-nav-fixed"/>
     <div id="layoutAuthentication">
         <div id="layoutAuthentication_content">
             <main>
