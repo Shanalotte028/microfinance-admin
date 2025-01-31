@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class AuditLogController extends Controller
 {   //
     public function index() {
-        $logs = AuditLog::with('user')->latest()->paginate(10);
+        $logs = AuditLog::all();
         return view('admin.settings.activity-log', compact('logs'));
     }
 }
