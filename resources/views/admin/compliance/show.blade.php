@@ -74,7 +74,13 @@
                         </x-admin.card-table-info-tr>
                         @if ($compliance->document_status !=='approved')
                             <x-slot:button>
-                                <button class="btn btn-success" type="submit">Approve</button>
+                                <button class="btn btn-success" type="button" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#confirmModal"
+                                    data-message="Are you sure you want to approve this compliance document?"
+                                    data-form-action="{{ route('admin.compliance.approve', ['client' => $client->id, 'compliance' => $compliance->id]) }}">
+                                    Approve
+                                </button>
                             </x-slot:button>
                         @endif
                     </x-admin.card-table-info>
@@ -83,10 +89,6 @@
         </div>        
     </div>
     <script>
-        
-        function confirmApproval() {
-            return confirm('Are you sure you want to approve this compliance document?');
-        }
         document.addEventListener("DOMContentLoaded", function () {
             // Check if the document type is PDF
             @if($fileExtension === 'pdf')
