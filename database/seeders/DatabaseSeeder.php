@@ -6,6 +6,7 @@ use App\Models\Address;
 use App\Models\Client;
 use App\Models\Compliance;
 use App\Models\Financial;
+use App\Models\LegalCase;
 use App\Models\Loan;
 use App\Models\Risk;
 use App\Models\User;
@@ -19,26 +20,29 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Create an admin user
         User::create([
-        'first_name' => 'Mark',
-        'last_name' => 'Alde',
-        'email' => 'aldemark28@gmail.com',
-        'role' => 'admin',
-        'access_level' => 'Admin',
-        'password' => 'adminadmin1234',
-        'password_reset_required' => false,
+            'first_name' => 'Mark',
+            'last_name' => 'Alde',
+            'email' => 'aldemark28@gmail.com',
+            'role' => 'admin',
+            'access_level' => 'Admin',
+            'password' => 'adminadmin1234',
+            'password_reset_required' => false,
         ]);
 
+        // Create a specific client
         Client::create([
-        'first_name'=> 'Kram',
-        'last_name' => 'Trash',
-        'email' => 'kramtrash@gmail.com',
-        'client_type' => 'Individual',
-        'password' => 'adminadmin1234',
+            'first_name' => 'Kram',
+            'last_name' => 'Trash',
+            'email' => 'kramtrash@gmail.com',
+            'client_type' => 'Individual',
+            'password' => 'adminadmin1234',
         ]);
 
+        // Create 100 clients with related records
         Client::factory()
-            ->count(100) // Creates 10 clients
+            ->count(100) // Creates 100 clients
             ->create()
             ->each(function ($client) {
                 // Seed addresses for each client
@@ -61,7 +65,7 @@ class DatabaseSeeder extends Seeder
                 $financialDetails->save();
 
                 // Seed compliance records for each client
-                $compliances = Compliance::factory()
+                Compliance::factory()
                     ->count(2) // 2 compliance records per client
                     ->create(['client_id' => $client->id]);
 
@@ -69,6 +73,14 @@ class DatabaseSeeder extends Seeder
                 Risk::factory()
                     ->count(2) // 2 risk assessments per client
                     ->create(['client_id' => $client->id]);
+
+                // Seed legal cases for each client
+                LegalCase::factory()
+                    ->count(3) // 3 legal cases per client
+                    ->create([
+                        'client_id' => $client->id,
+                        'assigned_to' => User::factory()->create(['role' => 'lawyer'])->id, // Assign a lawyer
+                    ]);
             });
     }
 }

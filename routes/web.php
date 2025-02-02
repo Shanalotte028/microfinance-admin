@@ -13,6 +13,7 @@ use App\Http\Controllers\ClientAuth\ClientForgotPasswordController;
 use App\Http\Controllers\ClientAuth\ClientResetPasswordController;
 use App\Http\Controllers\ClientAuth\ClientSessionController;
 use App\Http\Controllers\ClientAuth\ClientUserRegistrationController;
+use App\Http\Controllers\LegalCaseController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UserController;
 use App\Models\Client;
@@ -62,10 +63,6 @@ Route::middleware(['auth'])->group(function () {
     // Loans
     Route::get('/clients/{client}/financial-details/{financial}/loans/{loan}', [LoanController::class, 'show'])->name('admin.loan.show');
 
-     // account creation
-    Route::get('admin/create', [UserRegistrationController::class, 'create'])->name('admin.accountCreate');
-    Route::post('admin/create', [UserRegistrationController::class, 'store'])->name('admin.accountCreate.post');
-    
     // Logout
     Route::post('/logout', [SessionController::class, 'destroy'])->name('admin.logout');
 
@@ -77,6 +74,19 @@ Route::middleware(['auth'])->group(function () {
     //Audit Log/ Acitivy-Log
     Route::get('admin/activity-log', [AuditLogController::class, 'index'])->name('admin.activity-log');
 
+    //Legal Management
+    Route::get('admin/legal-case',[LegalCaseController::class, 'index'])->name('admin.legal.index');
+    Route::get('admin/legal-case/create',[LegalCaseController::class, 'create'])->name('admin.legal.create');
+    Route::post('admin/legal-case',[LegalCaseController::class, 'store'])->name('admin.legal.store');
+    Route::get('admin/legal-case/{case}',[LegalCaseController::class, 'show'])->name('admin.legal.show');
+    Route::put('admin/legal-case/{case}',[LegalCaseController::class, 'update'])->name('admin.legal.update');
+    Route::delete('admin/legal-case',[LegalCaseController::class, 'delete'])->name('admin.legal.destroy');
+    
+
+
+    // User Management
+    Route::get('admin/create', [UserRegistrationController::class, 'create'])->name('admin.accountCreate');
+    Route::post('admin/create', [UserRegistrationController::class, 'store'])->name('admin.accountCreate.post');
     Route::get('admin/users', [UserController::class, 'index'])->name('admin.user.index');
 });
 
