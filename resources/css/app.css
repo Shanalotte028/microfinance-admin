@@ -11251,6 +11251,13 @@ body {
   padding: 0.5rem 0.5rem;
 }
 
+.datatable-table td pre{
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden; /* Hide overflow */
+  text-overflow: ellipsis; /* Show ellipsis for overflow */
+  max-width: 200px; /* Set a maximum width */
+}
+
 .datatable-table > thead > tr > th {
   vertical-align: bottom;
   text-align: left;
