@@ -79,8 +79,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('admin/legal-case/create',[LegalCaseController::class, 'create'])->name('admin.legal.create');
     Route::post('admin/legal-case',[LegalCaseController::class, 'store'])->name('admin.legal.store');
     Route::get('admin/legal-case/{case}',[LegalCaseController::class, 'show'])->name('admin.legal.show');
+    Route::get('admin/legal-case/{case}/edit', [LegalCaseController::class, 'edit'])->name('admin.legal.edit');
     Route::put('admin/legal-case/{case}',[LegalCaseController::class, 'update'])->name('admin.legal.update');
     Route::delete('admin/legal-case',[LegalCaseController::class, 'delete'])->name('admin.legal.destroy');
+    
     
 
 

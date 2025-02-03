@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-md-6">
                 <x-admin.card-table-info>
-                    <x-slot:heading>Legal Case Title: {{$case->title}}</x-slot:heading>
+                    <x-slot:heading>Legal Case Title: {{$case->title}} <a href="{{route('admin.legal.edit', $case->id)}}" class="btn btn-success">Update Case</a></x-slot:heading>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Case Number</x-slot:heading>
                             {{ $case->case_number }}
@@ -35,21 +35,6 @@
                         <div>
                             <p>{{ $case->description }}</p>
                         </div>
-                        </x-admin.card-table-info-tr>
-                        <x-admin.card-table-info-tr>
-                            <x-slot:heading>Update Status</x-slot:heading>
-                            <form action="{{ route('admin.legal.update', $case->id) }}" method="POST">
-                                @csrf
-                                @method('PUT')
-                                <div class="form-group mb-3 col-3">
-                                    <select name="status" id="status" class="form-control" required>
-                                        <option value="open" {{ $case->status == 'open' ? 'selected' : '' }}>Open</option>
-                                        <option value="in_progress" {{ $case->status == 'in_progress' ? 'selected' : '' }}>In Progress</option>
-                                        <option value="closed" {{ $case->status == 'closed' ? 'selected' : '' }}>Closed</option>
-                                    </select>
-                                </div>
-                                <button type="submit" class="btn btn-success">Update Status</button>
-                            </form>
                         </x-admin.card-table-info-tr>
                 </x-admin.card-table-info>
             </div>

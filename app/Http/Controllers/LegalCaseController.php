@@ -60,27 +60,49 @@ class LegalCaseController extends Controller
         return view('admin/legal_cases.show', compact('case'));
     }
 
+        public function edit($id)
+    {
+        $case = LegalCase::with(['client', 'assignedLawyer'])->findOrFail($id);
+        $clients = Client::all(); // Fetch all clients for the dropdown
+        $lawyers = User::where('role', 'lawyer')->get(); // Fetch all lawyers for the dropdown
+        return view('admin/legal_cases.edit', compact('case', 'clients', 'lawyers'));
+    }
+
     // Update a legal case
-    public function update(Request $request, $id)
+        public function update(Request $request, $id)
     {
         $adminUser = Auth::user();
 
         $case = LegalCase::findOrFail($id);
-        $previousStatus = $case->status;
+        $previousStatus = $case->toArray();
+
         $request->validate([
+            'client_id' => 'required|exists:clients,id',
+            'assigned_to' => 'required|exists:users,id',
+            'case_number' => 'required|string|unique:legal_cases,case_number,' . $id,
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
             'status' => 'required|in:open,in_progress,closed',
+            'filing_date' => 'nullable|date',
+            'closing_date' => 'nullable|date|after:filing_date',
         ]);
 
-        $case->update($request->only(['status']));
+        // Update the legal case
+        $case->update($request->all());
 
-        $newStatus = $case->status;
+        $newStatus = $case->toArray();
 
-        AuditHelper::log('Update Legal Case',
-        'Legal Management',
-        "User $adminUser->id ($adminUser->email) updated a legal with case number: $case->case_number",
-        $previousStatus, // ID of the affected client
-        $newStatus,);
-        return redirect()->back()->with('success', 'Legal case updated successfully.');
+        // Log the audit trail
+        AuditHelper::log(
+            'Update Legal Case',
+            'Legal Management',
+            "User $adminUser->id ($adminUser->email) updated a legal case with case number: $case->case_number",
+            $previousStatus, // Old status
+            $newStatus // New status
+        );
+
+        // Redirect to the show page
+        return redirect()->route('admin.legal.show', $case->id)->with('success', 'Legal case updated successfully.');
     }
 
     public function destroy($id)
