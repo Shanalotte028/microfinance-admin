@@ -5,7 +5,8 @@
         <div class="row">
             <div class="col-md-6">
                 <x-admin.card-table-info>
-                    <x-slot:heading>Legal Case Title: {{$case->title}} <a href="{{route('admin.legal.edit', $case->id)}}" class="btn btn-success">Update Case</a></x-slot:heading>
+                    <x-slot:heading>Legal Case Title: {{$case->title}} <a href="{{route('admin.legal.edit', $case->id)}}" class="btn btn-success d-none d-md-inline-block">Update Case</a></x-slot:heading>
+                    <x-slot:heading_child> <a href="{{route('admin.legal.edit', $case->id)}}" class="btn btn-success d-md-none">Update Case</a></x-slot:heading>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Case Number</x-slot:heading>
                             {{ $case->case_number }}
