@@ -169,10 +169,21 @@ class ComplianceController extends Controller
 
 
     // Compliance Sidebar
-    public function compliance(){
-        $compliances = Compliance::with('client:id,email')
-                    ->select('id', 'client_id','compliance_type','document_type', 'document_status', 'submission_date', 'approval_date')               
-                    ->get();
+    public function compliance(Request $request){
+        // Get the status from the request (if provided)
+        $status = $request->query('status');
+
+        // Query builder for compliance records
+        $query = Compliance::with('client:id,email')
+            ->select('id', 'client_id', 'compliance_type', 'document_type', 'document_status', 'submission_date', 'approval_date');
+
+        // Apply status filter if provided
+        if ($status) {
+            $query->where('document_status', $status);
+        }
+
+    // Get the filtered compliance records
+    $compliances = $query->get();
 
         return view('admin/compliance.showall', compact('compliances'));
     }

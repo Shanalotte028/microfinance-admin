@@ -12,9 +12,16 @@ use Illuminate\Support\Facades\Auth;
 class LegalCaseController extends Controller
 {
     // List all legal cases
-    public function index()
+    public function index(Request $request)
     {
-        $cases = LegalCase::with(['client', 'assignedLawyer'])->get();
+        $status = $request->query('status');
+
+        // Query the legal cases based on the status
+        $cases = LegalCase::with(['client', 'assignedLawyer'])
+            ->when($status, function ($query, $status) {
+                return $query->where('status', $status);
+            })
+            ->get();
         return view('admin/legal_cases.index', compact('cases'));
     }
 

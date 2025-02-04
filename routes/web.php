@@ -18,6 +18,7 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UserController;
 use App\Models\Client;
 use App\Models\Compliance;
+use App\Models\LegalCase;
 use App\Models\Loan;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
@@ -28,12 +29,10 @@ use Illuminate\Support\Facades\Auth;
 Route::middleware(['auth'])->group(function () {
     // Dashboard
     Route::get('/', function () {
-        // Fetch total registered users
-        $totalUsers = Client::count();
         // Fetch total pending loans (assuming you have a status field for loans)
-        $pendingLoans = Loan::where('loan_status', 'defaulted')->count();
+        $openCase = LegalCase::where('status', 'open')->count();
         $pendingCompliance = Compliance::where('document_status', 'pending')->count(); 
-        return view('admin/dashboard', compact('totalUsers', 'pendingLoans', 'pendingCompliance'));
+        return view('admin/dashboard', compact('openCase', 'pendingCompliance'));
     })->name('dashboard');
     
     // Clients

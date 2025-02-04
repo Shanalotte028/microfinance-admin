@@ -2,6 +2,15 @@
     <x-slot:heading>
         Legal Cases
     </x-slot:heading>
+
+            <!-- Filter Buttons -->
+        <div class="mb-4">
+            <a href="{{ route('admin.legal.index') }}" class="btn btn-secondary">All</a>
+            <a href="{{ route('admin.legal.index', ['status' => 'open']) }}" class="btn btn-primary">Open</a>
+            <a href="{{ route('admin.legal.index', ['status' => 'in_progress']) }}" class="btn btn-warning">In Progress</a>
+            <a href="{{ route('admin.legal.index', ['status' => 'closed']) }}" class="btn btn-success">Closed</a>
+        </div>
+
             <x-admin.table-data>
                 <x-slot:heading>
                     Cases
