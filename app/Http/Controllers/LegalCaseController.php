@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\AuditHelper;
+use App\Jobs\SendLegalCaseCreatedEmail;
 use App\Models\Client;
 use App\Models\LegalCase;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class LegalCaseController extends Controller
 {
@@ -37,7 +40,7 @@ class LegalCaseController extends Controller
     public function store(Request $request)
     {
         $adminUser = Auth::user();
-
+    
         $request->validate([
             'client_id' => 'required|exists:clients,id',
             'assigned_to' => 'required|exists:users,id',
@@ -48,15 +51,31 @@ class LegalCaseController extends Controller
             'filing_date' => 'nullable|date',
             'closing_date' => 'nullable|date|after:filing_date',
         ]);
-
-        LegalCase::create($request->all());
-
-        AuditHelper::log('Create Legal Case',
-        'Legal Management',
-        "User $adminUser->id ($adminUser->email) Created a new legal with case number: $request->case_number",
-        null, // ID of the affected client
-        null,);
-
+    
+        DB::transaction(function () use ($request, $adminUser) {
+            // Find the assigned lawyer
+            $assignedLawyer = User::find($request->assigned_to);
+            // Ensure the assigned lawyer exists
+            if (!$assignedLawyer) {
+                throw new \Exception("Assigned lawyer not found.");
+            }
+    
+            // Create the legal case
+            $legalCase = LegalCase::create($request->all());
+    
+            // Dispatch the job to send the legal case created email
+            dispatch(new SendLegalCaseCreatedEmail($legalCase, $assignedLawyer->email));
+    
+            // Log the audit trail
+            AuditHelper::log(
+                'Create Legal Case',
+                'Legal Management',
+                "User $adminUser->id ($adminUser->email) created a new legal case with case number: $request->case_number",
+                null, // ID of the affected client
+                null
+            );
+        });
+    
         return redirect()->route('admin.legal.index')->with('success', 'Legal case created successfully.');
     }
 
