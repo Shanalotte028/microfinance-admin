@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\AuditHelper;
-use App\Mail\ClientVerified;
-use App\Mail\ComplianceApproved;
+use App\Jobs\SendClientVerifiedEmail;
+use App\Jobs\SendComplianceApprovedEmail;
 use App\Mail\KycConfirmationEmail;
 use App\Models\Address;
 use App\Models\Client;
@@ -13,8 +13,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\File;
+use Illuminate\Support\Facades\DB;
 
 class ComplianceController extends Controller
 {
@@ -139,30 +139,42 @@ class ComplianceController extends Controller
         return redirect()->route('client.compliance.compliance_records')->with('success', 'Client and compliance records saved successfully.');
     }
 
-    public function approve(Client $client, Compliance $compliance) {
-        $userAdmin = Auth::user();
-        $compliance->update([
-            'document_status' => 'approved', // Comma added here
-            'approval_date' => now() // Sets the current date and time
-        ]);
-    
-        Mail::to($client->email)->send(new ComplianceApproved($client, $compliance));
+        public function approve(Client $client, Compliance $compliance)
+    {
+        DB::transaction(function () use ($client, $compliance) {
+            $userAdmin = Auth::user();
 
-        $approvedKycCount = Compliance::where('client_id', $client->id)
-            ->where('compliance_type', 'KYC')
-            ->where('document_status', 'approved')
-            ->count();
-    
-        if ($approvedKycCount >= 3) { // If 3 KYC documents have been approved
-            // Mark the client as verified
-            $client->update(['client_status'=> 'Verified']);
-            Mail::to($client->email)->send(new ClientVerified($client));
-        }
+            // Update the compliance record
+            $compliance->update([
+                'document_status' => 'approved',
+                'approval_date' => now(),
+            ]);
 
-        AuditHelper::log('Approve',
-        'Compliance Management', 
-        "User $userAdmin->id ($userAdmin->email) approved Client ID number: $client->id, $compliance->document_type");
-    
+            // Dispatch the job to send the compliance approved email
+            dispatch(new SendComplianceApprovedEmail($client, $compliance));
+
+            // Check if the client should be marked as verified
+            $approvedKycCount = Compliance::where('client_id', $client->id)
+                ->where('compliance_type', 'KYC')
+                ->where('document_status', 'approved')
+                ->count();
+
+            if ($approvedKycCount >= 3) {
+                // Mark the client as verified
+                $client->update(['client_status' => 'Verified']);
+
+                // Dispatch the job to send the client verified email
+                dispatch(new SendClientVerifiedEmail($client));
+            }
+
+            // Log the audit trail
+            AuditHelper::log(
+                'Approve',
+                'Compliance Management',
+                "User $userAdmin->id ($userAdmin->email) approved Client ID number: $client->id, $compliance->document_type"
+            );
+        });
+
         return redirect()->route('admin.compliance.index', ['client' => $client->id])->with('success', 'Compliance document approved successfully.');
     }
     
