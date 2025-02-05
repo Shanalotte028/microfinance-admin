@@ -9,6 +9,7 @@
         </table>
         <div class="text-end mt-4 pe-4">
             {{ $button ?? '' }} <!-- Show all button -->
+            {{ $button2 ?? '' }}
         </div>
     </div>
 </div>

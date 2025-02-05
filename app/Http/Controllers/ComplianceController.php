@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\AuditHelper;
 use App\Jobs\SendClientVerifiedEmail;
 use App\Jobs\SendComplianceApprovedEmail;
+use App\Jobs\SendComplianceRejectedEmail;
 use App\Mail\KycConfirmationEmail;
 use App\Models\Address;
 use App\Models\Client;
@@ -169,13 +170,43 @@ class ComplianceController extends Controller
 
             // Log the audit trail
             AuditHelper::log(
-                'Approve',
+                'Approve Compliance',
                 'Compliance Management',
                 "User $userAdmin->id ($userAdmin->email) approved Client ID number: $client->id, $compliance->document_type"
             );
         });
 
         return redirect()->route('admin.compliance.index', ['client' => $client->id])->with('success', 'Compliance document approved successfully.');
+    }
+
+    public function reject(Client $client, Compliance $compliance, Request $request)
+    {
+        DB::transaction(function () use ($client, $compliance, $request) {
+            $userAdmin = Auth::user();
+
+            // Validate the rejection remarks (if any)
+            $request->validate([
+                'remarks' => 'nullable|string|max:255',
+            ]);
+
+            // Update the compliance record
+            $compliance->update([
+                'document_status' => 'rejected',
+                'remarks' => $request->remarks, // Save rejection remarks
+            ]);
+
+            // Dispatch the job to send the compliance rejected email
+            dispatch(new SendComplianceRejectedEmail($client, $compliance, $request->remarks));
+
+            // Log the audit trail
+            AuditHelper::log(
+                'Reject Compliance',
+                'Compliance Management',
+                "User $userAdmin->id ($userAdmin->email) rejected Client ID number: $client->id, $compliance->document_type"
+            );
+        });
+
+        return redirect()->route('admin.compliance.index', ['client' => $client->id])->with('success', 'Compliance document rejected successfully.');
     }
     
 
