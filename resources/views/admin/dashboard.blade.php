@@ -6,7 +6,7 @@
         icon="bi bi-journal"
         value="{{ $pendingCompliance }}"
         heading="Pending Compliances"
-        route="{{ route('admin.compliances') }}" 
+        route="{{ route('admin.compliances', ['status' => 'pending']) }}" 
         />
         <x-admin.cards 
         icon="bi bi-bank2"
