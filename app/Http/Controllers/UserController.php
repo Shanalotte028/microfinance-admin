@@ -67,7 +67,7 @@ class UserController extends Controller
     }
 
     public function deactivate(User $user){
-        $previousStatus = $user->blocked;
+        $previousStatus = $user->status;
         $adminUser = Auth::user();
         
         // Toggle the blocked status between 'yes' and 'no'
@@ -79,8 +79,8 @@ class UserController extends Controller
         $message = $user->status === 'inactive' ? 'user has been deactivated successfully.' : 'user has been activated successfully.';
         
         //  Add Audit Log
-        AuditHelper::log('Block',
-            'user Management',
+        AuditHelper::log('Deactivate/Activate',
+            'User Management',
             "User $adminUser->id ($adminUser->email) changed the status of user ID number: $user->id ($user->email)",
             $previousStatus, // ID of the affected user
             $newStatus,);
