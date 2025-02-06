@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Helpers\AuditHelper;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -43,6 +44,14 @@ class SessionController extends Controller
         }
 
         $user = Auth::user();
+
+        AuditHelper::log(
+            'Login', // Action
+            'Authentication', // Module
+            "User $user->email logged in successfully.", // Description
+            null, // Old Data (not needed here)
+            ['user_id' => $user->id, 'email' => $user->email, 'ip' => request()->ip()] // New Data
+        );
        
         if ($user->password_reset_required) { // Assuming you have this boolean column in your User model
             // Generate a password reset token
