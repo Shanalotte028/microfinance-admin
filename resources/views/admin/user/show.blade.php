@@ -28,6 +28,10 @@
                             {{ $user->email }}
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
+                            <x-slot:heading>Status</x-slot:heading>
+                            {{ $user->status }}
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
                             <x-slot:heading>Created At</x-slot:heading>
                             {{ $user->created_at }}
                         </x-admin.card-table-info-tr>

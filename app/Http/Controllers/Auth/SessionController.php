@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -25,6 +26,15 @@ class SessionController extends Controller
         ]);
 
         $remember = $request->has('remember');
+
+        // Find the user by email
+        $user = User::where('email', $validatedAttributes['email'])->first();
+
+        if ($user && $user->status === "inactive") {
+            throw ValidationException::withMessages([
+                'email' => 'Your account is deactivated. Please contact support.',
+            ]);
+        }
 
         if (!Auth::attempt($validatedAttributes, $remember)) {
             throw ValidationException::withMessages([

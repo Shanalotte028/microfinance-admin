@@ -65,4 +65,26 @@ class UserController extends Controller
 
         return redirect()->route('admin.user.index')->with('success', 'User updated successfully.');
     }
+
+    public function deactivate(User $user){
+        $previousStatus = $user->blocked;
+        $adminUser = Auth::user();
+        
+        // Toggle the blocked status between 'yes' and 'no'
+        $user->status = ($user->status === 'inactivate') ? 'active' : 'inactive';
+        $newStatus = $user->status;
+        $user->save();
+
+        // Prepare a success message based on the new status
+        $message = $user->status === 'inactive' ? 'user has been deactivated successfully.' : 'user has been activated successfully.';
+        
+        //  Add Audit Log
+        AuditHelper::log('Block',
+            'user Management',
+            "User $adminUser->id ($adminUser->email) changed the status of user ID number: $user->id ($user->email)",
+            $previousStatus, // ID of the affected user
+            $newStatus,);
+
+        return redirect()->back()->with('success', $message);
+    }
 }

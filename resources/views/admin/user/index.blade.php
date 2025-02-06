@@ -30,6 +30,17 @@
                                 <td>{{ $user->updated_at }}</td>
                                 <td>
                                     <a href="{{route('admin.user.show', $user)}}" class="btn btn-success">View</a>
+                                    <form action="{{ route('admin.user.deactivate', $user->id) }}" method="POST" style="display:inline;">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="button" class="btn btn-{{ $user->status === 'inactive' ? 'danger' : 'primary' }}" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#confirmModal" 
+                                            data-message="Are you sure you want to {{ $user->status === 'inactive' ? 'Activate' : 'Deactivate' }} this user?"
+                                            data-form-action="{{ route('admin.user.deactivate', $user->id) }}">
+                                        {{ $user->status === 'inactive' ? 'Activate' : 'Deactivate' }}
+                                    </button>
+                                    </form>
                                 </td>
                             </tr>
                     @endforeach

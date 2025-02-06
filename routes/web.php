@@ -92,6 +92,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('admin/users', [UserController::class, 'index'])->name('admin.user.index');
     Route::get('admin/users/{user}', [UserController::class, 'show'])->name('admin.user.show');
     Route::get('admin/users/{user}/edit', [UserController::class, 'edit'])->name('admin.user.edit');
+    Route::patch('admin/users/{user}/deactivate', [UserController::class, 'deactivate'])->name('admin.user.deactivate');
     Route::put('admin/users/{user}', [UserController::class, 'update'])->name('admin.user.update');
 });
 
