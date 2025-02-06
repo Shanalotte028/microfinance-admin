@@ -90,6 +90,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('admin/create', [UserRegistrationController::class, 'create'])->name('admin.accountCreate');
     Route::post('admin/create', [UserRegistrationController::class, 'store'])->name('admin.accountCreate.post');
     Route::get('admin/users', [UserController::class, 'index'])->name('admin.user.index');
+    Route::get('admin/users/{user}', [UserController::class, 'show'])->name('admin.user.show');
+    Route::get('admin/users/{user}/edit', [UserController::class, 'edit'])->name('admin.user.edit');
+    Route::put('admin/users/{user}', [UserController::class, 'update'])->name('admin.user.update');
 });
 
 // Routes for guest users

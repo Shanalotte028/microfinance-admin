@@ -15,6 +15,7 @@
                         <th>Role</th>
                         <th>Created At</th>
                         <th>Updated At</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>                              
@@ -27,6 +28,9 @@
                                 <td>{{ $user->role}}</td>
                                 <td>{{ $user->created_at }}</td>
                                 <td>{{ $user->updated_at }}</td>
+                                <td>
+                                    <a href="{{route('admin.user.show', $user)}}" class="btn btn-success">View</a>
+                                </td>
                             </tr>
                     @endforeach
                 </tbody>
