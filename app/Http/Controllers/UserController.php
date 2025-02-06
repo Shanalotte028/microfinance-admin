@@ -37,6 +37,7 @@ class UserController extends Controller
         if (Gate::denies('admin')) {
             abort(403);
         }
+        $oldData = $user->toArray();
 
         $validatedAttributes = $request->validate([
             'first_name' => ['required', 'string', 'max:255'],
@@ -59,7 +60,7 @@ class UserController extends Controller
         AuditHelper::log('Account Update', 
             'User Management', 
             "User " . Auth::user()->email . " updated account for $user->first_name $user->last_name ($user->email)", 
-            null, 
+            $oldData, 
             $user->toArray());
 
         return redirect()->route('admin.user.index')->with('success', 'User updated successfully.');
