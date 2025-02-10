@@ -6,9 +6,9 @@
             <!-- Left Column -->
             <div class="col-md-6">
                 <x-admin.card-table-info> {{-- Client Info Card --}}
-                    <x-slot:heading> {{ $client->email }} <a class="btn btn-success d-none d-md-inline-block"  href="{{ route('admin.client.edit',['client' => $client->id]) }}">Edit Client</a>
+                    <x-slot:heading> {{ $client->email }} @can('clients.edit')<a class="btn btn-success d-none d-md-inline-block"  href="{{ route('admin.client.edit',['client' => $client->id]) }}">Edit Client</a>@endcan
                     </x-slot:heading>
-                    <x-slot:heading_child>User ID: {{ $client->id }} <a class="btn btn-success d-md-none" href="{{ route('admin.client.edit', ['client' => $client->id]) }}">Edit Client</a></x-slot:heading_child>
+                    <x-slot:heading_child>User ID: {{ $client->id }} @can('clients.edit')<a class="btn btn-success d-md-none" href="{{ route('admin.client.edit', ['client' => $client->id]) }}">Edit Client</a>@endcan</x-slot:heading_child>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Name</x-slot:heading>
                             {{ $client->first_name }} {{ $client->last_name ?? 'n/a'}}
