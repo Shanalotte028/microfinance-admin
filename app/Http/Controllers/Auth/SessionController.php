@@ -68,6 +68,19 @@ class SessionController extends Controller
     }
 
     public function destroy(){
+
+        $user = Auth::user();
+
+        if ($user) {
+            AuditHelper::log(
+                'Logout', // Action
+                'Authentication', // Module
+                "User $user->email logged out successfully.", // Description
+                null, // Old Data (not needed here)
+                ['user_id' => $user->id, 'email' => $user->email, 'ip' => request()->ip()] // New Data
+            );
+        }
+
         Auth::guard('web')->logout();
 
         request()->session()->invalidate();
