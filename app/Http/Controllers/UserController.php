@@ -18,10 +18,6 @@ class UserController extends Controller
     }
 
     public function show(User $user){
-        if (Gate::denies('admin')) {
-            abort(403);
-        }
-
         return view('admin.user.show', compact('user'));
     }
 

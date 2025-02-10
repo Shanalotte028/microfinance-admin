@@ -20,17 +20,60 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+
+        $this->call([
+            RolesAndPermissionsSeeder::class,
+        ]);
         // Create an admin user
-        User::create([
+        $user = User::create([
             'first_name' => 'Mark',
             'last_name' => 'Alde',
             'email' => 'aldemark28@gmail.com',
-            'role' => 'admin',
+            'role' => 'Admin',
             'access_level' => 'Admin',
             'status' => 'active',
             'password' => 'adminadmin1234',
             'password_reset_required' => false,
         ]);
+
+        $user2 = User::create([
+            'first_name' => 'Kram',
+            'last_name' => 'Trash',
+            'email' => 'kramtrash@gmail.com',
+            'role' => 'Staff',
+            'access_level' => 'Staff',
+            'status' => 'active',
+            'password' => 'adminadmin1234',
+            'password_reset_required' => false,
+        ]);
+
+        $user3 = User::create([
+            'first_name' => 'Marky',
+            'last_name' => 'Alde',
+            'email' => 'aldemarkangelobsit1147@gmail.com',
+            'role' => 'Lawyer',
+            'access_level' => 'Lawyer',
+            'status' => 'active',
+            'password' => 'adminadmin1234',
+            'password_reset_required' => false,
+        ]);
+
+        $user4 = User::create([
+            'first_name' => 'Marky',
+            'last_name' => 'Alde',
+            'email' => 'markangelo.alde028@gmail.com',
+            'role' => 'Staff Manager',
+            'access_level' => 'Staff Manager',
+            'status' => 'active',
+            'password' => 'adminadmin1234',
+            'password_reset_required' => false,
+        ]);
+
+        $user->assignRole('Admin'); // Assign role after creation
+        $user2->assignRole('Staff');
+        $user3->assignRole('Lawyer');
+        $user4->assignRole('Staff Manager');
+        
 
         // Create a specific client
         Client::create([

@@ -11,7 +11,6 @@
                     <x-admin.nav-item id="collapseClients" heading="Clients" label="List Clients" route="{{ route('admin.client.index') }}" icon="fas fa-columns" />
                     <div class="sb-sidenav-menu-heading">Compliance Management</div>
                     <x-admin.nav-item id="collapseCompliances" heading="Compliances"  label="Compliance Records" route="{{ route('admin.compliances') }}" icon="fas fa-columns" />
-                    @can('admin')
                     <div class="sb-sidenav-menu-heading">User Management</div>
                     <!-- Dropdown menu for User Management -->
                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseAccount" aria-expanded="false" aria-controls="collapseAccount">
@@ -38,7 +37,6 @@
                             <a class="nav-link" href="{{ route('admin.legal.create') }}">Create Cases</a>
                         </nav>
                     </div>
-                    @endcan
                 </div>
             </div>
         </nav>

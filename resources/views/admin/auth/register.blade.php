@@ -30,8 +30,9 @@
                             <select class="form-control" name="role" id="role" required>
                                 <option value="" disabled selected class="text-dark">Role</option>
                                 <option value="Staff">Staff</option>
-                                <option value="Manager">Manager</option>
+                                <option value="Staff Manager">Manager</option>
                                 <option value="Admin">Admin</option>
+                                <option value="Lawyer">Lawyer</option>
                             </select>
                             <x-admin.form-error name="role"></x-admin.form-error>
                         </div>
