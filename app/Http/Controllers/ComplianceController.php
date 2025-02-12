@@ -163,7 +163,8 @@ class ComplianceController extends Controller
                     dispatch(new SendClientVerifiedEmail($client));
                 }
     
-                AuditHelper::log('Approve Compliance', 'Compliance Management', "User $userAdmin->id ($userAdmin->email) approved $compliance->document_type");
+                AuditHelper::log('Approve Compliance', 'Compliance Management', 
+                "User $userAdmin->id ($userAdmin->email) approved $compliance->document_type of Client ID: $client->id ($client->first_name $client->last_name)");
     
             });
     
@@ -192,7 +193,8 @@ class ComplianceController extends Controller
     
                 dispatch(new SendComplianceRejectedEmail($client, $compliance, $request->remarks));
     
-                AuditHelper::log('Reject Compliance', 'Compliance Management', "User $userAdmin->id ($userAdmin->email) rejected $compliance->document_type");
+                AuditHelper::log('Reject Compliance', 'Compliance Management', 
+                "User $userAdmin->id ($userAdmin->email) rejected $compliance->document_type of Client ID: $client->id ($client->first_name $client->last_name)");
             });
     
             return redirect()->route('admin.compliance.index', ['client' => $client->id])->with('success', 'Compliance document rejected successfully.');
