@@ -38,14 +38,12 @@
 
 /* Track (the area behind the scrollbar) */
 ::-webkit-scrollbar-track {
-  background: rgb(255, 255, 255); 
-  border-radius: 4px;
+  background: rgb(255, 253, 253); 
 }
 
 /* Handle (the moving part of the scrollbar) */
 ::-webkit-scrollbar-thumb {
   background: #1b1d20; /* Bootstrap primary color */
-  border-radius: 4px;
 }
 
 /* Handle on hover */

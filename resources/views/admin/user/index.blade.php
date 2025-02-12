@@ -30,6 +30,7 @@
                                 <td>{{ $user->updated_at }}</td>
                                 <td>
                                     <a href="{{route('admin.user.show', $user)}}" class="btn btn-success">View</a>
+                                    @can('users.deactivate')
                                     <form action="{{ route('admin.user.deactivate', $user->id) }}" method="POST" style="display:inline;">
                                         @csrf
                                         @method('PATCH')
@@ -41,6 +42,7 @@
                                         {{ $user->status === 'inactive' ? 'Activate' : 'Deactivate' }}
                                     </button>
                                     </form>
+                                    @endcan
                                 </td>
                             </tr>
                     @endforeach
