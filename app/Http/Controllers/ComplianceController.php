@@ -142,71 +142,65 @@ class ComplianceController extends Controller
 
         public function approve(Client $client, Compliance $compliance)
     {
-        DB::transaction(function () use ($client, $compliance) {
-            $userAdmin = Auth::user();
-
-            // Update the compliance record
-            $compliance->update([
-                'document_status' => 'approved',
-                'approval_date' => now(),
-            ]);
-
-            // Dispatch the job to send the compliance approved email
-            dispatch(new SendComplianceApprovedEmail($client, $compliance));
-
-            // Check if the client should be marked as verified
-            $approvedKycCount = Compliance::where('client_id', $client->id)
-                ->where('compliance_type', 'KYC')
-                ->where('document_status', 'approved')
-                ->count();
-
-            if ($approvedKycCount >= 3) {
-                // Mark the client as verified
-                $client->update(['client_status' => 'Verified']);
-
-                // Dispatch the job to send the client verified email
-                dispatch(new SendClientVerifiedEmail($client));
-            }
-
-            // Log the audit trail
-            AuditHelper::log(
-                'Approve Compliance',
-                'Compliance Management',
-                "User $userAdmin->id ($userAdmin->email) approved Client ID number: $client->id, $compliance->document_type"
-            );
-        });
-
-        return redirect()->route('admin.compliance.index', ['client' => $client->id])->with('success', 'Compliance document approved successfully.');
+        try {
+            DB::transaction(function () use ($client, $compliance) {
+                $userAdmin = Auth::user();
+    
+                $compliance->update([
+                    'document_status' => 'approved',
+                    'approval_date' => now(),
+                ]);
+    
+                dispatch(new SendComplianceApprovedEmail($client, $compliance));
+    
+                $approvedKycCount = Compliance::where('client_id', $client->id)
+                    ->where('compliance_type', 'KYC')
+                    ->where('document_status', 'approved')
+                    ->count();
+    
+                if ($approvedKycCount >= 3) {
+                    $client->update(['client_status' => 'Verified']);
+                    dispatch(new SendClientVerifiedEmail($client));
+                }
+    
+                AuditHelper::log('Approve Compliance', 'Compliance Management', "User $userAdmin->id ($userAdmin->email) approved $compliance->document_type");
+    
+            });
+    
+            return redirect()->route('admin.compliance.index', ['client' => $client->id])->with('success', 'Compliance document approved successfully.');
+        } catch (\Exception $e) {
+            Log::error('Compliance Approval Failed', ['error' => $e->getMessage()]);
+    
+            return redirect()->back()->with('error', 'Failed to approve the compliance document. Please try again.');
+        }
     }
 
     public function reject(Client $client, Compliance $compliance, Request $request)
     {
-        DB::transaction(function () use ($client, $compliance, $request) {
-            $userAdmin = Auth::user();
-
-            // Validate the rejection remarks (if any)
-            $request->validate([
-                'remarks' => 'nullable|string|max:255',
-            ]);
-
-            // Update the compliance record
-            $compliance->update([
-                'document_status' => 'rejected',
-                'remarks' => $request->remarks, // Save rejection remarks
-            ]);
-
-            // Dispatch the job to send the compliance rejected email
-            dispatch(new SendComplianceRejectedEmail($client, $compliance, $request->remarks));
-
-            // Log the audit trail
-            AuditHelper::log(
-                'Reject Compliance',
-                'Compliance Management',
-                "User $userAdmin->id ($userAdmin->email) rejected Client ID number: $client->id, $compliance->document_type"
-            );
-        });
-
-        return redirect()->route('admin.compliance.index', ['client' => $client->id])->with('success', 'Compliance document rejected successfully.');
+        try {
+            DB::transaction(function () use ($client, $compliance, $request) {
+                $userAdmin = Auth::user();
+    
+                $request->validate([
+                    'remarks' => 'nullable|string|max:255',
+                ]);
+    
+                $compliance->update([
+                    'document_status' => 'rejected',
+                    'remarks' => $request->remarks,
+                ]);
+    
+                dispatch(new SendComplianceRejectedEmail($client, $compliance, $request->remarks));
+    
+                AuditHelper::log('Reject Compliance', 'Compliance Management', "User $userAdmin->id ($userAdmin->email) rejected $compliance->document_type");
+            });
+    
+            return redirect()->route('admin.compliance.index', ['client' => $client->id])->with('success', 'Compliance document rejected successfully.');
+        } catch (\Exception $e) {
+            Log::error('Compliance Rejection Failed', ['error' => $e->getMessage()]);
+    
+            return redirect()->back()->with('error', 'Failed to reject the compliance document. Please try again.');
+        }
     }
     
 
@@ -216,17 +210,12 @@ class ComplianceController extends Controller
         // Get the status from the request (if provided)
         $status = $request->query('status');
 
-        // Query builder for compliance records
-        $query = Compliance::with('client:id,email')
-            ->select('id', 'client_id', 'compliance_type', 'document_type', 'document_status', 'submission_date', 'approval_date');
-
-        // Apply status filter if provided
-        if ($status) {
-            $query->where('document_status', $status);
-        }
-
-    // Get the filtered compliance records
-    $compliances = $query->get();
+        $compliances = Compliance::with('client:id,email') // Load only needed fields
+        ->select(['id', 'client_id', 'compliance_type', 'document_type', 'document_status', 'submission_date', 'approval_date'])
+        ->when($status, function ($query, $status) { // Apply status filter only when provided
+            return $query->where('document_status', $status);
+        })
+        ->get();
 
         return view('admin/compliance.showall', compact('compliances'));
     }
@@ -235,14 +224,13 @@ class ComplianceController extends Controller
         return view('admin/compliance.index', compact('client'));
     }
 
-    public function show($client_id, $compliance_id)
-    {
-        // Find the client or return 404 if not found
-        $client = Client::with('compliance_records')->findOrFail($client_id);
+    public function show($client_id, $compliance_id){
+        $client = Client::with(['compliance_records' => function ($query) use ($compliance_id) {
+            $query->where('id', $compliance_id); // Filter by compliance ID
+        }])->findOrFail($client_id);
     
-        // Find the specific compliance record or return 404 if not found
-        $compliance = $client->compliance_records()->find($compliance_id); // Use ->() to ensure it's treated as a query builder
-    
+        $compliance = $client->compliance_records->first(); // Get the filtered record
+
         // If the compliance record is not found in the client's records, throw a 404
         return view('admin/compliance.show', compact('client', 'compliance'));
     }
