@@ -43,6 +43,37 @@
                         </x-admin.card-table-info-tr>
                 </x-admin.card-table-info>
             </div>
+            @if($user->role === "Lawyer")
+                @if($cases->isEmpty())
+                <div class="col-md-6">
+                <x-admin.card-table-info>
+                    <x-slot:heading>No cases assigned.</x-slot:heading>
+                </x-admin.card-table-info>
+                </div>
+                @else
+                    <div class="col-md-6">
+                        <x-admin.card-table-list>
+                            <x-slot:heading>Assigned Cases</x-slot:heading>
+                            <x-slot:table_row>
+                                <th class="col-3">Case Number</th>
+                                <th class="col-3">Title</th>
+                                <th class="col-3">Client Name</th>
+                                <th class="col-3">Case Status</th>
+                                <th class="col-2">Filing Date</th>
+                            </x-slot:table_row>
+                            @foreach ($cases as $case)
+                                <tr>
+                                    <td>{{ $case->case_number ?? 'n/a' }}</td>
+                                    <td>{{ $case->title ?? 'n/a' }}</td>
+                                    <td>{{$case->client->first_name.' '. $case->client->last_name}}</td>
+                                    <td>{{ ucfirst($case->status) ?? 'n/a' }}</td>
+                                    <td>{{ $case->filing_date ?? 'n/a' }}</td>
+                                </tr>
+                            @endforeach
+                        </x-admin.card-table-list>
+                    </div>
+                @endif
+            @endif
         </div>
         <x-client.success-popup/>
 </x-admin.dashboard-layout>

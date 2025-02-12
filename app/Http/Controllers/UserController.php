@@ -18,7 +18,9 @@ class UserController extends Controller
     }
 
     public function show(User $user){
-        return view('admin.user.show', compact('user'));
+        $cases = $user->legalCases()->with(['client', 'assignedLawyer'])->get();
+
+        return view('admin.user.show', compact('user', 'cases'));
     }
 
         public function edit(User $user){

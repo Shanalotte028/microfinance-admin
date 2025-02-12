@@ -18,13 +18,20 @@ class LegalCaseController extends Controller
     public function index(Request $request)
     {
         $status = $request->query('status');
+        $user = Auth::user();
 
-        // Query the legal cases based on the status
-        $cases = LegalCase::with(['client', 'assignedLawyer'])
+        if ($user->role === 'Lawyer') {
+            /** @var User $user */
+            $cases = $user->legalCases()->with(['client', 'assignedLawyer'])->get();
+        } else {
+                // Query the legal cases based on the status
+            $cases = LegalCase::with(['client', 'assignedLawyer'])
             ->when($status, function ($query, $status) {
                 return $query->where('status', $status);
             })
             ->get();
+        }
+        
         return view('admin/legal_cases.index', compact('cases'));
     }
 

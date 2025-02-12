@@ -54,4 +54,8 @@ class User extends Authenticatable implements CanResetPassword
             'password' => 'hashed',
         ];
     }
+    
+    public function legalCases(){
+        return $this->hasMany(LegalCase::class, 'assigned_to');
+    }
 }

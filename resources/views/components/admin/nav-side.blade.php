@@ -46,7 +46,11 @@
                     <div class="collapse" id="collapseLegal" aria-labelledby="headingAccount" data-bs-parent="#sidenavAccordion">
                         <nav class="sb-sidenav-menu-nested nav">
                             @can('legal.index')
-                            <a class="nav-link" href="{{ route('admin.legal.index') }}">List Cases</a>
+                                @if(Auth::user()->role === "Lawyer")
+                                    <a class="nav-link" href="{{ route('admin.legal.index') }}">Assigned Cases</a>
+                                @else
+                                    <a class="nav-link" href="{{ route('admin.legal.index') }}">List Cases</a>
+                            @endif
                             @endcan
                             @can('legal.create')
                             <a class="nav-link" href="{{ route('admin.legal.create') }}">Create Cases</a>

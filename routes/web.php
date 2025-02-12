@@ -29,10 +29,12 @@ use Illuminate\Support\Facades\Auth;
 Route::middleware(['auth'])->group(function () {
     // Dashboard
     Route::get('/', function () {
+        $user = Auth::user();
+        $assignedCases = $user->legalCases->count();
         // Fetch total pending loans (assuming you have a status field for loans)
         $openCase = LegalCase::where('status', 'open')->count();
         $pendingCompliance = Compliance::where('document_status', 'pending')->count(); 
-        return view('admin/dashboard', compact('openCase', 'pendingCompliance'));
+        return view('admin/dashboard', compact('openCase', 'pendingCompliance', 'assignedCases'));
     })->name('dashboard');
     
    // Clients

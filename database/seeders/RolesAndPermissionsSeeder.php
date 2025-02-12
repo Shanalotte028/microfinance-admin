@@ -41,7 +41,7 @@ class RolesAndPermissionsSeeder extends Seeder
                                 'audit','legal.index','legal.show','legal.edit','legal.create','legal.update','users.index','users.show',],
             'Staff' => ['clients.index','clients.show',
                         'compliances.index','compliances.show','compliances.approve','compliances.reject',],
-            'Lawyer' => ['clients.index','clients.show','legal.index','legal.show','legal.edit','legal.update',]
+            'Lawyer' => ['clients.show','legal.index','legal.show','legal.edit','legal.update',]
         ];
 
         // Create roles and assign permissions

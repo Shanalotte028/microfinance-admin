@@ -123,7 +123,7 @@ class DatabaseSeeder extends Seeder
                     ->count(3) // 3 legal cases per client
                     ->create([
                         'client_id' => $client->id,
-                        'assigned_to' => User::factory()->create(['role' => 'lawyer'])->id, // Assign a lawyer
+                        'assigned_to' => User::factory()->create(['role' => 'Lawyer'])->id, // Assign a lawyer
                     ]);
             });
     }

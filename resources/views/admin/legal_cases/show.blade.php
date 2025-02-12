@@ -13,7 +13,7 @@
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Client</x-slot:heading>
-                            {{ $case->client->first_name }} {{ $case->client->last_name }}
+                            <a href="{{route('admin.client.show', $case->client->id)}}">{{ $case->client->first_name }} {{ $case->client->last_name }}</a>
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Assigned Lawyer</x-slot:heading>
