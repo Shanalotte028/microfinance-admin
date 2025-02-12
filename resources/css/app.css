@@ -30,6 +30,29 @@
   padding-right: 1rem; /* Add some padding to the right */
 }
 
+/* Apply to all scrollable elements */
+::-webkit-scrollbar {
+  width: 10px; /* Width of vertical scrollbar */
+  height: 10px; /* Height of horizontal scrollbar */
+}
+
+/* Track (the area behind the scrollbar) */
+::-webkit-scrollbar-track {
+  background: rgb(255, 255, 255); 
+  border-radius: 4px;
+}
+
+/* Handle (the moving part of the scrollbar) */
+::-webkit-scrollbar-thumb {
+  background: #1b1d20; /* Bootstrap primary color */
+  border-radius: 4px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #0f1111;
+}
+
 :root {
   --bs-blue: #0d6efd;
   --bs-indigo: #6610f2;
