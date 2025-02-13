@@ -125,15 +125,6 @@
                             </div>
                             @endcan 
                         </form>
-                        @can('delete',$client)
-                        <form action="{{ route('admin.client.destroy', $client->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this client?');">
-                            @csrf
-                            @method('DELETE')
-                            <div class="text-end mt-4 pe-4">
-                            <button type="submit" class="btn btn-danger">Delete Client</button>
-                            </div>
-                        </form>
-                        @endcan
                         </x-admin.card-table-info-tr>                                   
                 </x-admin.card-table-info>        
             </div>

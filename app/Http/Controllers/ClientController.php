@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\AuditHelper;
 use App\Models\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,13 +23,23 @@ class ClientController extends Controller
     }
 
     public function toggleBlock(Client $client){
+    $previousStatus = $client->blocked;
+    $adminUser = Auth::user();
     // Toggle the blocked status between 'yes' and 'no'
     $client->blocked = ($client->blocked === 'Yes') ? 'No' : 'Yes';
+    $newStatus = $client->blocked;
     $client->save();
 
     // Prepare a success message based on the new status
     $message = $client->blocked === 'Yes' ? 'Client has been blocked successfully.' : 'Client has been unblocked successfully.';
     
+    //  Add Audit Log
+    AuditHelper::log('Block',
+        'Client Management',
+        "User $adminUser->id ($adminUser->email) changed blocked status of client ID number: $client->id ($client->email)",
+        $previousStatus, // ID of the affected client
+        $newStatus,);
+
     return redirect()->back()->with('success', $message);
     }
     
@@ -48,7 +59,9 @@ class ClientController extends Controller
 
     public function profileUpdate(Request $request, Client $client)
     {
-        //dd($request->all());
+        $userAdmin = Auth::user()->id;
+        $oldData = $client->toArray();
+
         $validatedData = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -97,7 +110,10 @@ class ClientController extends Controller
                 'postal_code' => $validatedData['postal_code'],
             ]);
         }
+
+        $newData = $client->toArray();
     
+        
         // Redirect back with success message
         return back()->with('success', 'Profile updated successfully!');
     }
@@ -107,6 +123,10 @@ class ClientController extends Controller
 
     public function update(Request $request, Client $client)
     {
+        $userAdmin = Auth::user();
+        $oldData = $client->toArray();
+
+
         $validatedData = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -148,6 +168,15 @@ class ClientController extends Controller
                 'postal_code' => $validatedData['postal_code'],
             ]);
         }
+
+        $newData = $client->toArray();
+
+        AuditHelper::log('Update', 
+        'Client Management',
+        "User $userAdmin->id ($userAdmin->email) Updated account of Client ID number: $client->id ($client->email)",
+        $oldData,  
+        $newData);
+
     
         // Redirect back with success message
         return redirect()->route('admin.client.show', $client)->with('success', 'Client Information updated successfully!');

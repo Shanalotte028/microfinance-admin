@@ -8,5 +8,5 @@ Congratulations! Your account has been successfully verified. You now have full 
 If you need any assistance, feel free to reach out to us.
 
 Best Regards,  
-{{ config('app.name') }}
+Microfinance Solution Support Team
 @endcomponent

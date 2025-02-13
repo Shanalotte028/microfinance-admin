@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('role');
             $table->string('access_level');
             $table->string('email')->unique();
+            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->boolean('password_reset_required')->default(true);

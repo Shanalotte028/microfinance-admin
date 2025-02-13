@@ -42,13 +42,17 @@
                                     <form action="{{ route('clients.toggleBlock', $client->id) }}" method="POST" style="display:inline;">
                                         @csrf
                                         @method('PATCH')
-                                        <button type="submit" class="btn btn-{{ $client->blocked === 'Yes' ? 'danger' : 'primary' }}" 
-                                                onclick="return confirm('Are you sure you want to {{ $client->blocked === 'Yes' ? 'unblock' : 'block' }} this client?');">
-                                            {{ $client->blocked === 'Yes' ? 'Unblock' : 'Block' }}
+                                        @can('clients.block')
+                                        <button type="button" class="btn btn-{{ $client->blocked === 'Yes' ? 'danger' : 'primary' }}" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#confirmModal" 
+                                            data-message="Are you sure you want to {{ $client->blocked === 'Yes' ? 'unblock' : 'block' }} this client?"
+                                            data-form-action="{{ route('clients.toggleBlock', $client->id) }}">
+                                        {{ $client->blocked === 'Yes' ? 'Unblock' : 'Block' }}
                                         </button>
+                                        @endcan
                                     </form>
                                 </td>
-
                             </tr>
                     @endforeach
                 </tbody>

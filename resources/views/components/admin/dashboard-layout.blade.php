@@ -1,7 +1,7 @@
 <x-admin.header/>
     <x-admin.nav-bar/>
     <x-admin.nav-side/>
-        <div id="layoutSidenav_content"  class="bg-dark" style="--bs-bg-opacity: .95;">
+        <div id="layoutSidenav_content"  class="bg-dark-low">
             <main>
                 <div class="container-fluid px-4">
                     <div class="d-flex align-items-center gap-2">
@@ -19,5 +19,19 @@
             </main>
             <x-admin.footer/>
         </div>
-    </div>
+        <x-admin.confirm-modal />
 <x-admin.foot/>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var confirmModal = document.getElementById('confirmModal');
+        confirmModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget; 
+            var message = button.getAttribute('data-message');
+            var formAction = button.getAttribute('data-form-action');
+
+            document.getElementById('confirmModalMessage').textContent = message;
+            document.getElementById('confirmForm').setAttribute('action', formAction);
+        });
+    });
+</script>

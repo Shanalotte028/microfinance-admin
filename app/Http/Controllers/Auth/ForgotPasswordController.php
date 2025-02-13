@@ -41,7 +41,7 @@ class ForgotPasswordController extends Controller
         if ($status === Password::RESET_LINK_SENT && $user) {
             // Send notification to the client
 
-            $token = app('auth.password.broker')->createToken($user);
+            $token = Password::sendResetLink($request->only('email'));
 
             $user->notify(new AdminResetPasswordNotification($token));
         }

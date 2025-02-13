@@ -3,15 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KYC Document Submission Confirmation</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        .container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
-        h1 { color: #4CAF50; }
-        p { line-height: 1.6; }
-    </style>
 </head>
 <body>
     <div class="container">
@@ -31,7 +23,7 @@
         <p>If you have any questions or need further assistance, please do not hesitate to contact us.</p>
         <p>Thank you for your cooperation.</p>
 
-        <p>Best regards,<br>{{ config('app.name') }}<br>Customer Support Team</p>
+        <p>Best regards,<br>Microfinance Solution<br>Customer Support Team</p>
     </div>
 </body>
 </html>

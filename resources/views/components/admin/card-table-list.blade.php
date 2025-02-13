@@ -11,7 +11,7 @@
                 {{ $slot }}
             </tbody>
         </table>
-        <div class="text-end mt-4 pe-4">
+        <div class="mt-4 pe-4">
              {{ $button ?? '' }}<!-- Show all button -->
         </div> 
     </div>

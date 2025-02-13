@@ -10,5 +10,5 @@ If you have any questions, please contact our support team.
 Thank you for staying compliant!
 
 Best Regards,  
-{{ config('app.name') }}
+Microfinance Solution Support Team
 @endcomponent

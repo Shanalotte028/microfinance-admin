@@ -8,7 +8,8 @@
         "php": "^8.2",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
-        "laravel/ui": "^4.5"
+        "laravel/ui": "^4.5",
+        "spatie/laravel-permission": "^6.13"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.14",
@@ -25,7 +26,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "app/Helpers/auditHelper.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

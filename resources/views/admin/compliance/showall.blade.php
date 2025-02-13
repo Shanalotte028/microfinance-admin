@@ -5,6 +5,13 @@
     <x-slot:heading_child>
         Compliance
     </x-slot:heading_child>
+
+    <div class="mb-4">
+        <a href="{{ route('admin.compliances') }}" class="btn btn-secondary">All</a>
+        <a href="{{ route('admin.compliances', ['status' => 'pending']) }}" class="btn btn-primary">Pending</a>
+        <a href="{{ route('admin.compliances', ['status' => 'approved']) }}" class="btn btn-warning">Approved</a>
+        <a href="{{ route('admin.compliances', ['status' => 'rejected']) }}" class="btn btn-success">Rejected</a>
+    </div>
             <x-admin.table-data>
                 <x-slot:heading>
                     Compliance
