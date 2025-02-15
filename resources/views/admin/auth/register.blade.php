@@ -1,7 +1,7 @@
 <x-admin.auth-layout>
     <x-slot:header>Create Account</x-slot:header>
         <div class="card-body">
-            <form method="POST" action="{{ route('admin.accountCreate.post') }}">
+            <form method="POST" action="{{ url('api/admin/create')  }}">
                 @csrf
                 <div class="row mb-3">
                     <div class="col-md-6">
@@ -37,6 +37,25 @@
                             <x-admin.form-error name="role"></x-admin.form-error>
                         </div>
                     </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <select class="form-control" name="microservice" id="microservice" required>
+                                <option value="" disabled selected class="text-dark">Microservice</option>
+                                <option value="Admin">Admin</option>
+                                <option value="HR1">HR 1</option>
+                                <option value="HR2">HR 2</option>
+                                <option value="HR3">HR 3</option>
+                                <option value="HR4">HR 4</option>
+                                <option value="Core1">Core 1</option>
+                                <option value="Core2">Core 2</option>
+                                <option value="Logistic1">Logistic 1</option>
+                                <option value="Logistic2">Logistic 2</option>
+                                <option value="Finance">Finance</option>
+                            </select>
+                            <x-admin.form-error name="microservice"></x-admin.form-error>
+                        </div>
+                    </div>
+                </div>
                 <div class="mt-4 mb-0">
                     <div class="d-grid"><button class="btn btn-success btn-block" type="submit">Create Account</button></div>
                 </div>

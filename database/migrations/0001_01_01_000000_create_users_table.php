@@ -16,9 +16,9 @@ return new class extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('role');
-            $table->string('access_level');
             $table->string('email')->unique();
             $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->enum('microservice', ['Admin','HR1','HR2','HR3','HR4','Core1','Core2','Logistic1','Logistic2','Finance'])->default('Admin');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->boolean('password_reset_required')->default(true);
