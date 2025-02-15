@@ -32,6 +32,7 @@ public function store(Request $request){
 
     // Validate input
     $validatedAttributes = $request->validate([
+        'employee_id' => ['required', 'string', 'unique:users,employee_id'],
         'first_name' => ['required', 'string', 'max:255'],
         'last_name' => ['required', 'string', 'max:255'],
         'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
@@ -44,10 +45,11 @@ public function store(Request $request){
 
     // Create user with the generated password
     $user = User::create([
+        'employee_id' => $validatedAttributes['employee_id'],
         'first_name' => $validatedAttributes['first_name'],
         'last_name' => $validatedAttributes['last_name'],
         'email' => $validatedAttributes['email'],
-        'access_level' => $validatedAttributes['role'],
+        'role' => $validatedAttributes['role'],
         'password' => bcrypt($randomPassword),
         'password_reset_required' => true, 
     ]);
@@ -58,8 +60,11 @@ public function store(Request $request){
     // Send Email with Password
     Mail::to($user->email)->send(new UserPasswordMail($randomPassword));
 
-    // Notify the assigned microservice
-    $this->notifyMicroservice($user, $validatedAttributes['microservice'], $randomPassword);
+    // **Check if the user is an Admin**
+    if ($validatedAttributes['microservice'] !== 'Admin') {
+        // Notify the assigned microservice
+        $this->notifyMicroservice($user, $validatedAttributes['microservice'], $randomPassword);
+    }
 
     // Log the Action
     AuditHelper::log(
@@ -122,11 +127,12 @@ private function notifyMicroservice($user, $microservice, $password){
             'Authorization' => "Bearer " . $apiConfig[$microservice]['key'],
             'Accept' => 'application/json',
         ])->post($apiConfig[$microservice]['url'], [
+            'employee_id' => $user->employee_id,
             'first_name' => $user->first_name,
             'last_name' => $user->last_name,
             'email' => $user->email,
             'role' => $user->getRoleNames()->first(),
-            'password' => $password, // The microservice should enforce password reset
+            'password' => $password, // The microservice should enforce password reset   
         ]);
 
         // Check if the request was successful

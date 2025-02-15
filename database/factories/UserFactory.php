@@ -24,6 +24,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
+            'employee_id' => 'EMP-' . now()->year . str_pad($this->faker->unique()->numberBetween(1, 9999), 4, '0', STR_PAD_LEFT),
             'first_name' => fake()->firstName(),
             'last_name'=> fake()->lastName(),
             'email' => fake()->unique()->safeEmail(),

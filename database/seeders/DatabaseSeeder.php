@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
         ]);
         // Create an admin user
         $user = User::create([
+            'employee_id' => 'EMP-20240001',
             'first_name' => 'Mark',
             'last_name' => 'Alde',
             'email' => 'aldemark28@gmail.com',
@@ -36,6 +37,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $user2 = User::create([
+            'employee_id' => 'EMP-20240002',
             'first_name' => 'Kram',
             'last_name' => 'Trash',
             'email' => 'kramtrash@gmail.com',
@@ -46,6 +48,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $user3 = User::create([
+            'employee_id' => 'EMP-20240003',
             'first_name' => 'Marky',
             'last_name' => 'Alde',
             'email' => 'aldemarkangelobsit1147@gmail.com',
@@ -56,6 +59,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $user4 = User::create([
+            'employee_id' => 'EMP-20240004',
             'first_name' => 'Marky',
             'last_name' => 'Alde',
             'email' => 'markangelo.alde028@gmail.com',

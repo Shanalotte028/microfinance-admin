@@ -3,6 +3,13 @@
         <div class="card-body">
             <form method="POST" action="{{ url('api/admin/create')  }}">
                 @csrf
+                <div class="col-md-4 mb-3">
+                    <div class="form-floating mb-3 mb-md-0">
+                        <input class="form-control" name="employee_id" id="employee_id" type="text" required/>
+                        <label for="employee_id">Employee ID</label>
+                        <x-admin.form-error name="employee_id"></x-admin.form-error>
+                    </div>
+                </div>
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <div class="form-floating mb-3 mb-md-0">
