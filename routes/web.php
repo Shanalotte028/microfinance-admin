@@ -136,7 +136,7 @@ Route::middleware(['auth'])->group(function () {
     ->middleware('can:users.create')
     ->name('admin.accountCreate');
 
-    Route::post('admin/create', [UserRegistrationController::class, 'store'])->name('admin.accountCreate.post');
+    //Route::post('admin/create', [UserRegistrationController::class, 'store'])->name('admin.accountCreate.post');
 
     Route::get('admin/users', [UserController::class, 'index'])
     ->middleware('can:users.index')
