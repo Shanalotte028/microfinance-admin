@@ -1,8 +1,15 @@
 <x-admin.auth-layout>
     <x-slot:header>Create Account</x-slot:header>
         <div class="card-body">
-            <form method="POST" action="{{ url('api/admin/create')  }}">
+            <form method="POST" action="{{ route('admin.accountCreate.post')  }}">
                 @csrf
+                <div class="col-md-4 mb-3">
+                    <div class="form-floating mb-3 mb-md-0">
+                        <input class="form-control" name="employee_id" id="employee_id" type="text" required/>
+                        <label for="employee_id">Employee ID</label>
+                        <x-admin.form-error name="employee_id"></x-admin.form-error>
+                    </div>
+                </div>
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <div class="form-floating mb-3 mb-md-0">
@@ -30,7 +37,7 @@
                             <select class="form-control" name="role" id="role" required>
                                 <option value="" disabled selected class="text-dark">Role</option>
                                 <option value="Staff">Staff</option>
-                                <option value="Staff Manager">Manager</option>
+                                <option value="Staff Manager">Staff Manager</option>
                                 <option value="Admin">Admin</option>
                                 <option value="Lawyer">Lawyer</option>
                             </select>

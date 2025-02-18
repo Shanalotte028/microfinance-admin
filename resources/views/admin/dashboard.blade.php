@@ -28,5 +28,5 @@
         @endcan
       
     </div>
-    <x-client.success-popup></x-client.success-popup>
+    <x-client.success-popup/>
 </x-admin.dashboard-layout>

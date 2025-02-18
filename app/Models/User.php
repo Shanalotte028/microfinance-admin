@@ -9,10 +9,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements CanResetPassword
 {
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, Notifiable, HasRoles, HasApiTokens ;
 
     /**
      * The attributes that are mass assignable.
@@ -20,11 +21,12 @@ class User extends Authenticatable implements CanResetPassword
      * @var array<int, string>
      */
     protected $fillable = [
+        'employee_id',
         'first_name',
         'last_name',
         'email',
         'role',
-        'access_level',
+        'microservices',
         'password',
     ];
 
