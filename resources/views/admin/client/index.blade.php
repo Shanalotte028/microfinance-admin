@@ -38,7 +38,7 @@
                                 <td>{{ $client->phone_number }}</td>
                                 <td>{{ $client->created_at }}</td>
                                 <td>
-                                    <a href="{{ url('/clients/' . $client->id) }}" class="btn btn-success">View</a> <!-- View button -->
+                                    <a href="{{ route('admin.client.show', $client) }}" class="btn btn-success">View</a> <!-- View button -->
                                     <form action="{{ route('clients.toggleBlock', $client->id) }}" method="POST" style="display:inline;">
                                         @csrf
                                         @method('PATCH')

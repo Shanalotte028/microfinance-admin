@@ -17,10 +17,10 @@
                             <x-slot:heading>Email</x-slot:heading>
                             {{ $client->email ?? 'n/a'}}
                         </x-admin.card-table-info-tr>
-                        <x-admin.card-table-info-tr>
+                        {{-- <x-admin.card-table-info-tr>
                             <x-slot:heading>Blocked</x-slot:heading>
                             {{ $client->blocked ?? 'n/a'}}
-                        </x-admin.card-table-info-tr>
+                        </x-admin.card-table-info-tr> --}}
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Phone Number</x-slot:heading>
                             {{ $client->phone_number ?? 'n/a'}}
@@ -33,10 +33,10 @@
                             <x-slot:heading>Gender</x-slot:heading>
                             {{ $client->gender ?? 'n/a'}}
                         </x-admin.card-table-info-tr>
-                        <x-admin.card-table-info-tr>
+                        {{-- <x-admin.card-table-info-tr>
                             <x-slot:heading>Nationality</x-slot:heading>
                             {{ $client->nationality ?? 'n/a' }}
-                        </x-admin.card-table-info-tr>
+                        </x-admin.card-table-info-tr> --}}
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Marital Status</x-slot:heading>
                             {{ $client->marital_status ?? 'n/a' }}
@@ -45,41 +45,69 @@
                             <x-slot:heading>Source of Income</x-slot:heading>
                             {{ $client->source_of_income ?? 'n/a' }}
                         </x-admin.card-table-info-tr>
-                        <x-admin.card-table-info-tr>
+                        {{-- <x-admin.card-table-info-tr>
                             <x-slot:heading>Tin Number</x-slot:heading>
                             {{ $client->tin_number ?? 'n/a' }}
                         </x-admin.card-table-info-tr>
-                        <x-admin.card-table-info-tr>
+                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Client Type</x-slot:heading>
                             {{ $client->client_type ?? 'n/a' }}
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Client Status</x-slot:heading>
                             {{ $client->client_status ?? 'n/a' }}
+                        </x-admin.card-table-info-tr>  --}}
+                        <x-admin.card-table-info-tr>
+                            <x-slot:heading>Number Of Dependents</x-slot:heading>
+                            {{ $client->number_of_dependents ?? 'n/a' }} {{ "(Child/Children)" }}
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
+                            <x-slot:heading>Employment Status</x-slot:heading>
+                            {{ $client->job_temporary ?? 'n/a' }}
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
+                            <x-slot:heading>Education Level</x-slot:heading>
+                            {{ $client->education_level ?? 'n/a' }}
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
+                            <x-slot:heading>Ownership Status</x-slot:heading>
+                            {{ $client->ownership_status ?? 'n/a' }}
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
+                            <x-slot:heading>Work Duration</x-slot:heading>
+                            {{ $client->work_duration ?? 'n/a' }} {{ "Years" }}
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
+                            <x-slot:heading>Job Tenure</x-slot:heading>
+                            {{ $client->job_tenure ?? 'n/a' }} {{ "Years" }}
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
+                            <x-slot:heading>Region</x-slot:heading>
+                            {{ $client->address->region ?? 'n/a'}}
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
+                            <x-slot:heading>Province</x-slot:heading>
+                            {{ $client->address->province ?? 'n/a'}}
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
+                            <x-slot:heading>City</x-slot:heading>
+                            {{ $client->address->city ?? 'n/a' }}
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
+                            <x-slot:heading>Barangay</x-slot:heading>
+                            {{ $client->address->barangay ?? 'n/a'}}
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
+                            <x-slot:heading>Street</x-slot:heading>
+                            {{ $client->address->permanent_street ?? 'n/a'}}
+                        </x-admin.card-table-info-tr>
+                        <x-admin.card-table-info-tr>
+                            <x-slot:heading>Postal Code</x-slot:heading>
+                            {{ $client->address->postal_code ?? 'n/a'}}
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Created At</x-slot:heading>
                             {{ $client->created_at ?? 'n/a' }}
-                        </x-admin.card-table-info-tr>
-                        <x-admin.card-table-info-tr>
-                            <x-slot:heading>Address Line 1</x-slot:heading>
-                            {{ $client->addresses->first()->address_line_1 ?? 'n/a' }}
-                        </x-admin.card-table-info-tr>
-                        <x-admin.card-table-info-tr>
-                            <x-slot:heading>Address Line 2</x-slot:heading>
-                            {{ $client->addresses->first()->address_line_2 ?? 'n/a' }}
-                        </x-admin.card-table-info-tr>
-                        <x-admin.card-table-info-tr>
-                            <x-slot:heading>City</x-slot:heading>
-                            {{ $client->addresses->first()->city ?? 'n/a' }}
-                        </x-admin.card-table-info-tr>
-                        <x-admin.card-table-info-tr>
-                            <x-slot:heading>Province</x-slot:heading>
-                            {{ $client->addresses->first()->province ?? 'n/a' }}
-                        </x-admin.card-table-info-tr>
-                        <x-admin.card-table-info-tr>
-                            <x-slot:heading>Postal Code</x-slot:heading>
-                            {{ $client->addresses->first()->postal_code ?? 'n/a' }}
                         </x-admin.card-table-info-tr>
                 </x-admin.card-table-info>        
                 
@@ -147,17 +175,45 @@
                         <x-slot:heading>Total Amount Borrowed</x-slot:heading>
                         {{ $client->financial_details->total_loan_amount_borrowed ?? 'n/a' }}
                     </x-admin.card-table-info-tr>
-                    <x-admin.card-table-info-tr>
+                    {{-- <x-admin.card-table-info-tr>
                         <x-slot:heading>Repayment Status</x-slot:heading>
                         {{ $client->financial_details->loan_repayment_status ?? 'n/a'  }}
+                    </x-admin.card-table-info-tr> --}}
+                    <x-admin.card-table-info-tr>
+                        <x-slot:heading>Annual Income</x-slot:heading>
+                        {{ $client->financial_details->annual_income ?? 'n/a' }}
                     </x-admin.card-table-info-tr>
                     <x-admin.card-table-info-tr>
-                        <x-slot:heading>Income</x-slot:heading>
-                        {{ $client->financial_details->income ?? 'n/a' }}
+                        <x-slot:heading>Monthly Income</x-slot:heading>
+                        {{ $client->financial_details->monthly_income ?? 'n/a' }}
+                    </x-admin.card-table-info-tr>
+                    <x-admin.card-table-info-tr>
+                        <x-slot:heading>Savings Account Balance</x-slot:heading>
+                        {{ $client->financial_details->savings_account_balance ?? 'n/a' }}
+                    </x-admin.card-table-info-tr>
+                    <x-admin.card-table-info-tr>
+                        <x-slot:heading>Checking Account Balance</x-slot:heading>
+                        {{ $client->financial_details->checking_account_balance ?? 'n/a' }}
+                    </x-admin.card-table-info-tr>
+                    <x-admin.card-table-info-tr>
+                        <x-slot:heading>Total Assets</x-slot:heading>
+                        {{ $client->financial_details->total_assets ?? 'n/a' }}
+                    </x-admin.card-table-info-tr>
+                    <x-admin.card-table-info-tr>
+                        <x-slot:heading>Networth</x-slot:heading>
+                        {{ $client->financial_details->networth ?? 'n/a' }}
                     </x-admin.card-table-info-tr>
                     <x-admin.card-table-info-tr>
                         <x-slot:heading>Credit Score</x-slot:heading>
                         {{ $client->financial_details->credit_score ?? 'n/a'  }}
+                    </x-admin.card-table-info-tr>
+                    <x-admin.card-table-info-tr>
+                        <x-slot:heading>Late Payments</x-slot:heading>
+                        {{ $client->financial_details->late_payments ?? 'n/a'  }}
+                    </x-admin.card-table-info-tr>
+                    <x-admin.card-table-info-tr>
+                        <x-slot:heading>Credit Score</x-slot:heading>
+                        {{ $client->financial_details->loan_defaults ?? 'n/a'  }}
                     </x-admin.card-table-info-tr>
                     <x-slot:button>
                         @if(isset($client->financial_details) && isset($client->financial_details->id))
