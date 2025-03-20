@@ -11,9 +11,17 @@ class Financial extends Model
     protected $table = 'financial_details';
     protected $fillable = [
         'total_loan_amount_borrowed',
-        'loan_repayment_status',
-        'income',
-        'credit_score',
+        'late_payments',  // Previous Late Payments
+        'loan_defaults', // Previous Loan Defaults
+        'number_of_payments', // Payments History
+        'annual_income', // Annual Income
+        'monthly_income', // Monthly Income
+        'monthly_expenses', // Monthly Expenses 
+        'savings_account_balance',
+        'checking_account_balance',
+        'total_assets',
+        'networth',
+        'credit_score', // Credit Score
     ];
 
     public function client(){

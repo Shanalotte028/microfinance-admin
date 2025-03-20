@@ -10,12 +10,15 @@ class Loan extends Model
     use HasFactory;
 
     protected $fillable = [
-        'financial_id',
-        'loan_amount',
-        'loan_status',
-        'interest_rate',
-        'start_date',
-        'end_date',
+        'submitted_at', // Loan Appplication Date
+        'term_type', // Loan Duration
+        'loan_term', // Loan Duration
+        'payment_frequency_method', // Loan Duration
+        'principal_amount', //Monthly Debt Payments
+        'installment', // Monthly Debt Payments
+        'loan_description', // Loan Purpose
+        'interest_rate', // Interest Rate
+        'loan_status'
         ];
 
     public function financial(){
@@ -25,6 +28,6 @@ class Loan extends Model
     public static function getTotalLoanAmount($financialDetailsId)
     {
         return self::where('financial_details_id', $financialDetailsId)
-                   ->sum('loan_amount');
+                   ->sum('principal_amount');
     }
 }
