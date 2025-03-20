@@ -42,7 +42,7 @@
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Client ID</x-slot:heading>
-                            {{ $compliance->client_id }}
+                            {{ $client->client_id }}
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Client Email</x-slot:heading>

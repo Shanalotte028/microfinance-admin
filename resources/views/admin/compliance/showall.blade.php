@@ -43,20 +43,24 @@
                     </tr>
                 </tfoot>
                 <tbody>                             
-                    @foreach ($compliances as $compliance )
+                    @foreach ($clients as $client)
+                        @foreach ($client->compliance_records as $compliance)
                             <tr>
                                 <td>{{ $compliance->id }}</td>
-                                <td>{{ $compliance->client_id }}</td>
-                                <td>{{ optional($compliance->client)->email ?? 'n/a' }}</td>
+                                <td>{{ $client->client_id }}</td> 
+                                <td>{{ $client->email ?? 'n/a' }}</td>
                                 <td>{{ $compliance->compliance_type }}</td>
                                 <td>{{ $compliance->document_type }}</td>
                                 <td>{{ $compliance->document_status }}</td>
                                 <td>{{ $compliance->submission_date }}</td>
-                                <td>{{ $compliance->approval_date ?? 'n/a'}}</td>
+                                <td>{{ $compliance->approval_date ?? 'n/a' }}</td>
                                 <td>
-                                    <a href="{{ url('/clients/'.$compliance->client->id.'/compliance-records/'.$compliance->id) }}" class="btn btn-success">View</a> <!-- View button -->
+                                    <a href="{{ route('admin.compliance.show', ['client' => $client, 'compliance' => $compliance->id]) }}" class="btn btn-success">
+                                        View
+                                    </a>
                                 </td>
                             </tr>
+                        @endforeach
                     @endforeach
                 </tbody>
             </x-admin.table-data>

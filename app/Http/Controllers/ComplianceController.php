@@ -445,18 +445,18 @@ class ComplianceController extends Controller
 
     // Compliance Sidebar
     public function compliance(Request $request){
-        // Get the status from the request (if provided)
         $status = $request->query('status');
 
-        $compliances = Compliance::with('client:id,email') // Load only needed fields
-        ->select(['id', 'client_id', 'compliance_type', 'document_type', 'document_status', 'submission_date', 'approval_date'])
-        ->when($status, function ($query, $status) { // Apply status filter only when provided
-            return $query->where('document_status', $status);
-        })
-        ->get();
+        // Fetch all clients with their compliance records
+        $clients = Client::with(['compliance_records' => function ($query) use ($status) {
+            if ($status) {
+                $query->where('document_status', $status);
+            }
+        }])->get();
 
-        return view('admin/compliance.showall', compact('compliances'));
+        return view('admin/compliance.showall', compact('clients'));
     }
+
 
     public function index(Client $client){
         return view('admin/compliance.index', compact('client'));
