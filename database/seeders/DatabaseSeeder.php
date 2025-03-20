@@ -77,7 +77,7 @@ class DatabaseSeeder extends Seeder
 
         // Create a specific client
         Client::create([
-            'client_id' => 1,
+            'client_id' => 00,
             'first_name' => 'Kram',
             'last_name' => 'Trash',
             'email' => 'kramtrash@gmail.com',
