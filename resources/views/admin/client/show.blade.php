@@ -217,7 +217,7 @@
                     </x-admin.card-table-info-tr>
                     <x-slot:button>
                         @if(isset($client->financial_details) && isset($client->financial_details->id))
-                            <a href="{{ route('admin.financial.show', ['client'=>$client->id, 'financial' => $client->financial_details->id])}}" class="btn btn-success">Show Loans</a>
+                            <a href="{{ route('admin.financial.show', ['client'=>$client, 'financial' => $client->financial_details->id])}}" class="btn btn-success">Show Loans</a>
                         @endif
                     </x-slot:button>
                 </x-admin.card-table-info>

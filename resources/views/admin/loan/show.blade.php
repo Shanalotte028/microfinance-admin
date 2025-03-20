@@ -1,5 +1,5 @@
 <x-admin.dashboard-layout>
-    <x-slot:back><a href="{{ route('admin.financial.show', ['client' => $client->id, 'financial'=>$financial->id]) }}" class="text-white"><i class="bi bi-arrow-left larger-icon"></i></a></x-slot:back>
+    <x-slot:back><a href="{{ route('admin.financial.show', ['client' => $client, 'financial'=>$financial->id]) }}" class="text-white"><i class="bi bi-arrow-left larger-icon"></i></a></x-slot:back>
     <x-slot:heading>
         {{ $client->first_name }} {{ $client->last_name }}
     </x-slot:heading>
