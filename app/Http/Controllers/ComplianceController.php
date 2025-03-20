@@ -462,12 +462,15 @@ class ComplianceController extends Controller
         return view('admin/compliance.index', compact('client'));
     }
 
-    public function show($client_id, $compliance_id){
-        $client = Client::with(['compliance_records' => function ($query) use ($compliance_id) {
+    public function show(Client $client, $compliance_id){
+        /* $client = Client::with(['compliance_records' => function ($query) use ($compliance_id) {
             $query->where('id', $compliance_id); // Filter by compliance ID
-        }])->findOrFail($client_id);
+        }])->findOrFail($client);
     
-        $compliance = $client->compliance_records->first(); // Get the filtered record
+        $compliance = $client->compliance_records->first(); // Get the filtered record */
+
+        // Ensure compliance record exists for this client
+        $compliance = $client->compliance_records()->where('id', $compliance_id)->firstOrFail();
 
         // If the compliance record is not found in the client's records, throw a 404
         return view('admin/compliance.show', compact('client', 'compliance'));
