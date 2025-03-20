@@ -204,6 +204,242 @@ class ComplianceController extends Controller
             return redirect()->back()->with('error', 'Failed to reject the compliance document. Please try again.');
         }
     }
+
+    public function store(Request $request, Client $client)
+{
+    Log::info('Request received:', $request->all());
+
+    try {
+        // Validate the request data
+        $validatedData = $this->validateRequest($request);
+
+        // Determine the HTTP method
+        $method = $request->method();
+
+        // Process and store data
+        DB::transaction(function () use ($validatedData, $method, $client) {
+            // Find or create the client based on the HTTP method
+            if ($method === 'POST') {
+                // Create a new client
+                $client = $this->createOrUpdateClient($validatedData['client']);
+            } else if ($method === 'PATCH' || $method === 'PUT') {
+                // Update an existing client
+                /* $client = Client::findOrFail($client); */
+                $client = $this->createOrUpdateClient($validatedData['client'], $client);
+            } else {
+                throw new \Exception('Unsupported HTTP method');
+            }
+
+            // Process address, financial details, loan, and compliance documents
+            $this->createOrUpdateAddress($client, $validatedData['address']);
+            $this->createOrUpdateFinancialDetails($client, $validatedData['financial']);
+            $this->createLoan($client, $validatedData['loan']);
+            /* $this->handleComplianceDocuments($client, $validatedData['compliance']); */
+        });
+
+        return response()->json(['client' =>$client, 'message' => 'Client data processed successfully'], 201);
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        Log::error('Validation error in store method:', ['error' => $e->errors()]);
+        return response()->json(['error' => $e->errors()], 422);
+    } catch (\Exception $e) {
+        Log::error('Error in store method:', ['error' => $e->getMessage()]);
+        return response()->json(['error' => 'An unexpected error occurred'], 500);
+    }
+}
+
+    /**
+     * Validate the request data.
+     */
+    private function validateRequest(Request $request): array
+    {
+        return [
+            'client' => $request->validate([
+                'client_id' => 'required|integer',
+                'fname' => 'required|string',
+                'lname' => 'required|string',
+                'month' => 'required|string',
+                'day' => 'required|integer',
+                'year' => 'required|integer',
+                'email' => 'required|email',
+                'mobilenum' => 'required|string',
+                'place_of_birth' => 'required|string',
+                'gender' => 'required|string',
+                'civil_status' => 'required|string',
+                'primary_source' => 'required|string',
+                'number_of_dependents' => 'required|integer',
+                'job_temporary' => 'required|string',
+                'education_level' => 'required|string',
+                'ownership_status' => 'required|string',
+                'work_duration' => 'required|integer',
+                'job_tenure' => 'required|integer',
+            ]),
+            'address' => $request->validate([
+                'region' => 'required|string',
+                'province' => 'required|string',
+                'city' => 'required|string',
+                'barangay' => 'required|string',
+                'permanent_street' => 'required|string',
+                'postal_code' => 'required|string',
+                'same_address' => 'required|string|in:Yes,No',
+                'present_region' => 'required_if:same_address,No|string|nullable',
+                'present_province' => 'required_if:same_address,No|string|nullable',
+                'present_city' => 'required_if:same_address,No|string|nullable',
+                'present_barangay' => 'required_if:same_address,No|string|nullable',
+                'present_street' => 'required_if:same_address,No|string|nullable',
+                'present_postal_code' => 'required_if:same_address,No|string|nullable',
+            ]),
+            'financial' => $request->validate([
+                'late_payments' => 'required|integer',
+                'number_of_default' => 'required|integer',
+                'number_of_payments' => 'required|integer',
+                'monthly_income' => 'required|numeric',
+                'monthly_expense' => 'required|numeric',
+                'savings_account_balance' => 'required|numeric',
+                'checking_account_balance' => 'required|numeric',
+                'total_assets' => 'required|numeric',
+                'networth' => 'required|numeric',
+                'acc_credit_score' => 'required|integer',
+            ]),
+            'loan' => $request->validate([
+                'submitted_at' => 'required|date',
+                'term_type' => 'required|string',
+                'loan_term' => 'required|integer',
+                'payment_frequency_method' => 'required|string',
+                'principal_amount' => 'required|numeric',
+                'installment' => 'required|numeric',
+                'loan_description' => 'required|string',
+                'interest_rate' => 'required|numeric',
+                'loan_status' => 'required|string',
+            ]),
+            /* 'compliance' => $request->validate([
+                'documents' => ['required', 'file', 'mimes:pdf'],
+                'id_front' => ['required', 'file', 'mimes:png,jpg,pdf'],
+                'id_back' => ['required', 'file', 'mimes:png,jpg,pdf'],
+                'selfie_with_id' => ['required', 'file', 'mimes:png,jpg,pdf'],
+            ]), */
+        ];
+    }
+
+    /**
+     * Create or update a client.
+     */
+    private function createOrUpdateClient(array $data): Client
+    {
+        $birthday = sprintf('%04d-%02d-%02d', $data['year'], $data['month'], $data['day']);
+
+        return Client::updateOrCreate(
+            ['client_id' => $data['client_id']],
+            [
+                'first_name' => $data['fname'],
+                'last_name' => $data['lname'],
+                'email' => $data['email'],
+                'phone_number' => $data['mobilenum'],
+                'birthday' => $birthday,
+                'place_of_birth' => $data['place_of_birth'],
+                'gender' => $data['gender'],
+                'marital_status' => $data['civil_status'],
+                'source_of_income' => $data['primary_source'],
+                'number_of_dependents' => $data['number_of_dependents'],
+                'employment_status' => $data['job_temporary'],
+                'education_level' => $data['education_level'],
+                'ownership_status' => $data['ownership_status'],
+                'work_duration' => $data['work_duration'],
+                'job_tenure' => $data['job_tenure'],
+            ]
+        );
+    }
+
+    /**
+     * Create or update the client's address.
+     */
+    private function createOrUpdateAddress(Client $client, array $data): void
+    {
+        $processedAddress = $this->processAddress($data);
+        $client->address()->updateOrCreate([], $processedAddress);
+    }
+
+    /**
+     * Create or update the client's financial details.
+     */
+    private function createOrUpdateFinancialDetails(Client $client, array $data): void
+    {
+        $annualIncome = $data['monthly_income'] * 12;
+        $client->financial_details()->updateOrCreate(
+            [],
+            [
+                'total_loan_amount_borrowed' => $data['total_loan_amount_borrowed'] ?? null,
+                'late_payments' => $data['late_payments'],
+                'loan_defaults' => $data['number_of_default'],
+                'number_of_payments' => $data['number_of_payments'],
+                'annual_income' => $annualIncome,
+                'monthly_income' => $data['monthly_income'],
+                'monthly_expenses' => $data['monthly_expense'],
+                'savings_account_balance' => $data['savings_account_balance'],
+                'checking_account_balance' => $data['checking_account_balance'],
+                'total_assets' => $data['total_assets'],
+                'networth' => $data['networth'],
+                'credit_score' => $data['acc_credit_score'],
+            ]
+        );
+    }
+
+    /**
+     * Create or update the client's loan.
+     */
+        private function createLoan(Client $client, array $data): void
+    {
+        Log::info('Creating loan:', $data);
+        // Find or create the financial detail for the client
+        $financialDetail = $client->financial_details()->firstOrCreate([]);
+
+        $loan = $financialDetail->loans()->create([
+            'submitted_at' => $data['submitted_at'],
+            'term_type' => $data['term_type'],
+            'loan_term' => $data['loan_term'],
+            'payment_frequency_method' => $data['payment_frequency_method'],
+            'principal_amount' => $data['principal_amount'],
+            'installment' => $data['installment'],
+            'loan_description' => $data['loan_description'],
+            'interest_rate' => $data['interest_rate'],
+            'loan_status' => $data['loan_status'],
+        ]);
+
+        Log::info('Loan created:', $loan->toArray());
+    }
+
+    /**
+     * Handle compliance documents.
+     */
+    private function handleComplianceDocuments(Client $client, array $files): void
+    {
+        foreach ($files as $type => $file) {
+            $path = $file->store("documents/{$type}", 'public');
+            Compliance::create([
+                'client_id' => $client->client_id,
+                'compliance_type' => 'KYC',
+                'document_type' => $type,
+                'document_path' => $path,
+                'document_status' => 'pending',
+                'submission_date' => now(),
+            ]);
+        }
+    }
+
+    /**
+     * Process address data.
+     */
+    private function processAddress(array $addressData): array
+    {
+        if ($addressData['same_address'] === 'Yes') {
+            $addressData['present_region'] = $addressData['region'];
+            $addressData['present_province'] = $addressData['province'];
+            $addressData['present_city'] = $addressData['city'];
+            $addressData['present_barangay'] = $addressData['barangay'];
+            $addressData['present_street'] = $addressData['permanent_street'];
+            $addressData['present_postal_code'] = $addressData['postal_code'];
+        }
+        return $addressData;
+    }
     
 
 
