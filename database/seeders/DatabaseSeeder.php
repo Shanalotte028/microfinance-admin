@@ -77,10 +77,11 @@ class DatabaseSeeder extends Seeder
 
         // Create a specific client
         Client::create([
+            'client_id' => 1,
             'first_name' => 'Kram',
             'last_name' => 'Trash',
             'email' => 'kramtrash@gmail.com',
-            'client_type' => 'Individual',
+            /* 'client_type' => 'Individual', */
             'password' => 'adminadmin1234',
         ]);
 
@@ -104,7 +105,7 @@ class DatabaseSeeder extends Seeder
                     ->create(['financial_id' => $financialDetails->id]);
 
                 // Calculate and save total loan amount borrowed
-                $totalLoanAmount = Loan::where('financial_id', $financialDetails->id)->sum('loan_amount');
+                $totalLoanAmount = Loan::where('financial_id', $financialDetails->id)->sum('principal_amount');
                 $financialDetails->total_loan_amount_borrowed = $totalLoanAmount;
                 $financialDetails->save();
 
