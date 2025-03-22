@@ -183,7 +183,7 @@ Route::get('admin/password/reset/{token}', [ResetPasswordController::class, 'cre
 Route::post('admin/reset', [ResetPasswordController::class, 'update'])->name('password.update');
 
 
-// Client Routes
+/* // Client Routes
 Route::middleware(['client-auth'])->group(function(){
     Route::get('/client', function(){
         return view('client/dashboard');
@@ -214,4 +214,4 @@ Route::middleware(['client-guest'])->group(function () {
     Route::post('client/password/email', [ClientForgotPasswordController::class, 'store'])->name('client.password.email');
     Route::get('client/password/reset/{token}', [ClientResetPasswordController::class, 'create'])->name('client.password.reset');
     Route::post('client/reset', [ClientResetPasswordController::class, 'update'])->name('client.password.update');
-});
+}); */

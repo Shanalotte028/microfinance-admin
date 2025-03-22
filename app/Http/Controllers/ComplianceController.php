@@ -140,7 +140,7 @@ class ComplianceController extends Controller
         return redirect()->route('client.compliance.compliance_records')->with('success', 'Client and compliance records saved successfully.');
     }
 
-        public function approve(Client $client, Compliance $compliance)
+    public function approve(Client $client, Compliance $compliance)
     {
         try {
             DB::transaction(function () use ($client, $compliance) {
@@ -176,8 +176,7 @@ class ComplianceController extends Controller
         }
     }
 
-    public function reject(Client $client, Compliance $compliance, Request $request)
-    {
+    public function reject(Client $client, Compliance $compliance, Request $request){
         try {
             DB::transaction(function () use ($client, $compliance, $request) {
                 $userAdmin = Auth::user();
@@ -250,8 +249,7 @@ class ComplianceController extends Controller
     /**
      * Validate the request data.
      */
-    private function validateRequest(Request $request): array
-    {
+    private function validateRequest(Request $request): array{
         return [
             'client' => $request->validate([
                 'client_id' => 'required|integer',
@@ -323,8 +321,7 @@ class ComplianceController extends Controller
     /**
      * Create or update a client.
      */
-    private function createOrUpdateClient(array $data): Client
-    {
+    private function createOrUpdateClient(array $data): Client{
         $birthday = sprintf('%04d-%02d-%02d', $data['year'], $data['month'], $data['day']);
 
         return Client::updateOrCreate(
@@ -352,8 +349,7 @@ class ComplianceController extends Controller
     /**
      * Create or update the client's address.
      */
-    private function createOrUpdateAddress(Client $client, array $data): void
-    {
+    private function createOrUpdateAddress(Client $client, array $data): void{
         $processedAddress = $this->processAddress($data);
         $client->address()->updateOrCreate([], $processedAddress);
     }
@@ -361,8 +357,7 @@ class ComplianceController extends Controller
     /**
      * Create or update the client's financial details.
      */
-    private function createOrUpdateFinancialDetails(Client $client, array $data): void
-    {
+    private function createOrUpdateFinancialDetails(Client $client, array $data): void{
         $annualIncome = $data['monthly_income'] * 12;
         $client->financial_details()->updateOrCreate(
             [],
@@ -386,8 +381,7 @@ class ComplianceController extends Controller
     /**
      * Create or update the client's loan.
      */
-        private function createLoan(Client $client, array $data): void
-    {
+    private function createLoan(Client $client, array $data): void{
         Log::info('Creating loan:', $data);
         // Find or create the financial detail for the client
         $financialDetail = $client->financial_details()->firstOrCreate([]);
@@ -410,8 +404,7 @@ class ComplianceController extends Controller
     /**
      * Handle compliance documents.
      */
-    private function handleComplianceDocuments(Client $client, array $files): void
-    {
+    private function handleComplianceDocuments(Client $client, array $files): void{
         foreach ($files as $type => $file) {
             $path = $file->store("documents/{$type}", 'public');
             Compliance::create([
@@ -428,8 +421,7 @@ class ComplianceController extends Controller
     /**
      * Process address data.
      */
-    private function processAddress(array $addressData): array
-    {
+    private function processAddress(array $addressData): array{
         if ($addressData['same_address'] === 'Yes') {
             $addressData['present_region'] = $addressData['region'];
             $addressData['present_province'] = $addressData['province'];

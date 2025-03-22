@@ -14,7 +14,7 @@
                             <th>Assessment Date</th>
                             <th>Action</th>
                     </x-slot:table_row>
-                    @foreach ($client->risk_assessments as $risk)s
+                    @foreach ($client->risk_assessments as $risk)
                                 <tr>
                                     <td>{{ $risk->id ?? 'n/a'}}</td>
                                     <td>{{ $risk->client_id }}</td>
