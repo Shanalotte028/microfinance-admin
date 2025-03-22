@@ -10,7 +10,7 @@ class Risk extends Model
     use HasFactory;
     protected $table = 'risk_assessments';
     protected $fillable = [
-        'risk_score',
+        'confidence_level',
         'risk_level',
         'recommendation',
         'assessment_date',

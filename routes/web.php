@@ -14,6 +14,7 @@ use App\Http\Controllers\ClientAuth\ClientResetPasswordController;
 use App\Http\Controllers\ClientAuth\ClientSessionController;
 use App\Http\Controllers\ClientAuth\ClientUserRegistrationController;
 use App\Http\Controllers\LegalCaseController;
+use App\Http\Controllers\RiskController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UserController;
 use App\Models\Client;
@@ -137,6 +138,14 @@ Route::middleware(['auth'])->group(function () {
     ->name('admin.accountCreate');
 
     Route::post('admin/create', [UserRegistrationController::class, 'store'])->name('admin.accountCreate.post');
+
+    // Risk Management
+    Route::get('/risks',[RiskController::class, 'risks'])->name('admin.risk_assessment.risks');
+    Route::get('clients/{client}/list_risk',[RiskController::class, 'index'])->name('admin.risk_assessment.index');
+    Route::get('clients/{client}/show_risk/{risk}',[RiskController::class, 'show'])->name('admin.risk_assessment.show');
+    Route::patch('clients/{client}/show_risk/{risk}/recommendation',[RiskController::class, 'recommendation'])->name('admin.risk_assessment.recommendation');
+
+
 
     Route::get('admin/users', [UserController::class, 'index'])
     ->middleware('can:users.index')

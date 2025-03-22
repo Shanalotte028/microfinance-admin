@@ -132,40 +132,57 @@
                     @endforeach
                     <x-slot:button><a href="{{ route('admin.compliance.index', $client) }}" class="btn btn-success">Show All</a></x-slot:button>
                 </x-admin.card-table-list>
-            </div>
-            
+            </div>          
             <!-- Right Column -->
             <div class="col-md-6">
                 <div class="card bg-dark text-white mb-4"> {{-- Risk Mitigation --}}
                     <div class="card-body">
+                        <div class="d-flex justify-content-between" >
                         <h4 class="mb-4">Risk Assessment</h4>
+                            <div class="d-inline-block">
+                                <a href="{{ route('admin.risk_assessment.index', $client) }}" class="btn btn-success ">List Risk</a>
+                            </div> 
+                        </div>
                         @php
-                            $riskScore = $client->risk_assessments->first()->risk_score ?? ''; // Assuming risk_score is available
-                            $riskCategory = '';
+                            $confidenceLevel = optional($client->risk_assessments()->latest('assessment_date')->first())->confidence_level ?? ''; 
+                            $riskLevel = optional($client->risk_assessments()->latest('assessment_date')->first())->risk_level ?? '';
 
-                            if($riskScore === ''){
+                            if($riskLevel === ''){
                                 $riskCategory = '';
                                 $bgClass = 'bg-light';
-                            }else if ($riskScore <= 33) {
-                                $riskCategory = 'Low Risk';
-                                $bgClass = 'bg-success';
-                            } elseif ($riskScore <= 66) {
-                                $riskCategory = 'Medium Risk';
-                                $bgClass = 'bg-warning';
-                            } else{
+                                $textClass = 'text-light';
+                            }else if ($riskLevel === 'High Risk') {
                                 $riskCategory = 'High Risk';
                                 $bgClass = 'bg-danger';
+                                $textClass = 'text-danger';
+                            } elseif ($riskLevel === 'Medium Risk') {
+                                $riskCategory = 'Medium Risk';
+                                $bgClass = 'bg-warning';
+                                $textClass = 'text-warning';
+                            } else{
+                                $riskCategory = 'Low Risk';
+                                $bgClass = 'bg-success';
+                                $textClass = 'text-success';
                             }
                         @endphp
-
-                        <div class="progress" style="height: 35px; width: 100%; border-radius: 20px;">
-                            <div class="progress-bar {{ $bgClass }}" role="progressbar" style="width: {{ $riskScore }}%;" aria-valuenow="{{ $riskScore }}" aria-valuemin="0" aria-valuemax="100">
-                                {{ $riskCategory }}: {{ $riskScore }}
+                        <h5 class=" text-center {{$textClass}}">Risk Level: {{ $riskLevel }}</h1>
+                        <div class="progress" style="height: 35px; width: 100%; border-radius: 20px; position: relative;">
+                            <div class="progress-bar {{ $bgClass }} d-flex align-items-center justify-content-center fw-bold"
+                                role="progressbar" 
+                                style="width: {{ $confidenceLevel }}%; min-width: 20%; max-width: 100%; white-space: nowrap; padding: 5px 10px;"
+                                aria-valuenow="{{ $confidenceLevel }}" 
+                                aria-valuemin="0" 
+                                aria-valuemax="100">
+                                Confidence Level: {{ $confidenceLevel }}%
                             </div>
                         </div>
-                        <div class="mt-3">
-                            <p>Assessment Date: {{ $client->risk_assessments->first()->assessment_date ?? '' }}</p>
-                        </div>  
+                        <div class="d-flex justify-content-between mt-3">
+                            <p>Recent Assessment Date: {{ optional($client->risk_assessments()->latest('assessment_date')->first())->assessment_date ?? '' }}</p>
+                            <form method="POST" action="{{ route('api.risk_assessment.store', $client) }}">
+                                @csrf
+                                <button type="submit" class="btn btn-success">Assess Risk</button>
+                            </form>    
+                        </div>
                     </div>
                 </div>
                 {{-- Financial Card --}}

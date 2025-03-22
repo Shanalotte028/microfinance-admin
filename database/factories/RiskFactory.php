@@ -17,12 +17,12 @@ class RiskFactory extends Factory
      */
     public function definition(): array
     {
-        $risk_score = $this->faker->numberBetween(0, 100);
+        $confidence_level = $this->faker->numberBetween(0, 100);
 
         return [
             'client_id' => Client::factory(),
-            'risk_score'=> $risk_score,
-            'risk_level'=> $this->getRiskLevel($risk_score),
+            'confidence_level'=> $confidence_level,
+            'risk_level'=> $this->getRiskLevel($confidence_level),
             'recommendation'=> fake()->sentence(2),
             'assessment_date' => fake()->date(),      
         ];
@@ -38,11 +38,11 @@ class RiskFactory extends Factory
     private function getRiskLevel(int $risk_score): string
     {
         if ($risk_score <= 33) {
-            return 'low';
+            return 'Low Risk';
         } elseif ($risk_score <= 66) {
-            return 'medium';
+            return 'Medium Risk';
         } else {
-            return 'high';
+            return 'High Risk';
         }
     }
 }
