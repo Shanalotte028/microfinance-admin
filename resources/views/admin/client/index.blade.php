@@ -39,7 +39,7 @@
                                 <td>{{ $client->created_at }}</td>
                                 <td>
                                     <a href="{{ route('admin.client.show', $client) }}" class="btn btn-success">View</a> <!-- View button -->
-                                    <form action="{{ route('clients.toggleBlock', $client->id) }}" method="POST" style="display:inline;">
+                                    {{-- <form action="{{ route('clients.toggleBlock', $client->id) }}" method="POST" style="display:inline;">
                                         @csrf
                                         @method('PATCH')
                                         @can('clients.block')
@@ -51,7 +51,7 @@
                                         {{ $client->blocked === 'Yes' ? 'Unblock' : 'Block' }}
                                         </button>
                                         @endcan
-                                    </form>
+                                    </form> --}}
                                 </td>
                             </tr>
                     @endforeach
