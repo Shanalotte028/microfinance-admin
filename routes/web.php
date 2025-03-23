@@ -13,6 +13,7 @@ use App\Http\Controllers\ClientAuth\ClientForgotPasswordController;
 use App\Http\Controllers\ClientAuth\ClientResetPasswordController;
 use App\Http\Controllers\ClientAuth\ClientSessionController;
 use App\Http\Controllers\ClientAuth\ClientUserRegistrationController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LegalCaseController;
 use App\Http\Controllers\RiskController;
 use App\Http\Controllers\SettingsController;
@@ -28,15 +29,8 @@ use Illuminate\Support\Facades\Auth;
 // Admin Routes
 // Routes for authenticated users
 Route::middleware(['auth'])->group(function () {
-    // Dashboard
-    Route::get('/', function () {
-        $user = Auth::user();
-        $assignedCases = $user->legalCases->count();
-        // Fetch total pending loans (assuming you have a status field for loans)
-        $openCase = LegalCase::where('status', 'open')->count();
-        $pendingCompliance = Compliance::where('document_status', 'pending')->count(); 
-        return view('admin/dashboard', compact('openCase', 'pendingCompliance', 'assignedCases'));
-    })->name('dashboard');
+    //dashboard
+    Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
     
    // Clients
     Route::get('/clients', [ClientController::class, 'index'])

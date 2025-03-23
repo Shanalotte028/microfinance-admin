@@ -13,6 +13,21 @@
  
  @import '@/assets/vendor/bootstrap-icons/bootstrap-icons.css';
 
+ #loanChart {
+  display: block;
+  margin: 0 auto; /* Centers horizontally */
+}
+
+.chart-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px; /* Adjust as needed */
+  position: relative;
+}
+
+
+
 /* Custom CSS to adjust the label position for file input */
 .custom-file-label {
   margin-top: -5px;
