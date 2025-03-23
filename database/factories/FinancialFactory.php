@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Client;
+use App\Models\Financial;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,16 +18,6 @@ class FinancialFactory extends Factory
      */
     public function definition(): array
     {
-        $client = Client::factory()->create();
-        // Retrieve job status from Client model
-        $job_status = $client->job_temporary;
-
-        // Set income based on employment status (Unemployed = 50% lower)
-        $annual_income = ($job_status === 'Unemployed') 
-        ? fake()->numberBetween(50000, 500000)  // 50% lower for unemployed
-        : fake()->numberBetween(100000, 1000000);
-
-        $monthly_income = (int) ($annual_income / 12);
 
         $credit_score = fake()->numberBetween(600, 1000);
 
@@ -43,14 +34,14 @@ class FinancialFactory extends Factory
         
         return [
             //
-            'client_id' => $client->id,
+            'client_id' => Client::factory(),
             'total_loan_amount_borrowed'=> 0,
             /* 'loan_repayment_status'=> fake()->randomElement(['on-time','overdue','deliquent']), */
             'late_payments'=> fake()->numberBetween(0,10),
             'loan_defaults' => $loan_defaults, // Adjusted probability
             'number_of_payments'=> fake()->numberBetween(0,30),
-            'monthly_income'=> $monthly_income,
-            'annual_income'=> $annual_income,
+            'monthly_income'=> 0,
+            'annual_income'=> 0,
             'monthly_expenses' => fake()->numberBetween(10000,100000),
             'savings_account_balance'=> fake()->numberBetween(10000,100000),
             'checking_account_balance'=> fake()->numberBetween(10000,100000),
@@ -58,5 +49,23 @@ class FinancialFactory extends Factory
             'networth'=> fake()->numberBetween(10000,100000),
             'credit_score' => $credit_score, // Store the credit score
         ];
+    }
+
+        public function configure(){
+        return $this->afterMaking(function (Financial $financial) {
+            // Fetch the associated client
+            $client = Client::find($financial->client_id);
+            if ($client) {
+                $job_status = $client->job_temporary;
+
+                // Adjust income based on job status
+                $annual_income = ($job_status === 'Unemployed') 
+                    ? fake()->numberBetween(50000, 500000)  
+                    : fake()->numberBetween(100000, 1000000);
+
+                $financial->annual_income = $annual_income;
+                $financial->monthly_income = (int) ($annual_income / 12);
+            }
+        });
     }
 }

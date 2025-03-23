@@ -69,4 +69,8 @@ class Client extends Authenticatable implements AuthenticatableContract
     {
         return $this->hasMany(Risk::class);
     }
+
+    public function legalCases(){
+        return $this->hasMany(LegalCase::class);
+    }
 }
