@@ -168,7 +168,7 @@ class ComplianceController extends Controller
     
             });
     
-            return redirect()->route('admin.compliance.index', ['client' => $client->id])->with('success', 'Compliance document approved successfully.');
+            return redirect()->back()->with('success', 'Compliance document approved successfully.');
         } catch (\Exception $e) {
             Log::error('Compliance Approval Failed', ['error' => $e->getMessage()]);
     
@@ -196,7 +196,7 @@ class ComplianceController extends Controller
                 "User $userAdmin->id ($userAdmin->email) rejected $compliance->document_type of Client ID: $client->id ($client->first_name $client->last_name)");
             });
     
-            return redirect()->route('admin.compliance.index', ['client' => $client->id])->with('success', 'Compliance document rejected successfully.');
+            return redirect()->back()->with('success', 'Compliance document rejected successfully.');
         } catch (\Exception $e) {
             Log::error('Compliance Rejection Failed', ['error' => $e->getMessage()]);
     
@@ -233,7 +233,7 @@ class ComplianceController extends Controller
             $this->createOrUpdateAddress($client, $validatedData['address']);
             $this->createOrUpdateFinancialDetails($client, $validatedData['financial']);
             $this->createLoan($client, $validatedData['loan']);
-            /* $this->handleComplianceDocuments($client, $validatedData['compliance']); */
+           /*  $this->handleComplianceDocuments($client, $validatedData['compliance']); */
         });
 
         return response()->json(['client' =>$client, 'message' => 'Client data processed successfully'], 201);
@@ -409,7 +409,7 @@ class ComplianceController extends Controller
             $path = $file->store("documents/{$type}", 'public');
             Compliance::create([
                 'client_id' => $client->client_id,
-                'compliance_type' => 'KYC',
+                'compliance_type' => 'KYC & AML',
                 'document_type' => $type,
                 'document_path' => $path,
                 'document_status' => 'pending',
@@ -443,7 +443,7 @@ class ComplianceController extends Controller
         $clients = Client::with(['compliance_records' => function ($query) use ($status) {
             if ($status) {
                 $query->where('document_status', $status);
-            }
+        }
         }])->get();
 
         return view('admin/compliance.showall', compact('clients'));
@@ -451,20 +451,25 @@ class ComplianceController extends Controller
 
 
     public function index(Client $client){
-        return view('admin/compliance.index', compact('client'));
+        $compliance_records = $client->compliance_records; // Load compliance records
+        return view('admin/compliance.index', compact('client', 'compliance_records'));
     }
 
-    public function show(Client $client, $compliance_id){
+    public function show(Client $client, $complianceType){
         /* $client = Client::with(['compliance_records' => function ($query) use ($compliance_id) {
             $query->where('id', $compliance_id); // Filter by compliance ID
         }])->findOrFail($client);
     
         $compliance = $client->compliance_records->first(); // Get the filtered record */
 
-        // Ensure compliance record exists for this client
-        $compliance = $client->compliance_records()->where('id', $compliance_id)->firstOrFail();
+         // Eager load the `client` relationship
+        /* $compliance = Compliance::with('client')->findOrFail($compliance->id); */
+        /* $complianceDocuments = Compliance::where('client_id', $client->client_id)->get(); */
 
-        // If the compliance record is not found in the client's records, throw a 404
-        return view('admin/compliance.show', compact('client', 'compliance'));
+        $complianceRecords = $client->compliance_records()
+                                ->where('compliance_type', $complianceType)
+                                ->get();
+
+        return view('admin.compliance.show', compact('client', 'complianceRecords', 'complianceType'));
     }
 }

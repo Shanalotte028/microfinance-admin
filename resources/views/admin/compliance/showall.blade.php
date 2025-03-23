@@ -55,7 +55,7 @@
                                 <td>{{ $compliance->submission_date }}</td>
                                 <td>{{ $compliance->approval_date ?? 'n/a' }}</td>
                                 <td>
-                                    <a href="{{ route('admin.compliance.show', ['client' => $client, 'compliance' => $compliance->id]) }}" class="btn btn-success">
+                                    <a href="{{ route('admin.compliance.show', ['client' => $client, 'complianceType' => $compliance->compliance_type]) }}" class="btn btn-success">
                                         View
                                     </a>
                                 </td>

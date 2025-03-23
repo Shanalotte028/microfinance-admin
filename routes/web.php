@@ -62,11 +62,11 @@ Route::middleware(['auth'])->group(function () {
     ->middleware('can:compliances.index')
     ->name('admin.compliances');
 
-    Route::get('/clients/{client}/compliance-records', [ComplianceController::class, 'index'])
+    Route::get('/clients/{client}/compliance-index', [ComplianceController::class, 'index'])
         ->middleware('can:compliances.index')
         ->name('admin.compliance.index');
 
-    Route::get('/clients/{client}/compliance-records/{compliance}', [ComplianceController::class, 'show'])
+    Route::get('/clients/{client}/compliance-records/{complianceType}', [ComplianceController::class, 'show'])
         ->middleware('can:compliances.show')
         ->name('admin.compliance.show');
 

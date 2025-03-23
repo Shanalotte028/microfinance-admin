@@ -3,10 +3,11 @@
     <x-slot:heading>
         Compliance Record
     </x-slot:heading>
+    @foreach($complianceRecords as $compliance) 
     <div class="row">
         {{-- compliance file column --}} 
         <div class="col-md-6 p-4">
-            @if(is_null($compliance))
+            @if(is_null($complianceRecords))
                 <p>No KYC documents available.</p>
             @else           
             <x-admin.card-table-info>
@@ -33,7 +34,6 @@
                 <form action="{{ route('admin.compliance.approve', ['client' => $client->id, 'compliance' => $compliance->id]) }}" method="POST" onsubmit="return confirmApproval();">
                     @csrf
                     @method('PATCH')
-        
                     <x-admin.card-table-info>
                         <x-slot:heading>{{ $compliance->compliance_type }}</x-slot:heading>
                         <x-admin.card-table-info-tr>
@@ -46,7 +46,7 @@
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Client Email</x-slot:heading>
-                            {{ $compliance->client->email }}
+                            {{ $client->email }}
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Compliance Type</x-slot:heading>
@@ -100,40 +100,43 @@
                     </form>
                 </x-slot:button2>
             </x-admin.card-table-info>
-            @endif          
-        </div>        
-    </div>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // Check if the document type is PDF
-            @if($fileExtension === 'pdf')
-                const url = '{{ Storage::url($compliance->document_path) }}';
-                const pdfViewer = document.getElementById('pdf-viewer');
-    
-                // Asynchronously download PDF
-                pdfjsLib.getDocument(url).promise.then(pdf => {
-                    const scale = 1; // Adjust scale to your preference
-                    pdf.getPage(1).then(page => {
-                        const viewport = page.getViewport({ scale });
-    
-                        // Prepare canvas using PDF page dimensions
-                        const canvas = document.createElement('canvas');
-                        const context = canvas.getContext('2d');
-                        canvas.height = viewport.height;
-                        canvas.width = viewport.width;
-                        pdfViewer.appendChild(canvas);
-    
-                        // Render PDF page into canvas context
-                        const renderContext = {
-                            canvasContext: context,
-                            viewport: viewport,
-                        };
-                        page.render(renderContext);
-                    });
-                }).catch(function(error) {
-                    console.error("Error loading PDF: ", error);
-                });
             @endif
-        });
-    </script>
+        </div>
+        @endforeach         
+    </div>
+   
 </x-admin.dashboard-layout>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Check if the document type is PDF
+        @if($fileExtension === 'pdf')
+            const url = '{{ Storage::url($compliance->document_path) }}';
+            const pdfViewer = document.getElementById('pdf-viewer');
+
+            // Asynchronously download PDF
+            pdfjsLib.getDocument(url).promise.then(pdf => {
+                const scale = 1; // Adjust scale to your preference
+                pdf.getPage(1).then(page => {
+                    const viewport = page.getViewport({ scale });
+
+                    // Prepare canvas using PDF page dimensions
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    pdfViewer.appendChild(canvas);
+
+                    // Render PDF page into canvas context
+                    const renderContext = {
+                        canvasContext: context,
+                        viewport: viewport,
+                    };
+                    page.render(renderContext);
+                });
+            }).catch(function(error) {
+                console.error("Error loading PDF: ", error);
+            });
+        @endif
+    });
+</script>
