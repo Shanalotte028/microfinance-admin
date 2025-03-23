@@ -20,7 +20,7 @@ class DashboardController extends Controller
         $openCase = LegalCase::where('status', 'open')->count();
         $pendingCompliance = Compliance::where('document_status', 'pending')->count();
         
-        $approvedLoans = Loan::where('loan_status', 'approved')->count();
+        $approvedLoans = Loan::whereIn('loan_status', ['approved', 'active', 'finished', 'default'])->count();
         $rejectedLoans = Loan::where('loan_status', 'rejected')->count();
 
         $riskTrends = Risk::selectRaw("
