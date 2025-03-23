@@ -79,11 +79,17 @@ class RiskController extends Controller
             'assessment_date' => Carbon::now(),
         ]);
 
-        return response()->json([
+        /* return response()->json([
             'message' => 'Risk assessment completed successfully',
             'risk_level' => $prediction,
             'confidence_level' => $probability,
+        ]); */
+
+        return response()->json([
+            'success' => true,
+            'message' => "Risk assessment completed successfully. \n Risk Level: $prediction \n Confidence Level: $probability"
         ]);
+        
     }
 
     public function index(Client $client){
