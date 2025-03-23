@@ -57,7 +57,7 @@
                 <x-admin.card-table-list>
                     <x-slot:heading>Loan Records</x-slot:heading>
                         <x-slot:table_row>
-                            <th>Loan Amount</th>
+                            <th>Principal Amount</th>
                             <th>Loan Status</th>
                             <th>Interest Rate</th>
                             <th>Installment</th>

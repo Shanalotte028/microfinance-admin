@@ -229,7 +229,7 @@
                         {{ $client->financial_details->late_payments ?? 'n/a'  }}
                     </x-admin.card-table-info-tr>
                     <x-admin.card-table-info-tr>
-                        <x-slot:heading>Credit Score</x-slot:heading>
+                        <x-slot:heading>Loan Defaults</x-slot:heading>
                         {{ $client->financial_details->loan_defaults ?? 'n/a'  }}
                     </x-admin.card-table-info-tr>
                     <x-slot:button>
