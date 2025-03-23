@@ -248,47 +248,48 @@
 
         <script>
             document.getElementById('riskAssessmentForm').addEventListener('submit', function(event) {
-                event.preventDefault(); // Stop default form submission
-            
-                let button = document.getElementById("assessRiskButton");
-                let spinner = document.getElementById("assessRiskSpinner");
-                let buttonText = document.getElementById("assessRiskText");
-            
-                // Show loading state
-                spinner.classList.remove("d-none");
-                buttonText.textContent = "Assessing...";
-                button.disabled = true;
-            
-                fetch("{{ route('api.risk_assessment.store', $client) }}", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                    },
-                    body: JSON.stringify({})
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        document.getElementById('successMessage').innerText = data.message;
-                        var successModal = new bootstrap.Modal(document.getElementById('successModal'));
-                        successModal.show();
-            
-                        successModal._element.addEventListener('hidden.bs.modal', function () {
-                            location.reload();
-                        });
-                    } else {
-                        alert(`❌ Error: ${data.message}`);
-                    }
-                })
-                .catch(error => console.error("Fetch error:", error))
-                .finally(() => {
-                    // Restore button state after response
-                    spinner.classList.add("d-none");
-                    buttonText.textContent = "Assess Risk";
-                    button.disabled = false;
+                    event.preventDefault(); // Stop default form submission
+                
+                    let button = document.getElementById("assessRiskButton");
+                    let spinner = document.getElementById("assessRiskSpinner");
+                    let buttonText = document.getElementById("assessRiskText");
+                
+                    // Show loading state
+                    spinner.classList.remove("d-none");
+                    buttonText.textContent = "Assessing...";
+                    button.disabled = true;
+                
+                    fetch("{{ route('api.risk_assessment.store', $client) }}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                        },
+                        body: JSON.stringify({})
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById('successMessage').innerText = data.message;
+                            var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                            successModal.show();
+                
+                            successModal._element.addEventListener('hidden.bs.modal', function () {
+                                location.reload();
+                            });
+                        } else {
+                            alert(`❌ Error: ${data.message}`);
+                        }
+                    })
+                    .catch(error => console.error("Fetch error:", error))
+                    .finally(() => {
+                        // Restore button state after response
+                        spinner.classList.add("d-none");
+                        buttonText.textContent = "Assess Risk";
+                        button.disabled = false;
+                    });
                 });
-            });
-            </script>
+            }
+        </script>
             
 </x-admin.dashboard-layout>
