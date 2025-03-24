@@ -23,18 +23,12 @@ class UserController extends Controller
         return view('admin.user.show', compact('user', 'cases'));
     }
 
-        public function edit(User $user){
-        if (Gate::denies('admin')) {
-            abort(403);
-        }
+    public function edit(User $user){
 
         return view('admin.user.edit', compact('user'));
     }
 
     public function update(Request $request, User $user){
-        if (Gate::denies('admin')) {
-            abort(403);
-        }
         $oldData = $user->toArray();
 
         $validatedAttributes = $request->validate([
@@ -69,7 +63,7 @@ class UserController extends Controller
         $adminUser = Auth::user();
         
         // Toggle the blocked status between 'yes' and 'no'
-        $user->status = ($user->status === 'inactivate') ? 'active' : 'inactive';
+        $user->status = ($user->status === 'inactive') ? 'active' : 'inactive';
         $newStatus = $user->status;
         $user->save();
 
@@ -79,7 +73,7 @@ class UserController extends Controller
         //  Add Audit Log
         AuditHelper::log('Deactivate/Activate',
             'User Management',
-            "User $adminUser->id ($adminUser->email) changed the status of user ID number: $user->id ($user->email)",
+            "User $adminUser->id ($adminUser->email) changed the status of User ID number: $user->id ($user->email)",
             $previousStatus, // ID of the affected user
             $newStatus,);
 
