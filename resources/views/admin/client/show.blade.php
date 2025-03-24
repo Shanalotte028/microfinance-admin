@@ -289,7 +289,6 @@
                         button.disabled = false;
                     });
                 });
-            }
         </script>
             
 </x-admin.dashboard-layout>

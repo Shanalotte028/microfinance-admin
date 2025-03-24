@@ -70,6 +70,7 @@ Route::middleware(['auth'])->group(function () {
         ->middleware('can:compliances.show')
         ->name('admin.compliance.show');
 
+
     Route::patch('/clients/{client}/compliance-records/{compliance}', [ComplianceController::class, 'approve'])
         ->middleware('can:compliances.approve')
         ->name('admin.compliance.approve');
@@ -77,6 +78,8 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/clients/{client}/compliance-records/{compliance}/reject', [ComplianceController::class, 'reject'])
         ->middleware('can:compliances.reject')
         ->name('admin.compliance.reject');
+
+    /* Route::get('/clients/{client}/compliance-records/download/{file}', [ComplianceController::class, 'download'])->name('admin.compliance.download'); */
     
     // Financial
     Route::get('/clients/{client}/financial-details/{financial}', [FinancialController::class, 'show'])->name('admin.financial.show');

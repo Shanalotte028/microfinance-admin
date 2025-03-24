@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rules\File;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\Response;
 
 class ComplianceController extends Controller
 {
@@ -233,7 +235,7 @@ class ComplianceController extends Controller
             $this->createOrUpdateAddress($client, $validatedData['address']);
             $this->createOrUpdateFinancialDetails($client, $validatedData['financial']);
             $this->createLoan($client, $validatedData['loan']);
-           /*  $this->handleComplianceDocuments($client, $validatedData['compliance']); */
+            $this->handleComplianceDocuments($client, $validatedData['compliance']);
         });
 
         return response()->json(['client' =>$client, 'message' => 'Client data processed successfully'], 201);
@@ -309,12 +311,12 @@ class ComplianceController extends Controller
                 'interest_rate' => 'required|numeric',
                 'loan_status' => 'required|string',
             ]),
-            /* 'compliance' => $request->validate([
+            'compliance' => $request->validate([
                 'documents' => ['required', 'file', 'mimes:pdf'],
                 'id_front' => ['required', 'file', 'mimes:png,jpg,pdf'],
                 'id_back' => ['required', 'file', 'mimes:png,jpg,pdf'],
                 'selfie_with_id' => ['required', 'file', 'mimes:png,jpg,pdf'],
-            ]), */
+            ]),
         ];
     }
 
@@ -404,11 +406,11 @@ class ComplianceController extends Controller
     /**
      * Handle compliance documents.
      */
-    private function handleComplianceDocuments(Client $client, array $files): void{
+   /*  private function handleComplianceDocuments(Client $client, array $files): void{
         foreach ($files as $type => $file) {
             $path = $file->store("documents/{$type}", 'public');
-            Compliance::create([
-                'client_id' => $client->client_id,
+            $client->compliance_records->updateOrCreate([
+                'client_id' => $client->client_id, 
                 'compliance_type' => 'KYC & AML',
                 'document_type' => $type,
                 'document_path' => $path,
@@ -416,7 +418,29 @@ class ComplianceController extends Controller
                 'submission_date' => now(),
             ]);
         }
+    } */
+
+    private function handleComplianceDocuments(Client $client, array $files): void
+    {
+        foreach ($files as $type => $file) {
+            $path = $file->store("documents/{$type}", 'public');
+    
+            // Use relationship method instead of direct model call
+            $client->compliance_records()->updateOrCreate(
+                [
+                    'document_type' => $type, // Unique condition within this client
+                ],
+                [
+                    'compliance_type' => 'KYC & AML',
+                    'document_path' => $path,
+                    'document_status' => 'pending',
+                    'submission_date' => now(),
+                ]
+            );
+        }
     }
+    
+    
 
     /**
      * Process address data.
@@ -472,4 +496,35 @@ class ComplianceController extends Controller
 
         return view('admin.compliance.show', compact('client', 'complianceRecords', 'complianceType'));
     }
+
+    /* public function download(Client $client, $file): Response{
+        // Ensure the file path is properly constructed
+        $filePath = "documents/" . ltrim($file, '/');
+        
+        if (!Storage::disk('public')->exists($filePath)) {
+            return abort(404, 'File not found');
+        }
+
+        // Get the full path to the file
+        $fullPath = Storage::disk('public')->path($filePath);
+
+        // Get the original filename from storage
+        $originalName = basename($fullPath);
+
+        // Get the MIME type using PHP's mime_content_type()
+        $mimeType = mime_content_type($fullPath);
+        if ($mimeType === false){
+            $mimeType = 'application/octet-stream'; // default to binary stream
+        }
+
+        // Set proper headers for download
+        $headers = [
+            'Content-Type' => $mimeType,
+            'Content-Disposition' => 'attachment; filename="' . $originalName . '"', // Crucial header
+        ];
+
+        // Use response()->download() to send the file
+        return response()->download($fullPath, $originalName, $headers);
+    } */
+    
 }
