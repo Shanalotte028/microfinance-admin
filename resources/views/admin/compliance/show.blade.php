@@ -5,6 +5,7 @@
         Compliance Record
     </x-slot:heading>
             <div class="row"> 
+            {{-- Credit Investigation --}}
             <div class="col-md-6">
                 @if(is_null($fieldInvestigation))
                 <x-admin.card-table-info>
@@ -83,6 +84,7 @@
                 </x-admin.card-table-info>
                 @endif 
             </div>
+            {{-- Risk Assessment --}}
             <div class="col-md-6">
                 <div class="card bg-dark text-white mb-4"> {{-- Risk Mitigation --}}
                     <div class="card-body">
@@ -137,7 +139,7 @@
                         </div>
                     </div>
                 </div>
-        </div>
+            </div>
         
         {{-- Compliance Side --}}
         <h3 class="text-light p-3">Compliance Type: {{$complianceType}}</h3>

@@ -68,7 +68,7 @@ Route::middleware(['auth'])->group(function () {
         ->middleware('can:compliances.index')
         ->name('admin.compliance.index');
 
-    Route::get('/clients/{client}/compliance-records/{complianceType}', [ComplianceController::class, 'show'])
+    Route::get('/clients/{client}/compliance-records/{complianceType}/{submission_date}', [ComplianceController::class, 'show'])
         ->middleware('can:compliances.show')
         ->name('admin.compliance.show');
 

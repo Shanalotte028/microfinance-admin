@@ -24,7 +24,8 @@
                                     <td>{{ $compliance->submission_date ?? 'n/a'}}</td>
                                     <td>{{ $compliance->approval_date ?? 'n/a' }}</td>
                                     <td>
-                                        <a href="{{ route('admin.compliance.show', ['client' => $client, 'complianceType'=> $compliance->compliance_type] ) }}" class="btn btn-success">View</a> <!-- View button -->
+                                        <a href="{{ route('admin.compliance.show', ['client' => $client, 'complianceType'=> $compliance->compliance_type, 
+                                        'submission_date'=> $compliance->submission_date] ) }}" class="btn btn-success">View</a> <!-- View button -->
                                     </td>
                                 </tr>
                             @endforeach

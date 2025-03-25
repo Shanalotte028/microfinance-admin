@@ -484,7 +484,7 @@ class ComplianceController extends Controller
         return view('admin/compliance.index', compact('client', 'compliance_records'));
     }
 
-    public function show(Client $client, $complianceType){
+    public function show(Client $client, $complianceType, $submission_date){
         /* $client = Client::with(['compliance_records' => function ($query) use ($compliance_id) {
             $query->where('id', $compliance_id); // Filter by compliance ID
         }])->findOrFail($client);
@@ -494,9 +494,9 @@ class ComplianceController extends Controller
          // Eager load the `client` relationship
         /* $compliance = Compliance::with('client')->findOrFail($compliance->id); */
         /* $complianceDocuments = Compliance::where('client_id', $client->client_id)->get(); */
-
         $complianceRecords = $client->compliance_records()
                                 ->where('compliance_type', $complianceType)
+                                ->where('submission_date', $submission_date)
                                 ->get();
 
         $fieldInvestigation = $client->fieldInvestigations()->latest()->first();
