@@ -14,12 +14,14 @@ use App\Http\Controllers\ClientAuth\ClientResetPasswordController;
 use App\Http\Controllers\ClientAuth\ClientSessionController;
 use App\Http\Controllers\ClientAuth\ClientUserRegistrationController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FieldInvestigationController;
 use App\Http\Controllers\LegalCaseController;
 use App\Http\Controllers\RiskController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UserController;
 use App\Models\Client;
 use App\Models\Compliance;
+use App\Models\FieldInvestigation;
 use App\Models\LegalCase;
 use App\Models\Loan;
 use App\Models\User;
@@ -142,6 +144,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('clients/{client}/show_risk/{risk}',[RiskController::class, 'show'])->name('admin.risk_assessment.show');
     Route::patch('clients/{client}/show_risk/{risk}/recommendation',[RiskController::class, 'recommendation'])->name('admin.risk_assessment.recommendation');
 
+
+    // Credit Investigation 
+    Route::post('clients/assignInvestigation', [FieldInvestigationController::class, 'assignInvestigation'])->name('admin.investigation.assign');
 
 
     Route::get('admin/users', [UserController::class, 'index'])

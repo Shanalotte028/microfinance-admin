@@ -29,7 +29,7 @@ class UserFactory extends Factory
             'last_name'=> fake()->lastName(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'role' => $this->faker->randomElement(['Admin', 'Lawyer', 'Staff', 'Staff Manager']),
+            'role' => $this->faker->randomElement(['Admin', 'Lawyer', 'Staff', 'Staff Manager', 'Field Investigator']),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
         ];

@@ -10,6 +10,7 @@ use App\Mail\KycConfirmationEmail;
 use App\Models\Address;
 use App\Models\Client;
 use App\Models\Compliance;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -494,7 +495,10 @@ class ComplianceController extends Controller
                                 ->where('compliance_type', $complianceType)
                                 ->get();
 
-        return view('admin.compliance.show', compact('client', 'complianceRecords', 'complianceType'));
+        $fieldInvestigation = $client->fieldInvestigations()->latest()->first();
+        $field_officers = User::where('role', 'Field Officer')->get();
+
+        return view('admin.compliance.show', compact('client', 'complianceRecords', 'complianceType', 'fieldInvestigation', 'field_officers'));
     }
 
     /* public function download(Client $client, $file): Response{

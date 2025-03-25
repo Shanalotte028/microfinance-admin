@@ -87,7 +87,8 @@ class DatabaseSeeder extends Seeder
         
         // Pre-create a set of lawyers (to avoid creating a new one for each case)
         $lawyers = User::factory()->count(10)->create(['role' => 'Lawyer']);
-
+        $field_officers = User::factory()->count(10)->create(['role' => 'Field Officer']);
+        
         // Create 100 clients with related records
         Client::factory()
             ->count(100)

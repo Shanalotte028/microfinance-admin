@@ -19,6 +19,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $staff = Role::create(['name' => 'Staff']);
         $staffManager = Role::create(['name' => 'Staff Manager']);
         $lawyer = Role::create(['name' => 'Lawyer']);
+        $fieldOfficer = Role::create(['name'=> 'Field Officer']);
 
         $permissions = [
             'clients.index','clients.show','clients.edit','clients.update','clients.block',
@@ -26,6 +27,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'audit',
             'legal.index','legal.show','legal.edit','legal.create','legal.update',
             'users.index','users.show','users.create','users.edit','users.update','users.deactivate',
+            'investigation.assign',
         ];
 
           // Create and assign permissions
@@ -41,7 +43,9 @@ class RolesAndPermissionsSeeder extends Seeder
                                 'audit','legal.index','legal.show','legal.edit','legal.create','legal.update','users.index','users.show',],
             'Staff' => ['clients.index','clients.show',
                         'compliances.index','compliances.show','compliances.approve','compliances.reject',],
-            'Lawyer' => ['clients.show','legal.index','legal.show','legal.edit','legal.update',]
+            'Lawyer' => ['clients.show','legal.index','legal.show','legal.edit','legal.update',],
+            'Field Officer' => ['clients.index','clients.show',
+            'compliances.index','compliances.show']
         ];
 
         // Create roles and assign permissions
