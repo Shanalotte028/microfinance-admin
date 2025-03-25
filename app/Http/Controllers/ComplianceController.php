@@ -10,6 +10,7 @@ use App\Mail\KycConfirmationEmail;
 use App\Models\Address;
 use App\Models\Client;
 use App\Models\Compliance;
+use App\Models\FieldInvestigation;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -401,6 +402,11 @@ class ComplianceController extends Controller
             'loan_status' => $data['loan_status'],
         ]);
 
+        FieldInvestigation::create([
+            'client_id' => $client->id,
+            'officer_id' => null
+        ]);
+
         Log::info('Loan created:', $loan->toArray());
     }
 
@@ -427,11 +433,9 @@ class ComplianceController extends Controller
             $path = $file->store("documents/{$type}", 'public');
     
             // Use relationship method instead of direct model call
-            $client->compliance_records()->updateOrCreate(
+            $client->compliance_records()->create(
                 [
                     'document_type' => $type, // Unique condition within this client
-                ],
-                [
                     'compliance_type' => 'KYC & AML',
                     'document_path' => $path,
                     'document_status' => 'pending',

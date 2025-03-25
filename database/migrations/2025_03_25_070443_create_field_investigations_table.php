@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('field_investigations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('client_id')->constrained('clients')->onDelete('cascade');
-            $table->foreignId('officer_id')->constrained('users')->onDelete('cascade'); // Field officer
+            $table->foreignId('officer_id')->nullable()->default(null)->constrained('users')->onDelete('cascade'); // Field officer
             $table->text('observations')->nullable(); // Officer’s notes
             $table->boolean('verified')->nullable()->default(false); // Verified or not
             $table->timestamps();

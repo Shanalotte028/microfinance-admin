@@ -8,7 +8,7 @@
             <div class="col-md-6">
                 @if(is_null($fieldInvestigation))
                 <x-admin.card-table-info>
-                    <x-slot:heading>Field Investigation</x-slot:heading>
+                    <x-slot:heading>Credit Investigation</x-slot:heading>
                     <x-slot:heading_child>No Field Investigator Assigned</x-slot:heading_child>
                     <form action="{{route('admin.investigation.assign')}}" method="POST">
                         @csrf
@@ -31,14 +31,14 @@
                 </x-admin.card-table-info>
                 @else
                 <x-admin.card-table-info>
-                    <x-slot:heading>Field Investigation</x-slot:heading>
+                    <x-slot:heading>Credit Investigation</x-slot:heading>
                     <x-admin.card-table-info-tr>
                         <x-slot:heading>ID</x-slot:heading>
                         {{ $fieldInvestigation->id }}
                     </x-admin.card-table-info-tr>
                     <x-admin.card-table-info-tr>
                         <x-slot:heading>Officer ID</x-slot:heading>
-                        {{ $fieldInvestigation->officer_id }}
+                        {{ $fieldInvestigation->officer_id ?? 'Unassigned' }}
                     </x-admin.card-table-info-tr>
                     <x-admin.card-table-info-tr>
                         <x-slot:heading>Observations</x-slot:heading>
@@ -48,6 +48,38 @@
                         <x-slot:heading>Verified</x-slot:heading>
                         {{ $fieldInvestigation->verified ? 'Yes' : 'No' }}
                     </x-admin.card-table-info-tr>
+                    <x-admin.card-table-info-tr>
+                        <x-slot:heading>Created At</x-slot:heading>
+                        {{ $fieldInvestigation->created_at}}
+                    </x-admin.card-table-info-tr>
+                    <x-admin.card-table-info-tr>
+                        <x-slot:heading>Updated At</x-slot:heading>
+                        {{ $fieldInvestigation->updated_at}}
+                    </x-admin.card-table-info-tr>
+                <x-slot:button>
+                    @if(is_null($fieldInvestigation->officer_id))
+                        <form action="{{ route('admin.investigation.assign') }}" method="POST">
+                            @csrf
+                            <div class="col-md-4 p-3">
+                                <input type="hidden" name="client_id" value="{{ $client->id }}">
+                                <div class="form-group">
+                                    <select class="form-control" name="officer_id" id="officer_id" required>
+                                        <option value="" disabled selected class="text-dark">Assign Field Officer</option>
+                                        @foreach ($field_officers as $field_officer)
+                                            <option value="{{ $field_officer->id }}">{{ $field_officer->first_name }} {{ $field_officer->last_name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <x-admin.form-error name="officer_id"></x-admin.form-error>
+                                </div>
+                                <div class="mt-4 mb-0">
+                                    <div class="d-grid">
+                                        <button class="btn btn-success btn-block" type="submit">Assign Field Officer</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    @endif
+                </x-slot:button>
                 </x-admin.card-table-info>
                 @endif 
             </div>
@@ -255,7 +287,7 @@
             </div>
             @endforeach         
         </div>
-   
+    <x-client.success-popup/>
 </x-admin.dashboard-layout>
 
 <script>

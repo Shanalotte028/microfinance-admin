@@ -18,11 +18,11 @@ class FieldInvestigationController extends Controller
             'officer_id' => 'required|exists:users,id',
         ]);
 
-        FieldInvestigation::create([
-            'client_id' => $request->client_id,
-            'officer_id' => $request->officer_id,
-        ]);
+        FieldInvestigation::updateOrCreate(
+            ['client_id' => $request->client_id], // Search condition
+            ['officer_id' => $request->officer_id] // Fields to update or insert
+        );
         
-        return redirect()->back()->with('sucess','Investigation assigned to field officer.'); 
+        return redirect()->back()->with('success','Investigation assigned to field officer.'); 
     }
 }
