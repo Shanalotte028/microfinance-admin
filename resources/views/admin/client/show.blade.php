@@ -242,6 +242,29 @@
                         @endif
                     </x-slot:button>
                 </x-admin.card-table-info>
+                {{-- Credit Investigation Records --}}
+                <x-admin.card-table-list>
+                    <x-slot:heading>Credit Investigation Records</x-slot:heading>
+                    <x-slot:table_row>
+                        <th class="col-3">ID</th>
+                        <th class="col-3">Client ID</th>
+                        <th class="col-3">Officer ID</th>
+                        <th class="col-3">Verified</th>
+                        <th class="col-3">Created At</th>
+                        <th class="col-2">Updated At</th>
+                    </x-slot:table_row>
+                    @foreach ($client->fieldInvestigations->take(3) as $investigation)
+                        <tr>
+                            <td>{{ $investigation->id ?? 'n/a' }}</td>
+                            <td>{{ $investigation->client_id ?? 'n/a' }}</td>
+                            <td>{{ $investigation->officer_id ?? 'n/a' }}</td>
+                            <td>{{ $investigation->verified ? 'Yes' : 'No' }}</td>
+                            <td>{{ $investigation->created_at ?? 'n/a' }}</td>
+                            <td>{{ $investigation->uploaded_at ?? 'n/a' }}</td>
+                        </tr>
+                    @endforeach
+                    <x-slot:button><a href="{{ route('admin.investigation.index', $client) }}" class="btn btn-success">Show All</a></x-slot:button>
+                </x-admin.card-table-list>
             </div>
         </div>
         <x-client.success-popup/>

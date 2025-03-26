@@ -25,4 +25,15 @@ class FieldInvestigationController extends Controller
         
         return redirect()->back()->with('success','Investigation assigned to field officer.'); 
     }
+
+    public function index(Client $client){
+        $investigation_records = $client->fieldInvestigations; // Load field investigation records
+        return view('admin/investigation.index', compact('client', 'investigation_records'));
+    }
+
+    public function show(Client $client, $investigation_id)
+    {
+        $investigation = FieldInvestigation::with(['client', 'officer'])->findOrFail($investigation_id);
+        return view('admin/investigation.show', compact('investigation'));
+    }
 }

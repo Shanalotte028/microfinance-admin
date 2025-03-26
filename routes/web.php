@@ -147,6 +147,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Credit Investigation 
     Route::post('clients/assignInvestigation', [FieldInvestigationController::class, 'assignInvestigation'])->name('admin.investigation.assign');
+    Route::get('clients/{client}/index', [FieldInvestigationController::class, 'index'])->name('admin.investigation.index');
+    Route::get('clients/{client}/show/{investigation}', [FieldInvestigationController::class, 'show'])->name('admin.investigation.show');
+    
 
 
     Route::get('admin/users', [UserController::class, 'index'])
