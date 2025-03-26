@@ -34,7 +34,7 @@
                             </pre>
                         </td>
                         <td>
-                            <pre style="white-space: pre-wrap; word-wrap: break-word; max-width: 200px; overflow: auto; margin: 0;" title="{{ json_encode($log->old_data, JSON_PRETTY_PRINT) }}">
+                            <pre style="white-space: pre-wrap; word-wrap: break-word; max-width: 200px; overflow: auto; margin: 0;" title="{{ json_encode($log->new_data, JSON_PRETTY_PRINT) }}">
                                 {{ Str::limit(json_encode($log->new_data, JSON_PRETTY_PRINT), 50) }} <!-- Show only the first 50 characters -->
                             </pre>
                         </td>

@@ -69,62 +69,60 @@ class DatabaseSeeder extends Seeder
             'password_reset_required' => false,
         ]);
 
+        $user5 = User::create([
+            'employee_id' => 'EMP-20240005',
+            'first_name' => 'Syno',
+            'last_name' => 'Pzio',
+            'email' => 'synopzio@gmail.com',
+            'role' => 'Field Officer',
+            'status' => 'active',
+            'password' => 'adminadmin1234',
+            'password_reset_required' => false,
+        ]);
+
         $user->assignRole('Admin'); // Assign role after creation
         $user2->assignRole('Staff');
         $user3->assignRole('Lawyer');
         $user4->assignRole('Staff Manager');
+        $user5->assignRole('Field Officer');
         
 
         // Create a specific client
-        Client::create([
+     /*    Client::create([
+            'client_id' => 101,
             'first_name' => 'Kram',
             'last_name' => 'Trash',
             'email' => 'kramtrash@gmail.com',
-            'client_type' => 'Individual',
-            'password' => 'adminadmin1234',
-        ]);
-
+            /* 'client_type' => 'Individual', */
+            /* 'password' => 'adminadmin1234',
+        ]); */
+        
+        // Pre-create a set of lawyers (to avoid creating a new one for each case)
+        $lawyers = User::factory()->count(10)->create(['role' => 'Lawyer']);
+        $field_officers = User::factory()->count(10)->create(['role' => 'Field Officer']);
+        
         // Create 100 clients with related records
         Client::factory()
-            ->count(100) // Creates 100 clients
-            ->create()
-            ->each(function ($client) {
-                // Seed addresses for each client
-                Address::factory()
-                    ->count(1)
-                    ->create(['client_id' => $client->id]);
-
-                // Seed financial details for each client
-                $financialDetails = Financial::factory()
-                    ->create(['client_id' => $client->id]);
-
-                // Seed loans for each financial record
-                Loan::factory()
-                    ->count(3) // 3 loans per financial record
-                    ->create(['financial_id' => $financialDetails->id]);
-
-                // Calculate and save total loan amount borrowed
-                $totalLoanAmount = Loan::where('financial_id', $financialDetails->id)->sum('loan_amount');
-                $financialDetails->total_loan_amount_borrowed = $totalLoanAmount;
-                $financialDetails->save();
-
-                // Seed compliance records for each client
-                Compliance::factory()
-                    ->count(2) // 2 compliance records per client
-                    ->create(['client_id' => $client->id]);
-
-                // Seed risk assessments for each client
-                Risk::factory()
-                    ->count(2) // 2 risk assessments per client
-                    ->create(['client_id' => $client->id]);
-
-                // Seed legal cases for each client
+            ->count(100)
+            ->has(Address::factory(), 'address') // 1 Address per Client
+            ->has(
+                Financial::factory()
+                    ->has(Loan::factory()->count(3), 'loans') // 3 Loans per Financial
+                    ->afterCreating(function (Financial $financial) {
+                        // Calculate total loan amount before saving
+                        $financial->total_loan_amount_borrowed = $financial->loans->sum('principal_amount');
+                        $financial->save();
+                    }),
+                'financial_details'
+            )
+            ->has(Compliance::factory()->count(2), 'compliance_records') // 2 Compliance records per Client
+            ->has(Risk::factory()->count(2), 'risk_assessments') // 2 Risk assessments per Client
+            ->has(
                 LegalCase::factory()
-                    ->count(3) // 3 legal cases per client
-                    ->create([
-                        'client_id' => $client->id,
-                        'assigned_to' => User::factory()->create(['role' => 'Lawyer'])->id, // Assign a lawyer
-                    ]);
-            });
+                    ->count(3)
+                    ->state(fn () => ['assigned_to' => $lawyers->random()->id]), // Assign a random lawyer
+                'legalCases'
+            )
+            ->create();
     }
 }

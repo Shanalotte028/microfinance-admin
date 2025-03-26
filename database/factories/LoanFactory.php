@@ -22,10 +22,16 @@ class LoanFactory extends Factory
         return [
             //
             'financial_id' => Financial::factory(),
-            'loan_amount'=> fake()->numberBetween(1000,10000),
-            'loan_status'=> fake()->randomElement(['active','closed','defaulted']),
-            'interest_rate'=> fake()->numberBetween(100,1000),
-            'start_date'=> Carbon::now()->format('Y-m-d'),
+            'submitted_at' => $this->faker->date($format = 'Y-m-d', $max = 'now'),
+            'loan_status' => fake()->randomElement(['pending','processing','approved', 'rejected', 'active', 'finished', 'default', 'review']),
+            'principal_amount'=> fake()->numberBetween(1000,10000),
+            'interest_rate'=> fake()->numberBetween(5,30),
+            'term_type'=> fake()->randomElement(['Weeks', 'Months', 'Years']),
+            'loan_term' => fake()->numberBetween(5,30),
+            'payment_frequency_method'=> fake()->randomElement(['Weekly', 'Monthly', 'Yearly']),
+            'installment' => fake()->numberBetween(1000,10000),
+            'loan_description' => fake()->randomElement(['Personal', 'Education', 'Medical', 'Business', 'Home Improvement', 'Other']),
+            /* 'start_date'=> Carbon::now()->format('Y-m-d'), */
             'end_date'=> Carbon::now()->addDays(12)->format('Y-m-d'),
         ];
     }

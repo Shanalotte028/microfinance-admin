@@ -13,11 +13,15 @@ use App\Http\Controllers\ClientAuth\ClientForgotPasswordController;
 use App\Http\Controllers\ClientAuth\ClientResetPasswordController;
 use App\Http\Controllers\ClientAuth\ClientSessionController;
 use App\Http\Controllers\ClientAuth\ClientUserRegistrationController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FieldInvestigationController;
 use App\Http\Controllers\LegalCaseController;
+use App\Http\Controllers\RiskController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UserController;
 use App\Models\Client;
 use App\Models\Compliance;
+use App\Models\FieldInvestigation;
 use App\Models\LegalCase;
 use App\Models\Loan;
 use App\Models\User;
@@ -27,15 +31,8 @@ use Illuminate\Support\Facades\Auth;
 // Admin Routes
 // Routes for authenticated users
 Route::middleware(['auth'])->group(function () {
-    // Dashboard
-    Route::get('/', function () {
-        $user = Auth::user();
-        $assignedCases = $user->legalCases->count();
-        // Fetch total pending loans (assuming you have a status field for loans)
-        $openCase = LegalCase::where('status', 'open')->count();
-        $pendingCompliance = Compliance::where('document_status', 'pending')->count(); 
-        return view('admin/dashboard', compact('openCase', 'pendingCompliance', 'assignedCases'));
-    })->name('dashboard');
+    //dashboard
+    Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
     
    // Clients
     Route::get('/clients', [ClientController::class, 'index'])
@@ -67,13 +64,14 @@ Route::middleware(['auth'])->group(function () {
     ->middleware('can:compliances.index')
     ->name('admin.compliances');
 
-    Route::get('/clients/{client}/compliance-records', [ComplianceController::class, 'index'])
+    Route::get('/clients/{client}/compliance-index', [ComplianceController::class, 'index'])
         ->middleware('can:compliances.index')
         ->name('admin.compliance.index');
 
-    Route::get('/clients/{client}/compliance-records/{compliance}', [ComplianceController::class, 'show'])
+    Route::get('/clients/{client}/compliance-records/{complianceType}/{submission_date}', [ComplianceController::class, 'show'])
         ->middleware('can:compliances.show')
         ->name('admin.compliance.show');
+
 
     Route::patch('/clients/{client}/compliance-records/{compliance}', [ComplianceController::class, 'approve'])
         ->middleware('can:compliances.approve')
@@ -82,6 +80,8 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/clients/{client}/compliance-records/{compliance}/reject', [ComplianceController::class, 'reject'])
         ->middleware('can:compliances.reject')
         ->name('admin.compliance.reject');
+
+    /* Route::get('/clients/{client}/compliance-records/download/{file}', [ComplianceController::class, 'download'])->name('admin.compliance.download'); */
     
     // Financial
     Route::get('/clients/{client}/financial-details/{financial}', [FinancialController::class, 'show'])->name('admin.financial.show');
@@ -138,6 +138,24 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('admin/create', [UserRegistrationController::class, 'store'])->name('admin.accountCreate.post');
 
+    // Risk Management
+    Route::get('/risks',[RiskController::class, 'risks'])->name('admin.risk_assessment.risks');
+    Route::get('clients/{client}/list_risk',[RiskController::class, 'index'])->name('admin.risk_assessment.index');
+    Route::get('clients/{client}/show_risk/{risk}',[RiskController::class, 'show'])->name('admin.risk_assessment.show');
+    Route::patch('clients/{client}/show_risk/{risk}/recommendation',[RiskController::class, 'recommendation'])->name('admin.risk_assessment.recommendation');
+
+
+    // Credit Investigation 
+    Route::post('clients/assignInvestigation', [FieldInvestigationController::class, 'assignInvestigation'])->name('admin.investigation.assign');
+    Route::get('clients/{client}/index', [FieldInvestigationController::class, 'index'])->name('admin.investigation.index');
+    Route::get('clients/{client}/show/{investigation}', [FieldInvestigationController::class, 'show'])->name('admin.investigation.show');
+    Route::get('clients/{client}/show/{investigation}/edit', [FieldInvestigationController::class, 'edit'])->name('admin.investigation.edit');
+    Route::patch('clients/{client}/show/{investigation}/update', [FieldInvestigationController::class, 'update'])->name('admin.investigation.update');
+
+
+    
+
+
     Route::get('admin/users', [UserController::class, 'index'])
     ->middleware('can:users.index')
     ->name('admin.user.index');
@@ -174,7 +192,7 @@ Route::get('admin/password/reset/{token}', [ResetPasswordController::class, 'cre
 Route::post('admin/reset', [ResetPasswordController::class, 'update'])->name('password.update');
 
 
-// Client Routes
+/* // Client Routes
 Route::middleware(['client-auth'])->group(function(){
     Route::get('/client', function(){
         return view('client/dashboard');
@@ -205,4 +223,4 @@ Route::middleware(['client-guest'])->group(function () {
     Route::post('client/password/email', [ClientForgotPasswordController::class, 'store'])->name('client.password.email');
     Route::get('client/password/reset/{token}', [ClientResetPasswordController::class, 'create'])->name('client.password.reset');
     Route::post('client/reset', [ClientResetPasswordController::class, 'update'])->name('client.password.update');
-});
+}); */

@@ -10,6 +10,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class AddressFactory extends Factory
 {
+
+   
+
     /**
      * Define the model's default state.
      *
@@ -17,14 +20,45 @@ class AddressFactory extends Factory
      */
     public function definition(): array
     {
+        $permanentAddress = [
+            'region' => $this->faker->randomElement(['I', 'II', 'III', 'IV-A', 'V', 'CAR', 'NCR', 'Mimaropa']),
+            'province' => $this->faker->randomElement(['Metro Manila', 'Abra', 'Zambales', 'Quezon', 'Palawan', 'Nueva Ecija', 'Masbate', 'Marinduque']),
+            'city'=> $this->faker->randomElement(['Quezon City', 'Caloocan City', 'Davao City', 'Taguig', 'Manila', 'Zamboanga', 'Cebu City', 'Antipolo']),
+            'barangay' => fake()->numberBetween(1,250),
+            'postal_code'=> fake()->postcode(),
+            'street' => fake()->streetAddress(),
+        ];
+        
+        // Decide if present address is the same as permanent
+        $sameAddress = $this->faker->randomElement(['Yes', 'No']);
+        
+        $presentAddress = ($sameAddress === 'Yes') ? $permanentAddress : [
+            'region' => $this->faker->randomElement(['I', 'II', 'III', 'IV-A', 'V', 'CAR', 'NCR', 'Mimaropa']),
+            'province' => $this->faker->randomElement(['Metro Manila', 'Abra', 'Zambales', 'Quezon', 'Palawan', 'Nueva Ecija', 'Masbate', 'Marinduque']),
+            'city'=> $this->faker->randomElement(['Quezon City', 'Caloocan City', 'Davao City', 'Taguig', 'Manila', 'Zamboanga', 'Cebu City', 'Antipolo']),
+            'barangay' => fake()->numberBetween(1,250),
+            'postal_code'=> fake()->postcode(),
+            'street' => fake()->streetAddress(),
+        ];
+
         return [
             //
-            'client_id'=> Client::factory(),
-            'address_line_1'=> fake()->streetAddress(),
-            'address_line_2'=> fake()->streetAddress(),
-            'city'=> fake()->city(),
-            'province'=> fake()->city(),
-            'postal_code'=> fake()->postcode(),
+        'region' => $permanentAddress['region'],
+        'province' => $permanentAddress['province'],
+        'city' => $permanentAddress['city'],
+        'barangay' => $permanentAddress['barangay'],
+        'postal_code' => $permanentAddress['postal_code'],
+        'permanent_street' => $permanentAddress['street'],
+
+        'same_address' => $sameAddress,
+
+        'present_region' => $presentAddress['region'],
+        'present_province' => $presentAddress['province'],
+        'present_city' => $presentAddress['city'],
+        'present_barangay' => $presentAddress['barangay'],
+        'present_postal_code' => $presentAddress['postal_code'],
+        'present_street' => $presentAddress['street'],
+            
         ];
     }
 }

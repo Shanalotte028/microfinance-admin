@@ -1,5 +1,5 @@
 <x-admin.dashboard-layout>
-    <x-slot:back><a href="{{ route('admin.client.show', ['client' => $client->id]) }}" class="text-white"><i class="bi bi-arrow-left larger-icon"></i></a></x-slot:back>
+    <x-slot:back><a href="{{ route('admin.client.show', $client) }}" class="text-white"><i class="bi bi-arrow-left larger-icon"></i></a></x-slot:back>
     <x-slot:heading>
         Compliance Records
     </x-slot:heading>
@@ -24,7 +24,8 @@
                                     <td>{{ $compliance->submission_date ?? 'n/a'}}</td>
                                     <td>{{ $compliance->approval_date ?? 'n/a' }}</td>
                                     <td>
-                                        <a href="{{ url('/clients/'.$client->id.'/compliance-records/'.$compliance->id) }}" class="btn btn-success">View</a> <!-- View button -->
+                                        <a href="{{ route('admin.compliance.show', ['client' => $client, 'complianceType'=> $compliance->compliance_type, 
+                                        'submission_date'=> $compliance->submission_date] ) }}" class="btn btn-success">View</a> <!-- View button -->
                                     </td>
                                 </tr>
                             @endforeach

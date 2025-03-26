@@ -12,20 +12,33 @@ class Client extends Authenticatable implements AuthenticatableContract
     use HasFactory, Notifiable;
 
     protected $fillable = [
-        'first_name',
-        'last_name',
-        'email',
-        'phone_number',
+        'client_id', //client_id
+        'first_name', //fname
+        'last_name', //lname
+        'email', 
+        'phone_number', // mobilenum
         'birthday',
+        'place_of_birth',
         'gender',
-        'nationality',
-        'marital_status',
-        'source_of_income',
-        'tin_number',
-        'client_type',
-        'client_status',
-        'password',
+        'marital_status', // Civil Status
+        'source_of_income', // primary_source
+        'number_of_dependents', // Number of Dependents
+        'job_temporary', // Employment Status
+        'education_level', // Education Level
+        'ownership_status', //Home Ownership Status
+        'work_duration', // Experience
+        'job_tenure', // Job tenure
+        /* 'nationality', */
+        /* 'tin_number', */
+        /* 'client_type',
+        'client_status', */
+        'password', // might remove
     ];
+
+    public function getRouteKeyName()
+    {
+        return 'client_id'; // Use 'client_id' instead of 'id'
+    }
 
     protected $hidden = [
         'password',
@@ -37,9 +50,9 @@ class Client extends Authenticatable implements AuthenticatableContract
         'password' => 'hashed',
     ];
 
-    public function addresses()
+    public function address()
     {
-        return $this->hasMany(Address::class);
+        return $this->hasOne(Address::class);
     }
     
     public function compliance_records()
@@ -56,4 +69,13 @@ class Client extends Authenticatable implements AuthenticatableContract
     {
         return $this->hasMany(Risk::class);
     }
+
+    public function legalCases(){
+        return $this->hasMany(LegalCase::class);
+    }
+
+    public function fieldInvestigations(){   
+    return $this->hasMany(FieldInvestigation::class);
+    }
+    
 }

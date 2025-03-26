@@ -15,6 +15,8 @@
                     <div class="sb-sidenav-menu-heading">Compliance Management</div>
                     <x-admin.nav-item id="collapseCompliances" heading="Compliances"  label="Compliance Records" route="{{ route('admin.compliances') }}" icon="bi bi-file-earmark-check" />
                     @endcan
+                    <div class="sb-sidenav-menu-heading">Risk Management</div>
+                    <x-admin.nav-item id="collapseRisks" heading="Risk Management" label="List Risks" route="{{ route('admin.risk_assessment.risks') }}" icon="bi bi-people" />
                     @can('users.index')
                     <div class="sb-sidenav-menu-heading">User Management</div>
                     <!-- Dropdown menu for User Management -->
@@ -23,7 +25,6 @@
                         User Management
                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                     </a>
-                    
                     <div class="collapse" id="collapseAccount" aria-labelledby="headingAccount" data-bs-parent="#sidenavAccordion">
                         <nav class="sb-sidenav-menu-nested nav">
                             @can('users.index')

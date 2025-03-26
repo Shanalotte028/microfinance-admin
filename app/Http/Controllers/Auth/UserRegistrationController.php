@@ -24,9 +24,6 @@ class UserRegistrationController extends Controller
         return view("admin/auth.register");
     }
 
-    
-
-
 public function store(Request $request){
     $userAdmin = Auth::user();
 
@@ -94,7 +91,7 @@ private function notifyMicroservice($user, $microservice, $password){
             'key' => env('HR_API_KEY')
         ],
         'HR3' => [
-            'url' => env('HR3_API_URL') . '/api/users',
+            'url' => env('HR3_API_URL') . '/api.php',
             'key' => env('HR3_API_KEY')
         ],
         'HR4' => [
