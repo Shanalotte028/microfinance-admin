@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\AuditHelper;
 use App\Models\Client;
 use App\Models\FieldInvestigation;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class FieldInvestigationController extends Controller
 {
@@ -41,5 +43,37 @@ class FieldInvestigationController extends Controller
     {
         $investigation = FieldInvestigation::with(['client', 'officer'])->findOrFail($investigation_id);
         return view('admin/investigation.edit', compact('client', 'investigation'));
+    }
+
+    public function update(Request $request, Client $client, $investigation_id)
+    {
+        $adminUser = Auth::user();
+
+        $investigation = FieldInvestigation::findOrFail($investigation_id);
+        $previousStatus = $investigation->toArray();
+
+        $request->validate([
+            'client_id' => 'required|exists:clients,id',
+            'officer_id' => 'required|exists:users,id',
+            'verified' => 'required|boolean',
+            'observations' => 'required|string',
+        ]);
+
+        // Update the legal case
+        $investigation->update($request->all());
+
+        $newStatus = $investigation->toArray();
+
+        // Log the audit trail
+        AuditHelper::log(
+            'Update Investigation Record',
+            'Credit Investigation',
+            "User $adminUser->id ($adminUser->email) updated a Investigation Record with investigation number: $investigation_id",
+            $previousStatus, // Old status
+            $newStatus // New status
+        );
+
+        // Redirect to the show page
+        return redirect()->route('admin.investigation.show', ['client'=> $client, 'investigation'=> $investigation_id])->with('success', 'Investigation updated successfully.');
     }
 }
