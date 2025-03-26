@@ -149,6 +149,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('clients/assignInvestigation', [FieldInvestigationController::class, 'assignInvestigation'])->name('admin.investigation.assign');
     Route::get('clients/{client}/index', [FieldInvestigationController::class, 'index'])->name('admin.investigation.index');
     Route::get('clients/{client}/show/{investigation}', [FieldInvestigationController::class, 'show'])->name('admin.investigation.show');
+    Route::get('clients/{client}/show/{investigation}/edit', [FieldInvestigationController::class, 'edit'])->name('admin.investigation.edit');
+    Route::patch('clients/{client}/show/{investigation}/update', [FieldInvestigationController::class, 'update'])->name('admin.investigation.update');
+
+
     
 
 

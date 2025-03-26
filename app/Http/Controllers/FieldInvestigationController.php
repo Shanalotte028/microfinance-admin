@@ -34,6 +34,12 @@ class FieldInvestigationController extends Controller
     public function show(Client $client, $investigation_id)
     {
         $investigation = FieldInvestigation::with(['client', 'officer'])->findOrFail($investigation_id);
-        return view('admin/investigation.show', compact('investigation'));
+        return view('admin/investigation.show', compact('client','investigation'));
+    }
+
+    public function edit(Client $client, $investigation_id)
+    {
+        $investigation = FieldInvestigation::with(['client', 'officer'])->findOrFail($investigation_id);
+        return view('admin/investigation.edit', compact('client', 'investigation'));
     }
 }

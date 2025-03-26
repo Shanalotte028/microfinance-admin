@@ -5,8 +5,8 @@
         <div class="row">
             <div class="col-md-6">
                 <x-admin.card-table-info>
-                    <x-slot:heading>Credit Investigation ID: {{$investigation->id}} </x-slot:heading> {{-- <a href="{{route('admin.legal.edit', $case->id)}}" class="btn btn-success d-none d-md-inline-block">Update Case</a></x-slot:heading> --}}
-                    {{-- <x-slot:heading_child> <a href="{{route('admin.legal.edit', $case->id)}}" class="btn btn-success d-md-none">Update Case</a></x-slot:heading> --}}
+                    <x-slot:heading>Credit Investigation ID: {{$investigation->id}} <a href="{{route('admin.investigation.edit', ['client'=> $client, 'investigation'=> $investigation->id])}}" class="btn btn-success d-none d-md-inline-block">Update Investigation</a></x-slot:heading>
+                    <x-slot:heading_child> <a href="{{route('admin.investigation.edit', ['client'=> $client, 'investigation'=> $investigation->id])}}" class="btn btn-success d-md-none">Update Case</a></x-slot:heading>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Client</x-slot:heading>
                             <a href="{{route('admin.client.show', $investigation->client->id)}}" class="text-light">{{ $investigation->client->first_name }} {{ $investigation->client->last_name }}</a>
