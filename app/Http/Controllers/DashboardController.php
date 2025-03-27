@@ -16,6 +16,7 @@ class DashboardController extends Controller
     public function dashboard(){
         $user = Auth::user();
         $assignedCases = $user->legalCases->count();
+        $assignedInvestigations = $user->fieldInvestigations->count();
         // Fetch total pending loans (assuming you have a status field for loans)
         $openCase = LegalCase::where('status', 'open')->count();
         $pendingCompliance = Compliance::where('document_status', 'pending')->count();
@@ -49,6 +50,6 @@ class DashboardController extends Controller
         $highRiskClients = Risk::where('risk_level', 'High Risk')->take(5)->get();
 
         return view('admin/dashboard', compact('openCase', 'pendingCompliance', 'assignedCases', 'approvedLoans', 
-        'rejectedLoans', 'riskTrends', 'financialStats', 'riskData', 'highRiskClients'));
+        'rejectedLoans', 'riskTrends', 'financialStats', 'riskData', 'highRiskClients', 'assignedInvestigations'));
     }
 }

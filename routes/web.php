@@ -146,11 +146,20 @@ Route::middleware(['auth'])->group(function () {
 
 
     // Credit Investigation 
-    Route::post('clients/assignInvestigation', [FieldInvestigationController::class, 'assignInvestigation'])->name('admin.investigation.assign');
+    Route::get('/credit_investigations', [FieldInvestigationController::class, 'credit_investigations'])
+    ->middleware('can:investigation.credit_investigations')
+    ->name('admin.investigation.credit_investigations');
+    Route::post('clients/assignInvestigation', [FieldInvestigationController::class, 'assignInvestigation'])
+    ->middleware('can:investigation.assign')
+    ->name('admin.investigation.assign');
     Route::get('clients/{client}/index', [FieldInvestigationController::class, 'index'])->name('admin.investigation.index');
     Route::get('clients/{client}/show/{investigation}', [FieldInvestigationController::class, 'show'])->name('admin.investigation.show');
-    Route::get('clients/{client}/show/{investigation}/edit', [FieldInvestigationController::class, 'edit'])->name('admin.investigation.edit');
-    Route::patch('clients/{client}/show/{investigation}/update', [FieldInvestigationController::class, 'update'])->name('admin.investigation.update');
+    Route::get('clients/{client}/show/{investigation}/edit', [FieldInvestigationController::class, 'edit'])
+    ->middleware('can:investigation.edit')
+    ->name('admin.investigation.edit');
+    Route::patch('clients/{client}/show/{investigation}/update', [FieldInvestigationController::class, 'update'])
+    ->middleware('can:investigation.update')
+    ->name('admin.investigation.update');
 
 
     

@@ -60,4 +60,8 @@ class User extends Authenticatable implements CanResetPassword
     public function legalCases(){
         return $this->hasMany(LegalCase::class, 'assigned_to');
     }
+
+    public function fieldInvestigations(){
+        return $this->hasMany(FieldInvestigation::class, 'officer_id');
+    }
 }

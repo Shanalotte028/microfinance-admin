@@ -80,11 +80,24 @@ class DatabaseSeeder extends Seeder
             'password_reset_required' => false,
         ]);
 
+        $user6 = User::create([
+            'employee_id' => 'EMP-20240006',
+            'first_name' => 'Mark',
+            'last_name' => 'Mark',
+            'email' => 'markmark@gmail.com',
+            'role' => 'Field Officer',
+            'status' => 'active',
+            'password' => 'adminadmin1234',
+            'password_reset_required' => false,
+        ]);
+
         $user->assignRole('Admin'); // Assign role after creation
         $user2->assignRole('Staff');
         $user3->assignRole('Lawyer');
         $user4->assignRole('Staff Manager');
         $user5->assignRole('Field Officer');
+        $user6->assignRole('Field Officer');
+
         
 
         // Create a specific client

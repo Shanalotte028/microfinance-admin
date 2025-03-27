@@ -13,6 +13,15 @@ class FieldInvestigationController extends Controller
 {
     //
 
+    public function credit_investigations(Request $request)
+    {
+        $user = Auth::user();
+        $user->role === 'Field Investigator' ;
+        /** @var User $user */
+        $investigations = $user->fieldInvestigations()->with(['client', 'officer'])->get();
+        return view('admin/investigation.credit_investigations', compact('investigations'));
+    }
+
     public function assignInvestigation(Request $request){
 
         $request->validate([

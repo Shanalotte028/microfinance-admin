@@ -20,6 +20,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $staffManager = Role::create(['name' => 'Staff Manager']);
         $lawyer = Role::create(['name' => 'Lawyer']);
         $fieldOfficer = Role::create(['name'=> 'Field Officer']);
+        $Trainer = Role::create(['name' => 'Trainer']);
 
         $permissions = [
             'clients.index','clients.show','clients.edit','clients.update','clients.block',
@@ -27,7 +28,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'audit',
             'legal.index','legal.show','legal.edit','legal.create','legal.update',
             'users.index','users.show','users.create','users.edit','users.update','users.deactivate',
-            'investigation.assign',
+            'investigation.assign', 'investigation.index', 'investigation.show', 'investigation.edit','investigation.update', 'investigation.credit_investigations'
         ];
 
           // Create and assign permissions
@@ -40,12 +41,12 @@ class RolesAndPermissionsSeeder extends Seeder
             'Admin' => $permissions,  // Full access
             'Staff Manager' => ['clients.index','clients.show','clients.block',
                                 'compliances.index','compliances.show','compliances.approve','compliances.reject',
-                                'audit','legal.index','legal.show','legal.edit','legal.create','legal.update','users.index','users.show',],
+                                'audit','legal.index','legal.show','legal.edit','legal.create','legal.update','users.index','users.show','investigation.assign', 'investigation.credit_investigations'],
             'Staff' => ['clients.index','clients.show',
                         'compliances.index','compliances.show','compliances.approve','compliances.reject',],
             'Lawyer' => ['clients.show','legal.index','legal.show','legal.edit','legal.update',],
             'Field Officer' => ['clients.index','clients.show',
-            'compliances.index','compliances.show']
+            'compliances.index','compliances.show', 'investigation.index', 'investigation.show', 'investigation.edit', 'investigation.update', 'investigation.credit_investigations']
         ];
 
         // Create roles and assign permissions

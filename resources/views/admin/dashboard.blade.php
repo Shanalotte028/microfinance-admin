@@ -26,6 +26,16 @@
         />
         @endif
         @endcan
+        @can('investigation.credit_investigations')
+        @if(Auth::user()->role === "Field Officer")
+        <x-admin.cards 
+        icon="bi bi-folder-check"
+        value="{{ $assignedInvestigations }}"
+        heading="Investigations"
+        route="{{ route('admin.investigation.credit_investigations') }}" 
+        />
+        @endif
+        @endcan
     </div>
     <div>
         <!-- Top Section - Quick Insights -->
