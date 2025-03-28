@@ -25,7 +25,7 @@
                         <th>Document Type</th>
                         <th>Document Status</th>
                         <th>Submission Date</th>
-                        <th>Approval Date</th>
+                        <th>Updated Date</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -38,7 +38,7 @@
                         <th>Document Type</th>
                         <th>Document Status</th>
                         <th>Submission Date</th>
-                        <th>Approval Date</th>
+                        <th>Updated Date</th>
                         <th>Action</th>
                     </tr>
                 </tfoot>

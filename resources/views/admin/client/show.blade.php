@@ -120,7 +120,7 @@
                         <th class="col-3">Document Type</th>
                         <th class="col-3">Document Status</th>
                         <th class="col-3">Submission Date</th>
-                        <th class="col-2">Approval Date </th>
+                        <th class="col-2">Updated Date </th>
                     </x-slot:table_row>
                     @foreach ($client->compliance_records->take(3) as $compliance)
                         <tr>
