@@ -41,7 +41,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'Admin' => $permissions,  // Full access
             'Staff Manager' => ['clients.index','clients.show','clients.block',
                                 'compliances.index','compliances.show','compliances.approve','compliances.reject',
-                                'audit','legal.index','legal.show','legal.edit','legal.create','legal.update','users.index','users.show','investigation.assign', 'investigation.credit_investigations'],
+                                'audit','legal.index','legal.show','legal.edit','legal.create','legal.update','users.index','users.show','investigation.assign', 'investigaion.credit_investigations'],
             'Staff' => ['clients.index','clients.show',
                         'compliances.index','compliances.show','compliances.approve','compliances.reject',],
             'Lawyer' => ['clients.show','legal.index','legal.show','legal.edit','legal.update',],
@@ -56,3 +56,5 @@ class RolesAndPermissionsSeeder extends Seeder
         }
     }
 }
+
+

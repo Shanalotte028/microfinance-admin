@@ -12,6 +12,7 @@ use App\Models\Client;
 use App\Models\Compliance;
 use App\Models\FieldInvestigation;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -144,6 +145,72 @@ class ComplianceController extends Controller
         return redirect()->route('client.compliance.compliance_records')->with('success', 'Client and compliance records saved successfully.');
     }
 
+    public function approveBatch(Request $request, Client $client){
+        $validated = $request->validate([
+            'compliance_type' => 'required|string',
+            'submission_date' => 'required|date',
+            'remarks' => 'nullable|string|max:500'
+        ]);
+
+        $submissionDate = Carbon::parse($validated['submission_date'])->startOfDay();
+
+        $records = $client->compliance_records()
+            ->where('compliance_type', $validated['compliance_type'])
+            ->where('submission_date', '>=', $submissionDate)
+            ->where('submission_date', '<', $submissionDate->copy()->addDay())
+            ->where('document_status', 'pending')
+            ->get();
+
+        if ($records->isEmpty()) {
+            return redirect()->back()
+                ->with('error', 'No pending documents found for the selected date');
+        }
+
+        DB::transaction(function () use ($records, $validated) {
+            $records->each->update([
+                'document_status' => 'approved',
+                'approval_date' => now(),
+                'remarks' => $validated['remarks'] ?? null
+            ]);
+        });
+
+        return redirect()->back()
+            ->with('success', "Successfully approved {$records->count()} documents");
+    }
+
+    public function rejectBatch(Request $request, Client $client){
+        $validated = $request->validate([
+            'compliance_type' => 'required|string',
+            'submission_date' => 'required|date',
+            'remarks' => 'required|string|max:500' // Require remarks for rejections
+        ]);
+
+        $submissionDate = Carbon::parse($validated['submission_date'])->startOfDay();
+
+        $records = $client->compliance_records()
+            ->where('compliance_type', $validated['compliance_type'])
+            ->where('submission_date', '>=', $submissionDate)
+            ->where('submission_date', '<', $submissionDate->copy()->addDay())
+            ->where('document_status', 'pending')
+            ->get();
+
+        if ($records->isEmpty()) {
+            return redirect()->back()
+                ->with('error', 'No pending documents found for the selected date');
+        }
+
+        DB::transaction(function () use ($records, $validated) {
+            $records->each->update([
+                'document_status' => 'rejected',
+                'approval_date' => now(),
+                'remarks' => $validated['remarks']
+            ]);
+        });
+
+        return redirect()->back()
+            ->with('success', "Successfully rejected {$records->count()} documents");
+    }
+
     public function approve(Client $client, Compliance $compliance)
     {
         try {
@@ -155,17 +222,7 @@ class ComplianceController extends Controller
                     'approval_date' => now(),
                 ]);
     
-                dispatch(new SendComplianceApprovedEmail($client, $compliance));
-    
-                $approvedKycCount = Compliance::where('client_id', $client->id)
-                    ->where('compliance_type', 'KYC')
-                    ->where('document_status', 'approved')
-                    ->count();
-    
-                if ($approvedKycCount >= 3) {
-                    $client->update(['client_status' => 'Verified']);
-                    dispatch(new SendClientVerifiedEmail($client));
-                }
+                /* dispatch(new SendComplianceApprovedEmail($client, $compliance)); */
     
                 AuditHelper::log('Approve Compliance', 'Compliance Management', 
                 "User $userAdmin->id ($userAdmin->email) approved $compliance->document_type of Client ID: $client->id ($client->first_name $client->last_name)");

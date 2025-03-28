@@ -64,6 +64,13 @@ Route::middleware(['auth'])->group(function () {
     ->middleware('can:compliances.index')
     ->name('admin.compliances');
 
+    Route::patch('/clients/{client}/compliance/approve-batch', [ComplianceController::class, 'approveBatch'])
+    ->name('admin.compliance.approve-batch');
+    
+    Route::patch('clients/{client}/compliance/reject-batch', 
+    [ComplianceController::class, 'rejectBatch'])
+    ->name('admin.compliance.reject-batch');
+
     Route::get('/clients/{client}/compliance-index', [ComplianceController::class, 'index'])
         ->middleware('can:compliances.index')
         ->name('admin.compliance.index');
@@ -71,7 +78,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/clients/{client}/compliance-records/{complianceType}/{submission_date}', [ComplianceController::class, 'show'])
         ->middleware('can:compliances.show')
         ->name('admin.compliance.show');
-
 
     Route::patch('/clients/{client}/compliance-records/{compliance}', [ComplianceController::class, 'approve'])
         ->middleware('can:compliances.approve')

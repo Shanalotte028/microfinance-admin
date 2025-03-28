@@ -287,12 +287,72 @@
                 </x-admin.card-table-info>
                 @endif
             </div>
-            @endforeach         
+            @endforeach
+            <div class="row">
+                @if($complianceRecords->where('document_status', 'pending')->count() > 0)
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Batch Approval</h5>
+                            <form action="{{ route('admin.compliance.approve-batch', ['client' => $client]) }}" method="POST" 
+                                onsubmit="return confirm('Approve ALL {{ $complianceType }} documents?')">
+                                @csrf
+                                @method('PATCH')
+                                <input type="hidden" name="compliance_type" value="{{ $complianceType }}">
+                                <input type="hidden" name="submission_date" 
+                                    value="{{ $complianceRecords->first()->submission_date }}">
+                                
+                                <div class="mb-3">
+                                    <label for="batchRemarks" class="form-label">Remarks</label>
+                                    <textarea class="form-control" id="batchRemarks" name="remarks" 
+                                            rows="2" placeholder="Optional notes about this approval"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-check-all"></i> Approve All ({{ $complianceRecords->where('document_status', 'pending')->count() }} pending)
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                @endif
+
+                @if($complianceRecords->where('document_status', 'pending')->count() > 0)
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Batch Rejection</h5>
+                            <form action="{{ route('admin.compliance.reject-batch', ['client' => $client]) }}" method="POST" 
+                                onsubmit="return confirm('Reject ALL {{ $complianceType }} documents?')">
+                                @csrf
+                                @method('PATCH')
+                                <input type="hidden" name="compliance_type" value="{{ $complianceType }}">
+                                <input type="hidden" name="submission_date" 
+                                    value="{{ $complianceRecords->first()->submission_date }}">
+                                
+                                <div class="mb-3">
+                                    <label for="rejectionRemarks" class="form-label">Rejection Reason*</label>
+                                    <textarea class="form-control" id="rejectionRemarks" name="remarks" 
+                                            rows="2" required placeholder="Please specify the reason for rejection"></textarea>
+                                    <small class="text-muted">Required for rejections</small>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-x-circle"></i> Reject All ({{ $complianceRecords->where('document_status', 'pending')->count() }} pending)
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                @endif
         </div>
     <x-client.success-popup/>
 </x-admin.dashboard-layout>
 
 <script>
+    console.log({
+    route: @json(route('admin.compliance.approve-batch', ['client' => $client->id])),
+    clientId: @json($client->id)
+});
        /*  document.addEventListener("DOMContentLoaded", function () {
             // Check if the document type is PDF
             @if($fileExtension === 'pdf')
