@@ -216,9 +216,6 @@
                 @if(is_null($compliance))
                     <p>No KYC documents available.</p>
                 @else
-                    <form action="{{ route('admin.compliance.approve', ['client' => $client->id, 'compliance' => $compliance->id]) }}" method="POST" onsubmit="return confirmApproval();">
-                        @csrf
-                        @method('PATCH')
                         <x-admin.card-table-info>
                             <x-slot:heading>{{ $compliance->compliance_type }}</x-slot:heading>
                             <x-admin.card-table-info-tr>
@@ -257,33 +254,6 @@
                                 <x-slot:heading>Remarks</x-slot:heading>
                                 {{ $compliance->remarks ?? 'n/a'}}
                             </x-admin.card-table-info-tr>
-                            @if ($compliance->document_status !=='approved' && $compliance->document_status !=='rejected')
-                                <x-slot:button>
-                                    <button class="btn btn-success" type="button" 
-                                        data-bs-toggle="modal" 
-                                        data-bs-target="#confirmModal"
-                                        data-message="Are you sure you want to approve this compliance document?"
-                                        data-form-action="{{ route('admin.compliance.approve', ['client' => $client->id, 'compliance' => $compliance->id]) }}">
-                                        Approve
-                                    </button>
-                                </x-slot:button>
-                            @endif
-                    </form>
-                    <x-slot:button2>
-                        <form action="{{ route('admin.compliance.reject', ['client' => $client->id, 'compliance' => $compliance->id]) }}" method="POST" onsubmit="return confirmApproval();">
-                            @csrf
-                            @method('PATCH')
-                            @if ($compliance->document_status !=='approved' && $compliance->document_status !=='rejected')
-                                <button class="btn btn-danger mt-3" type="button" 
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#confirmModal"
-                                    data-message="Are you sure you want to reject this compliance document?"
-                                    data-form-action="{{ route('admin.compliance.reject', ['client' => $client->id, 'compliance' => $compliance->id]) }}">
-                                    Reject
-                                </button>
-                            @endif
-                        </form>
-                    </x-slot:button2>
                 </x-admin.card-table-info>
                 @endif
             </div>
