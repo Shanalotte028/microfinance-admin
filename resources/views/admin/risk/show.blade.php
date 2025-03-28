@@ -6,14 +6,14 @@
         <div class="row">
             <div class="col-md-6">
                 <x-admin.card-table-info>
-                    <x-slot:heading>Risk Assement</x-slot:heading>
+                    <x-slot:heading>Risk Assessment</x-slot:heading>
                     <x-admin.card-table-info-tr>
                         <x-slot:heading>ID</x-slot:heading>
                         {{ $risk->id }}
                     </x-admin.card-table-info-tr>
                     <x-admin.card-table-info-tr>
-                        <x-slot:heading>Client ID</x-slot:heading>
-                        {{ $risk->client_id  }}
+                        <x-slot:heading>Client name</x-slot:heading>
+                        <a href="{{ route('admin.client.show', $client)}}" class="text-light">{{ $risk->client_id  }}</a> 
                     </x-admin.card-table-info-tr>
                     <x-admin.card-table-info-tr>
                         <x-slot:heading>Risk Level</x-slot:heading>
