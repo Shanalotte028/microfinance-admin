@@ -250,7 +250,7 @@
                                 {{ $compliance->submission_date }}
                             </x-admin.card-table-info-tr>
                             <x-admin.card-table-info-tr>
-                                <x-slot:heading>Approval Date</x-slot:heading>
+                                <x-slot:heading>Updated Date</x-slot:heading>
                                 {{ $compliance->approval_date ?? 'n/a' }}
                             </x-admin.card-table-info-tr>
                             <x-admin.card-table-info-tr>
