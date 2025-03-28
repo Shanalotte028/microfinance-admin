@@ -258,58 +258,63 @@
                 @endif
             </div>
             @endforeach
+
+            <!-- Batch Action Modal -->
+            <div class="modal fade" id="batchActionModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content bg-dark-low text-white">
+                        <div class="modal-header border-0">
+                            <h5 class="modal-title" id="batchActionModalLabel">Batch Action Confirmation</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="batchActionModalMessage"></p>
+                            <div class="mb-3">
+                                <label for="batchActionRemarks" class="form-label">
+                                    <span id="remarksLabel">Remarks</span>
+                                    <span id="remarksRequired" class="text-danger">*</span>
+                                </label>
+                                <textarea class="form-control" id="batchActionRemarks" rows="3"></textarea>
+                                <div class="invalid-feedback">Please provide a rejection reason</div>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-0">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <form id="batchActionForm" method="POST">
+                                @csrf
+                                @method('PATCH')
+                                <input type="hidden" name="compliance_type" id="modalComplianceType">
+                                <input type="hidden" name="submission_date" id="modalSubmissionDate">
+                                <button type="submit" class="btn" id="modalActionButton">
+                                    <span id="buttonText">Confirm</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 @if($complianceRecords->where('document_status', 'pending')->count() > 0)
                 <div class="col-md-6">
                     <div class="card mb-4">
                         <div class="card-body">
                             <h5 class="card-title">Batch Approval</h5>
-                            <form action="{{ route('admin.compliance.approve-batch', ['client' => $client]) }}" method="POST" 
-                                onsubmit="return confirm('Approve ALL {{ $complianceType }} documents?')">
-                                @csrf
-                                @method('PATCH')
-                                <input type="hidden" name="compliance_type" value="{{ $complianceType }}">
-                                <input type="hidden" name="submission_date" 
-                                    value="{{ $complianceRecords->first()->submission_date }}">
-                                
-                                <div class="mb-3">
-                                    <label for="batchRemarks" class="form-label">Remarks</label>
-                                    <textarea class="form-control" id="batchRemarks" name="remarks" 
-                                            rows="2" placeholder="Optional notes about this approval"></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-success">
-                                    <i class="bi bi-check-all"></i> Approve All ({{ $complianceRecords->where('document_status', 'pending')->count() }} pending)
-                                </button>
-                            </form>
+                            <button type="button" class="btn btn-success"
+                                    onclick="setupBatchActionModal('approve', '{{ $complianceType }}', '{{ $complianceRecords->first()->submission_date }}')">
+                                <i class="bi bi-check-all"></i> Approve All ({{ $complianceRecords->where('document_status', 'pending')->count() }} pending)
+                            </button>
                         </div>
                     </div>
                 </div>
-                @endif
-
-                @if($complianceRecords->where('document_status', 'pending')->count() > 0)
+                <!-- Rejection Button -->
                 <div class="col-md-6">
                     <div class="card mb-4">
                         <div class="card-body">
                             <h5 class="card-title">Batch Rejection</h5>
-                            <form action="{{ route('admin.compliance.reject-batch', ['client' => $client]) }}" method="POST" 
-                                onsubmit="return confirm('Reject ALL {{ $complianceType }} documents?')">
-                                @csrf
-                                @method('PATCH')
-                                <input type="hidden" name="compliance_type" value="{{ $complianceType }}">
-                                <input type="hidden" name="submission_date" 
-                                    value="{{ $complianceRecords->first()->submission_date }}">
-                                
-                                <div class="mb-3">
-                                    <label for="rejectionRemarks" class="form-label">Rejection Reason*</label>
-                                    <textarea class="form-control" id="rejectionRemarks" name="remarks" 
-                                            rows="2" required placeholder="Please specify the reason for rejection"></textarea>
-                                    <small class="text-muted">Required for rejections</small>
-                                </div>
-                                
-                                <button type="submit" class="btn btn-danger">
-                                    <i class="bi bi-x-circle"></i> Reject All ({{ $complianceRecords->where('document_status', 'pending')->count() }} pending)
-                                </button>
-                            </form>
+                            <button type="button" class="btn btn-danger"
+                                    onclick="setupBatchActionModal('reject', '{{ $complianceType }}', '{{ $complianceRecords->first()->submission_date }}')">
+                                <i class="bi bi-x-circle"></i> Reject All ({{ $complianceRecords->where('document_status', 'pending')->count() }} pending)
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -319,41 +324,56 @@
 </x-admin.dashboard-layout>
 
 <script>
-    console.log({
-    route: @json(route('admin.compliance.approve-batch', ['client' => $client->id])),
-    clientId: @json($client->id)
-});
-       /*  document.addEventListener("DOMContentLoaded", function () {
-            // Check if the document type is PDF
-            @if($fileExtension === 'pdf')
-                const url = '{{ Storage::url($compliance->document_path) }}';
-                const pdfViewer = document.getElementById('pdf-viewer');
+
+function setupBatchActionModal(action, complianceType, submissionDate) {
+    const modal = new bootstrap.Modal(document.getElementById('batchActionModal'));
+    const form = document.getElementById('batchActionForm');
+    const remarksField = document.getElementById('batchActionRemarks');
     
-                // Asynchronously download PDF
-                pdfjsLib.getDocument(url).promise.then(pdf => {
-                    const scale = 1; // Adjust scale to your preference
-                    pdf.getPage(1).then(page => {
-                        const viewport = page.getViewport({ scale });
+    // Clear previous values
+    remarksField.value = '';
+    remarksField.classList.remove('is-invalid');
     
-                        // Prepare canvas using PDF page dimensions
-                        const canvas = document.createElement('canvas');
-                        const context = canvas.getContext('2d');
-                        canvas.height = viewport.height;
-                        canvas.width = viewport.width;
-                        pdfViewer.appendChild(canvas);
+    // Configure modal
+    if (action === 'approve') {
+        document.getElementById('batchActionModalMessage').textContent = 
+            `Approve ALL ${complianceType} documents?`;
+        document.getElementById('modalActionButton').className = 'btn btn-success';
+        document.getElementById('modalActionButton').textContent = 'Confirm Approval';
+        form.action = "{{ route('admin.compliance.approve-batch', ['client' => $client]) }}";
+        remarksField.required = false;
+    } else {
+        document.getElementById('batchActionModalMessage').textContent = 
+            `Reject ALL ${complianceType} documents?`;
+        document.getElementById('modalActionButton').className = 'btn btn-danger';
+        document.getElementById('modalActionButton').textContent = 'Confirm Rejection';
+        form.action = "{{ route('admin.compliance.reject-batch', ['client' => $client]) }}";
+        remarksField.required = true;
+    }
     
-                        // Render PDF page into canvas context
-                        const renderContext = {
-                            canvasContext: context,
-                            viewport: viewport,
-                        };
-                        page.render(renderContext);
-                    });
-                }).catch(function(error) {
-                    console.error("Error loading PDF: ", error);
-                });
-            @endif
-        }); */
+    // Set hidden values
+    document.getElementById('modalComplianceType').value = complianceType;
+    document.getElementById('modalSubmissionDate').value = submissionDate;
+    
+    // Handle form submission
+    form.onsubmit = function(e) {
+        // Manually add remarks to form data
+        const remarksInput = document.createElement('input');
+        remarksInput.type = 'hidden';
+        remarksInput.name = 'remarks';
+        remarksInput.value = remarksField.value;
+        form.appendChild(remarksInput);
+        
+        if (action === 'reject' && !remarksField.value.trim()) {
+            e.preventDefault();
+            remarksField.classList.add('is-invalid');
+            return false;
+        }
+        return true;
+    };
+    
+    modal.show();
+}
 
         document.getElementById('riskAssessmentForm').addEventListener('submit', function(event) {
                 event.preventDefault(); // Stop default form submission

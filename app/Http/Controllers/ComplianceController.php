@@ -146,6 +146,7 @@ class ComplianceController extends Controller
     }
 
     public function approveBatch(Request $request, Client $client){
+        Log::debug('Approval Request Data:', $request->all());
         $validated = $request->validate([
             'compliance_type' => 'required|string',
             'submission_date' => 'required|date',
@@ -179,6 +180,7 @@ class ComplianceController extends Controller
     }
 
     public function rejectBatch(Request $request, Client $client){
+        Log::debug('Rejection Request Data:', $request->all());
         $validated = $request->validate([
             'compliance_type' => 'required|string',
             'submission_date' => 'required|date',
