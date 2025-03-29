@@ -23,30 +23,30 @@ class LegalCaseFactory extends Factory
             'client_id' => Client::factory(), // Create a new client if not provided
             'assigned_to' => User::factory(), // Create a new user (lawyer) if not provided
             'case_number' => $this->faker->unique()->numerify('CASE-####'), // Unique case number
-            'title' => fake()->randomElement([
-            'Breach of Contract Case',
-            'Property Dispute Resolution',
-            'Labor Complaint Against Employer',
-            'Cyber Libel Case',
-            'Custody Battle for Minor Child',
-            'Land Title Ownership Claim',
-            'Unlawful Dismissal Case',
-            'Intellectual Property Violation',
-            'Estate Inheritance Dispute',
-            'Debt Collection Lawsuit'
-        ]),
-        'description' => fake()->randomElement([
-            'The plaintiff alleges that the defendant failed to fulfill contractual obligations as per the agreement signed on a specified date. The case involves financial damages and legal remedies under Philippine contract law.',
-            'A long-standing property boundary dispute between two families has escalated into a legal claim for rightful ownership. The court is set to determine the validity of land titles and related documents.',
-            'An employee has filed a case against their former employer for wrongful termination without just cause. The case is being heard under the Philippine Labor Code.',
-            'The complainant claims that defamatory statements were posted against them on social media, damaging their reputation. The case is being pursued under the Cybercrime Prevention Act.',
-            'A custody battle has emerged between separated parents over the legal guardianship of their minor child. The court will decide based on the best interest of the child principle.',
-            'The petitioner asserts that they have legal rights over a piece of land currently occupied by the respondent. The case involves reviewing tax declarations, land surveys, and title records.',
-            'An employee is suing their employer for unfair labor practices, including salary deductions without consent and withholding of final pay. The case has been filed before the Department of Labor and Employment.',
-            'A local business owner is suing another company for unauthorized use of their copyrighted materials. The case will determine damages and potential cease-and-desist orders.',
-            'Heirs of a deceased individual are in dispute over the distribution of assets listed in the last will and testament. The case involves probate proceedings and estate division.',
-            'A financial institution has taken legal action against a borrower for failure to repay a loan despite repeated demands. The case seeks to enforce debt recovery through legal channels.'
-        ]),
+            'title' => $this->faker->randomElement([
+                'Loan Agreement Dispute',
+                'Delayed Repayment Issue',
+                'Fraudulent Loan Application',
+                'Breach of Contract in Microfinance Loan',
+                'Unauthorized Loan Application',
+                'Client Loan Default Litigation',
+                'Microloan Settlement Negotiation',
+                'Compliance Violation in Loan Disbursement',
+                'Dispute Over Collateral Agreement',
+                'Client Complaint on Loan Terms'
+            ]),
+            'description' => $this->faker->randomElement([
+                'The client has raised concerns regarding an unexpected increase in interest rates, which was not clearly explained in the loan agreement.',
+                'A legal complaint was filed regarding the misrepresentation of loan terms during the application process.',
+                'The client has defaulted on multiple loan payments and is now facing legal action for repayment enforcement.',
+                'A dispute has arisen between the client and the microfinance institution over the ownership of collateral submitted for loan security.',
+                'There is an ongoing legal issue regarding unauthorized deductions from the client’s account related to loan repayment.',
+                'The client claims that their loan application was fraudulently processed by a third party without their consent.',
+                'A mediation is being arranged between the microfinance institution and the client for a settlement on overdue loan payments.',
+                'The borrower has raised a dispute over hidden charges in the loan contract that were not disclosed at the time of signing.',
+                'A client has accused the loan officer of unfairly rejecting a loan restructuring request despite meeting eligibility criteria.',
+                'Legal proceedings have been initiated due to a client’s failure to adhere to the agreed repayment schedule, resulting in severe penalties.'
+            ]),
             'status' => $this->faker->randomElement(['open', 'in_progress', 'closed']), // Random status
             'filing_date' => $this->faker->date(), // Random filing date
             'closing_date' => $this->faker->optional()->date(), // Random closing date (nullable)
