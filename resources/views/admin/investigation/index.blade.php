@@ -1,11 +1,11 @@
 <x-admin.dashboard-layout>
     <x-slot:back><a href="{{ route('admin.client.show', $client) }}" class="text-white"><i class="bi bi-arrow-left larger-icon"></i></a></x-slot:back>
     <x-slot:heading>
-        Compliance Records
+        Credit Investigation Records
     </x-slot:heading>
         <div class="row">
             <x-admin.card-table-list>
-                <x-slot:heading>Compliance Record List</x-slot:heading>
+                <x-slot:heading>Credit Investigation Records</x-slot:heading>
                     <x-slot:table_row>
                             <th>ID</th>
                             <th>Client ID</th>

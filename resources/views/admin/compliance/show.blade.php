@@ -34,12 +34,16 @@
                 <x-admin.card-table-info>
                     <x-slot:heading>Credit Investigation</x-slot:heading>
                     <x-admin.card-table-info-tr>
-                        <x-slot:heading>ID</x-slot:heading>
-                        {{ $fieldInvestigation->id }}
+                        <x-slot:heading>Investigation ID</x-slot:heading>
+                        <a href="{{ route('admin.investigation.show', ['client'=>$client, 'investigation'=>$fieldInvestigation->id])}}" class="text-light">{{ $fieldInvestigation->id }}</a>
+                    </x-admin.card-table-info-tr>
+                    <x-admin.card-table-info-tr>
+                        <x-slot:heading>Client ID</x-slot:heading>
+                        <a href="{{ route('admin.client.show', $client)}}" class="text-light">{{ $client->client_id }}</a>
                     </x-admin.card-table-info-tr>
                     <x-admin.card-table-info-tr>
                         <x-slot:heading>Officer ID</x-slot:heading>
-                        {{ $fieldInvestigation->officer_id ?? 'Unassigned' }}
+                        <a href="{{ route('admin.user.show', $fieldInvestigation->officer_id)}}" class="text-light"> {{ $fieldInvestigation->officer_id ?? 'Unassigned' }} </a>
                     </x-admin.card-table-info-tr>
                     <x-admin.card-table-info-tr>
                         <x-slot:heading>Observations</x-slot:heading>
@@ -127,6 +131,7 @@
                                 Confidence Level: {{ $confidenceLevel }}%
                             </div>
                         </div>
+                        @can('assess.risk')
                         <div class="d-flex justify-content-between mt-3">
                             <p>Recent Assessment Date: {{ optional($client->risk_assessments()->latest('assessment_date')->first())->assessment_date ?? '' }}</p>
                             <form id="riskAssessmentForm"   method="POST" action="{{ route('api.risk_assessment.store', $client) }}">
@@ -137,6 +142,7 @@
                                 </button>   
                             </form>    
                         </div>
+                        @endcan
                     </div>
                 </div>
             </div>
@@ -216,9 +222,6 @@
                 @if(is_null($compliance))
                     <p>No KYC documents available.</p>
                 @else
-                    <form action="{{ route('admin.compliance.approve', ['client' => $client->id, 'compliance' => $compliance->id]) }}" method="POST" onsubmit="return confirmApproval();">
-                        @csrf
-                        @method('PATCH')
                         <x-admin.card-table-info>
                             <x-slot:heading>{{ $compliance->compliance_type }}</x-slot:heading>
                             <x-admin.card-table-info-tr>
@@ -250,80 +253,135 @@
                                 {{ $compliance->submission_date }}
                             </x-admin.card-table-info-tr>
                             <x-admin.card-table-info-tr>
-                                <x-slot:heading>Approval Date</x-slot:heading>
+                                <x-slot:heading>Updated Date</x-slot:heading>
                                 {{ $compliance->approval_date ?? 'n/a' }}
                             </x-admin.card-table-info-tr>
                             <x-admin.card-table-info-tr>
                                 <x-slot:heading>Remarks</x-slot:heading>
                                 {{ $compliance->remarks ?? 'n/a'}}
                             </x-admin.card-table-info-tr>
-                            @if ($compliance->document_status !=='approved' && $compliance->document_status !=='rejected')
-                                <x-slot:button>
-                                    <button class="btn btn-success" type="button" 
-                                        data-bs-toggle="modal" 
-                                        data-bs-target="#confirmModal"
-                                        data-message="Are you sure you want to approve this compliance document?"
-                                        data-form-action="{{ route('admin.compliance.approve', ['client' => $client->id, 'compliance' => $compliance->id]) }}">
-                                        Approve
-                                    </button>
-                                </x-slot:button>
-                            @endif
-                    </form>
-                    <x-slot:button2>
-                        <form action="{{ route('admin.compliance.reject', ['client' => $client->id, 'compliance' => $compliance->id]) }}" method="POST" onsubmit="return confirmApproval();">
-                            @csrf
-                            @method('PATCH')
-                            @if ($compliance->document_status !=='approved' && $compliance->document_status !=='rejected')
-                                <button class="btn btn-danger mt-3" type="button" 
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#confirmModal"
-                                    data-message="Are you sure you want to reject this compliance document?"
-                                    data-form-action="{{ route('admin.compliance.reject', ['client' => $client->id, 'compliance' => $compliance->id]) }}">
-                                    Reject
-                                </button>
-                            @endif
-                        </form>
-                    </x-slot:button2>
                 </x-admin.card-table-info>
                 @endif
             </div>
-            @endforeach         
-        </div>
+            @endforeach
+
+            <!-- Batch Action Modal -->
+            <div class="modal fade" id="batchActionModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content bg-dark-low text-white">
+                        <div class="modal-header border-0">
+                            <h5 class="modal-title" id="batchActionModalLabel">Batch Action Confirmation</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="batchActionModalMessage"></p>
+                            <div class="mb-3">
+                                <label for="batchActionRemarks" class="form-label">
+                                    <span id="remarksLabel">Remarks</span>
+                                    <span id="remarksRequired" class="text-danger">*</span>
+                                </label>
+                                <textarea class="form-control" id="batchActionRemarks" rows="3"></textarea>
+                                <div class="invalid-feedback">Please provide a rejection reason</div>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-0">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <form id="batchActionForm" method="POST">
+                                @csrf
+                                @method('PATCH')
+                                <input type="hidden" name="compliance_type" id="modalComplianceType">
+                                <input type="hidden" name="submission_date" id="modalSubmissionDate">
+                                <button type="submit" class="btn" id="modalActionButton">
+                                    <span id="buttonText">Confirm</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @can('compliances.approve')
+            <div class="row">
+                @if($complianceRecords->where('document_status', 'pending')->count() > 0)
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Batch Approval</h5>
+                            <button type="button" class="btn btn-success"
+                                    onclick="setupBatchActionModal('approve', '{{ $complianceType }}', '{{ $complianceRecords->first()->submission_date }}')">
+                                <i class="bi bi-check-all"></i> Approve All ({{ $complianceRecords->where('document_status', 'pending')->count() }} pending)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Rejection Button -->
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Batch Rejection</h5>
+                            <button type="button" class="btn btn-danger"
+                                    onclick="setupBatchActionModal('reject', '{{ $complianceType }}', '{{ $complianceRecords->first()->submission_date }}')">
+                                <i class="bi bi-x-circle"></i> Reject All ({{ $complianceRecords->where('document_status', 'pending')->count() }} pending)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                @endif
+            </div>
+            @endcan
     <x-client.success-popup/>
 </x-admin.dashboard-layout>
 
 <script>
-       /*  document.addEventListener("DOMContentLoaded", function () {
-            // Check if the document type is PDF
-            @if($fileExtension === 'pdf')
-                const url = '{{ Storage::url($compliance->document_path) }}';
-                const pdfViewer = document.getElementById('pdf-viewer');
+
+function setupBatchActionModal(action, complianceType, submissionDate) {
+    const modal = new bootstrap.Modal(document.getElementById('batchActionModal'));
+    const form = document.getElementById('batchActionForm');
+    const remarksField = document.getElementById('batchActionRemarks');
     
-                // Asynchronously download PDF
-                pdfjsLib.getDocument(url).promise.then(pdf => {
-                    const scale = 1; // Adjust scale to your preference
-                    pdf.getPage(1).then(page => {
-                        const viewport = page.getViewport({ scale });
+    // Clear previous values
+    remarksField.value = '';
+    remarksField.classList.remove('is-invalid');
     
-                        // Prepare canvas using PDF page dimensions
-                        const canvas = document.createElement('canvas');
-                        const context = canvas.getContext('2d');
-                        canvas.height = viewport.height;
-                        canvas.width = viewport.width;
-                        pdfViewer.appendChild(canvas);
+    // Configure modal
+    if (action === 'approve') {
+        document.getElementById('batchActionModalMessage').textContent = 
+            `Approve ALL ${complianceType} documents?`;
+        document.getElementById('modalActionButton').className = 'btn btn-success';
+        document.getElementById('modalActionButton').textContent = 'Confirm Approval';
+        form.action = "{{ route('admin.compliance.approve-batch', ['client' => $client]) }}";
+        remarksField.required = false;
+    } else {
+        document.getElementById('batchActionModalMessage').textContent = 
+            `Reject ALL ${complianceType} documents?`;
+        document.getElementById('modalActionButton').className = 'btn btn-danger';
+        document.getElementById('modalActionButton').textContent = 'Confirm Rejection';
+        form.action = "{{ route('admin.compliance.reject-batch', ['client' => $client]) }}";
+        remarksField.required = true;
+    }
     
-                        // Render PDF page into canvas context
-                        const renderContext = {
-                            canvasContext: context,
-                            viewport: viewport,
-                        };
-                        page.render(renderContext);
-                    });
-                }).catch(function(error) {
-                    console.error("Error loading PDF: ", error);
-                });
-            @endif
-        }); */
+    // Set hidden values
+    document.getElementById('modalComplianceType').value = complianceType;
+    document.getElementById('modalSubmissionDate').value = submissionDate;
+    
+    // Handle form submission
+    form.onsubmit = function(e) {
+        // Manually add remarks to form data
+        const remarksInput = document.createElement('input');
+        remarksInput.type = 'hidden';
+        remarksInput.name = 'remarks';
+        remarksInput.value = remarksField.value;
+        form.appendChild(remarksInput);
+        
+        if (action === 'reject' && !remarksField.value.trim()) {
+            e.preventDefault();
+            remarksField.classList.add('is-invalid');
+            return false;
+        }
+        return true;
+    };
+    
+    modal.show();
+}
 
         document.getElementById('riskAssessmentForm').addEventListener('submit', function(event) {
                 event.preventDefault(); // Stop default form submission

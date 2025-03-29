@@ -13,14 +13,15 @@ class UserController extends Controller
     //
 
     public function index(){
-        $users = User::all();
+        $users = User::orderBy('created_at', 'desc')->get();
         return view('admin.user.index', compact('users'));
     }
 
     public function show(User $user){
         $cases = $user->legalCases()->with(['client', 'assignedLawyer'])->get();
-
-        return view('admin.user.show', compact('user', 'cases'));
+        $investigations = $user->fieldInvestigations()->with(['client', 'officer'])->get();
+        
+        return view('admin.user.show', compact('user', 'cases', 'investigations'));
     }
 
     public function edit(User $user){
@@ -73,9 +74,9 @@ class UserController extends Controller
         //  Add Audit Log
         AuditHelper::log('Deactivate/Activate',
             'User Management',
-            "User $adminUser->id ($adminUser->email) changed the status of User ID number: $user->id ($user->email)",
+            "User $adminUser->id $adminUser->email ($adminUser->role) changed the status of User ID number: $user->id ($user->email)",
             $previousStatus, // ID of the affected user
-            $newStatus,);
+            $newStatus);
 
         return redirect()->back()->with('success', $message);
     }

@@ -1,4 +1,5 @@
 <x-admin.auth-layout>
+    <x-slot:back><a href="{{ route('admin.investigation.show', ['client'=> $client, 'investigation' => $investigation->id]) }}" class="text-white"><i class="bi bi-arrow-left larger-icon"></i></a></x-slot:back>
     <x-slot:header>Edit Credit Investigation Record</x-slot:header>
         <div class="card-body">
             <form method="POST" action="{{ route('admin.investigation.update', ['client'=> $client, 'investigation' => $investigation->id]) }}">

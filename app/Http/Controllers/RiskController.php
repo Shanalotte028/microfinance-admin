@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\AuditHelper;
 use Illuminate\Http\Request;
 use App\Models\Client;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 
 class RiskController extends Controller
@@ -104,16 +106,31 @@ class RiskController extends Controller
     }
 
     public function recommendation(Request $request, Client $client, $risk_id){
-        $validatedData = $request->validate([
-            'recommendation' => 'required|string'
-        ]);
+        $adminUser = Auth::user();
+
         // Find the specific risk record for this client or return 404
         $risk = $client->risk_assessments()->where('id', $risk_id)->firstOrFail();
 
+        $previousStatus = $risk->toArray();
+
+        $validatedData = $request->validate([
+            'recommendation' => 'required|string'
+        ]);
+        
         // Update the recommendation field
         $risk->update([
             'recommendation' => $validatedData['recommendation']
         ]);
+
+        $newStatus = $risk->toArray();
+
+        AuditHelper::log(
+            'Update',
+            'Risk Management',
+            "User $adminUser->id $adminUser->email ($adminUser->role) Update the recommendation for (Risk Assessment ID: $risk_id)",
+            $previousStatus, // Old status
+            $newStatus // New status
+        );
 
         return redirect()->back()->with('success', 'Recommendation updated successfully!');
     }
@@ -121,11 +138,12 @@ class RiskController extends Controller
     public function risks(Request $request){
         $status = $request->query('status');
 
-        // Fetch all clients with their compliance records
+        // Fetch all clients with their risk assessments, ordered by latest first
         $clients = Client::with(['risk_assessments' => function ($query) use ($status) {
             if ($status) {
                 $query->where('risk_level', $status);
             }
+            $query->orderBy('assessment_date', 'desc'); // Order by latest first
         }])->get();
 
         return view('admin/risk.risks', compact('clients'));

@@ -1,4 +1,5 @@
 <x-admin.dashboard-layout>
+    <x-slot:back><a href="{{ route('admin.user.index') }}" class="text-white"><i class="bi bi-arrow-left larger-icon"></i></a></x-slot:back>
     <x-slot:heading>
         User: {{$user->id}}
     </x-slot:heading>
@@ -43,6 +44,39 @@
                         </x-admin.card-table-info-tr>
                 </x-admin.card-table-info>
             </div>
+            @if($user->role === "Field Officer")
+                @if($investigations->isEmpty())
+                <div class="col-md-6">
+                <x-admin.card-table-info>
+                    <x-slot:heading>No investigations assigned.</x-slot:heading>
+                </x-admin.card-table-info>
+                </div>
+                @else
+                    <div class="col-md-6">
+                        <x-admin.card-table-list>
+                            <x-slot:heading>Assigned investigations</x-slot:heading>
+                            <x-slot:table_row>
+                                <th class="col-3">ID</th>
+                                <th class="col-3">Client ID</th>
+                                <th class="col-3">Officer ID</th>
+                                <th class="col-3">Verified</th>
+                                <th class="col-3">Created At</th>
+                                <th class="col-2">Updated At</th>
+                            </x-slot:table_row>
+                            @foreach ($investigations as $investigation)
+                                <tr>
+                                    <td>{{ $investigation->id ?? 'n/a' }}</td>
+                                    <td>{{ $investigation->client_id ?? 'n/a' }}</td>
+                                    <td>{{ $investigation->officer_id ?? 'n/a' }}</td>
+                                    <td>{{ $investigation->verified ? 'Yes' : 'No' }}</td>
+                                    <td>{{ $investigation->created_at ?? 'n/a' }}</td>
+                                    <td>{{ $investigation->uploaded_at ?? 'n/a' }}</td>
+                                </tr>
+                            @endforeach
+                        </x-admin.card-table-list>
+                    </div>
+                @endif
+            @endif
             @if($user->role === "Lawyer")
                 @if($cases->isEmpty())
                 <div class="col-md-6">

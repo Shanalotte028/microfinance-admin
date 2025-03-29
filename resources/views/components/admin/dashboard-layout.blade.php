@@ -17,7 +17,6 @@
                     {{ $slot }}
                 </div>
             </main>
-            <x-admin.footer/>
         </div>
         <x-admin.confirm-modal />
 <x-admin.foot/>

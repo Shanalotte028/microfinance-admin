@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminApprovalController;
 use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ComplianceController;
@@ -60,18 +61,30 @@ Route::middleware(['auth'])->group(function () {
     ->name('admin.client.destroy');
 
     // Compliances
+
+    Route::get('/compliance-report', [ComplianceController::class, 'showReportForm'])->name('compliance.report.form');
+    Route::get('/generate-compliance-report', [ComplianceController::class, 'generateComplianceReport'])->name('compliance.report');
+
+    Route::get('/export-compliance', [ComplianceController::class, 'exportCompliance'])->name('compliance.export');
+
     Route::get('/compliances', [ComplianceController::class, 'compliance'])
     ->middleware('can:compliances.index')
     ->name('admin.compliances');
 
+    Route::patch('/clients/{client}/compliance/approve-batch', [ComplianceController::class, 'approveBatch'])
+    ->name('admin.compliance.approve-batch');
+    
+    Route::patch('clients/{client}/compliance/reject-batch', 
+    [ComplianceController::class, 'rejectBatch'])
+    ->name('admin.compliance.reject-batch');
+
     Route::get('/clients/{client}/compliance-index', [ComplianceController::class, 'index'])
-        ->middleware('can:compliances.index')
+        ->middleware('can:compliances.show')
         ->name('admin.compliance.index');
 
     Route::get('/clients/{client}/compliance-records/{complianceType}/{submission_date}', [ComplianceController::class, 'show'])
         ->middleware('can:compliances.show')
         ->name('admin.compliance.show');
-
 
     Route::patch('/clients/{client}/compliance-records/{compliance}', [ComplianceController::class, 'approve'])
         ->middleware('can:compliances.approve')
@@ -104,7 +117,7 @@ Route::middleware(['auth'])->group(function () {
 
     //Legal Management
     Route::get('admin/legal-case', [LegalCaseController::class, 'index'])
-        ->middleware('can:legal.index')
+        ->middleware('can:legal.show')
         ->name('admin.legal.index');
 
     Route::get('admin/legal-case/create', [LegalCaseController::class, 'create'])
@@ -146,16 +159,22 @@ Route::middleware(['auth'])->group(function () {
 
 
     // Credit Investigation 
-    Route::post('clients/assignInvestigation', [FieldInvestigationController::class, 'assignInvestigation'])->name('admin.investigation.assign');
+    Route::get('/credit_investigations', [FieldInvestigationController::class, 'credit_investigations'])
+    ->middleware('can:investigation.credit_investigations')
+    ->name('admin.investigation.credit_investigations');
+    Route::post('clients/assignInvestigation', [FieldInvestigationController::class, 'assignInvestigation'])
+    ->middleware('can:investigation.assign')
+    ->name('admin.investigation.assign');
+
     Route::get('clients/{client}/index', [FieldInvestigationController::class, 'index'])->name('admin.investigation.index');
     Route::get('clients/{client}/show/{investigation}', [FieldInvestigationController::class, 'show'])->name('admin.investigation.show');
-    Route::get('clients/{client}/show/{investigation}/edit', [FieldInvestigationController::class, 'edit'])->name('admin.investigation.edit');
-    Route::patch('clients/{client}/show/{investigation}/update', [FieldInvestigationController::class, 'update'])->name('admin.investigation.update');
-
-
-    
-
-
+    Route::get('clients/{client}/show/{investigation}/edit', [FieldInvestigationController::class, 'edit'])
+    ->middleware('can:investigation.edit')
+    ->name('admin.investigation.edit');
+    Route::patch('clients/{client}/show/{investigation}/update', [FieldInvestigationController::class, 'update'])
+    ->middleware('can:investigation.update')
+    ->name('admin.investigation.update');
+    // User Management 
     Route::get('admin/users', [UserController::class, 'index'])
     ->middleware('can:users.index')
     ->name('admin.user.index');
@@ -175,6 +194,27 @@ Route::middleware(['auth'])->group(function () {
     Route::put('admin/users/{user}', [UserController::class, 'update'])
     ->middleware('can:users.update')
     ->name('admin.user.update');
+
+    //Approval Management
+    Route::get('/admin/pending-users', [AdminApprovalController::class, 'pendingUsers'])
+    ->middleware('can:approve.users')
+    ->name('admin.pending.users');
+    Route::post('/admin/approve-user/{id}', [AdminApprovalController::class, 'approveUser'])
+    ->middleware('can:approve.users')
+    ->name('admin.approve.users');
+    Route::delete('/admin/reject-user/{id}', [AdminApprovalController::class, 'rejectUser'])
+    ->middleware('can:approve.users')
+    ->name('admin.reject.users');
+
+    Route::get('/admin/pending-legal-cases', [AdminApprovalController::class, 'pendingLegalCases'])
+    ->middleware('can:approve.legal_cases')
+    ->name('admin.pending.legal_cases');
+    Route::post('/admin/approve-legal-case/{id}', [AdminApprovalController::class, 'approveLegalCase'])
+    ->middleware('can:approve.legal_cases')
+    ->name('admin.approve.legal_cases');
+    Route::delete('/admin/reject-legal-case/{id}', [AdminApprovalController::class, 'rejectLegalCase'])
+    ->middleware('can:approve.legal_cases')
+    ->name('admin.reject.legal_cases');
 });
 
 // Routes for guest users

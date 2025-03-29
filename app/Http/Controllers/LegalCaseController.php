@@ -15,37 +15,41 @@ use Illuminate\Support\Facades\Log;
 class LegalCaseController extends Controller
 {
     // List all legal cases
-    public function index(Request $request)
-    {
+    public function index(Request $request){
         $status = $request->query('status');
         $user = Auth::user();
 
         if ($user->role === 'Lawyer') {
             /** @var User $user */
-            $cases = $user->legalCases()->with(['client', 'assignedLawyer'])->get();
+            $cases = $user->legalCases()
+                ->with(['client', 'assignedLawyer'])
+                ->orderBy('created_at', 'desc') // Order by latest first
+                ->get();
         } else {
-                // Query the legal cases based on the status
+            // Query the legal cases based on the status
             $cases = LegalCase::with(['client', 'assignedLawyer'])
-            ->when($status, function ($query, $status) {
-                return $query->where('status', $status);
-            })
-            ->get();
+                ->when($status, function ($query, $status) {
+                    return $query->where('status', $status);
+                })
+                ->orderBy('created_at', 'desc') // Order by latest first
+                ->get();
         }
-        
+
         return view('admin/legal_cases.index', compact('cases'));
     }
 
+
     // Show form to create a new legal case
-    public function create()
-    {
+    public function create(){
+
         $clients = Client::all();
         $lawyers = User::where('role', 'lawyer')->get(); // Assuming you have a 'role' column
+
         return view('admin/legal_cases.create', compact('clients', 'lawyers'));
     }
 
     // Store a new legal case
-    public function store(Request $request)
-    {
+    public function store(Request $request){
         $adminUser = Auth::user();
     
         $request->validate([
@@ -77,7 +81,7 @@ class LegalCaseController extends Controller
             AuditHelper::log(
                 'Create Legal Case',
                 'Legal Management',
-                "User $adminUser->id ($adminUser->email) created a new legal case with case number: $request->case_number",
+                "User $adminUser->id $adminUser->email ($adminUser->role) created a new legal case with case number: $request->case_number",
                 null, // ID of the affected client
                 null
             );
@@ -87,14 +91,13 @@ class LegalCaseController extends Controller
     }
 
     // Show a specific legal case
-    public function show($id)
-    {
+    public function show($id){
         $case = LegalCase::with(['client', 'assignedLawyer'])->findOrFail($id);
         return view('admin/legal_cases.show', compact('case'));
     }
 
-        public function edit($id)
-    {
+    public function edit($id){
+
         $case = LegalCase::with(['client', 'assignedLawyer'])->findOrFail($id);
         $clients = Client::all(); // Fetch all clients for the dropdown
         $lawyers = User::where('role', 'lawyer')->get(); // Fetch all lawyers for the dropdown
@@ -102,8 +105,7 @@ class LegalCaseController extends Controller
     }
 
     // Update a legal case
-        public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id){
         $adminUser = Auth::user();
 
         $case = LegalCase::findOrFail($id);
@@ -127,9 +129,9 @@ class LegalCaseController extends Controller
 
         // Log the audit trail
         AuditHelper::log(
-            'Update Legal Case',
+            'Update',
             'Legal Management',
-            "User $adminUser->id ($adminUser->email) updated a legal case with case number: $case->case_number",
+            "User $adminUser->id $adminUser->email $adminUser->role updated a legal case with case number: $case->case_number",
             $previousStatus, // Old status
             $newStatus // New status
         );
@@ -138,11 +140,9 @@ class LegalCaseController extends Controller
         return redirect()->route('admin.legal.show', $case->id)->with('success', 'Legal case updated successfully.');
     }
 
-    public function destroy($id)
-    {
+   /*  public function destroy($id){
         $case = LegalCase::findOrFail($id);
         $case->delete();
         return redirect()->route('legal-cases.index')->with('success', 'Legal case deleted successfully.');
-    }
-
+    } */
 }

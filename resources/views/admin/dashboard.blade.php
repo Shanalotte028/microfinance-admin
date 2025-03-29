@@ -9,7 +9,7 @@
         route="{{ route('admin.compliances', ['status' => 'pending']) }}" 
         />
         @endcan
-        @can('legal.index')
+        @can('legal.show')
         @if(Auth::user()->role === "Lawyer")
         <x-admin.cards 
         icon="bi bi-folder-check"
@@ -17,94 +17,67 @@
         heading="Assigned cases"
         route="{{ route('admin.legal.index') }}" 
         />
-        @else
+        @endif
+        @endcan
+        @can('investigation.credit_investigations')
+        @if(Auth::user()->role === "Field Officer")
         <x-admin.cards 
-        icon="bi bi-journal-text"
-        value="{{ $openCase }}"
-        heading="Open Cases"
-        route="{{ route('admin.legal.index', ['status' => 'open']) }}" 
+        icon="bi bi-folder-check"
+        value="{{ $assignedInvestigations }}"
+        heading="Investigations"
+        route="{{ route('admin.investigation.credit_investigations') }}" 
         />
         @endif
         @endcan
+        @can('approve.users')
+        <x-admin.cards 
+            icon="bi bi-person-plus"
+            value="{{ $pendingUsers }}" 
+            heading="Pending User Approvals"
+            route="{{ route('admin.pending.users') }}" 
+        />
+        @endcan
+        @can('approve.legal_cases')
+        <x-admin.cards 
+            icon="bi bi-file-earmark-text"
+            value="{{ $pendingLegalCases }}"
+            heading="Pending Legal Cases"
+            route="{{ route('admin.pending.legal_cases') }}" 
+        />
+        @endcan
     </div>
     <div>
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card bg-dark text-light"> <!-- Dark background, light text -->
+                    <div class="card-header">Risk Assessment Trends</div>
+                    <div class="card-body">
+                        <canvas id="riskTrendsChart" height="500"></canvas> <!-- Increased height -->
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- Top Section - Quick Insights -->
-        <div class="row">
+        <div class="row mb-4">
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header bg-dark text-white">Loan Approval vs. Rejection Rate</div>
                     <div class="card-body">
                         <div class="chart-container">
-                            <canvas id="loanChart" height="400px"></canvas>
+                            <canvas id="loanChart" height="400"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-6">
-                <div class="card bg-dark text-light"> <!-- Dark background, light text -->
-                    <div class="card-header">Risk Assessment Trends</div>
-                    <div class="card-body">
-                        <canvas id="riskTrendsChart" height="400"></canvas> <!-- Increased height -->
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Middle Section - Risk & Loan Insights -->
-        <div class="row mt-4 mb-4">
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header bg-dark text-white">Late Payments & Defaults</div>
                     <div class="card-body">
-                        <canvas id="latePaymentsChart"></canvas>
+                        <canvas id="latePaymentsChart" height="200"></canvas>
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header bg-dark text-white">Risk vs. Credit Score</div>
-                    <div class="card-body">
-                        <canvas id="riskVsCreditChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Bottom Section - High-Risk Clients -->
-        {{-- <div class="row mt-4 mb-4">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header bg-danger text-white">High-Risk Clients</div>
-                    <div class="card-body">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Client ID</th>
-                                    <th>Risk Level</th>
-                                    <th>Credit Score</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($highRiskClients as $client)
-                                <tr>
-                                    <td>{{ $client->client_id }}</td>
-                                    <td class="text-danger">{{ $client->risk_level }}</td>
-                                    <td>{{ $client->credit_score }}</td>
-                                    <td>
-                                        <a href="{{ route('admin.client.show', $client) }}" class="btn btn-sm btn-success">View</a>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
-
+        </div>  
     </div>
 
     <!-- Include Chart.js -->

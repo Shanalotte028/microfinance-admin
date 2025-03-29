@@ -25,8 +25,13 @@ class UserFactory extends Factory
     {
         return [
             'employee_id' => 'EMP-' . now()->year . str_pad($this->faker->unique()->numberBetween(1, 9999), 4, '0', STR_PAD_LEFT),
-            'first_name' => fake()->firstName(),
-            'last_name'=> fake()->lastName(),
+            'first_name' => fake()->randomElement([
+                'Juan', 'Jose', 'Rizal', 'Andres', 'Emilio', 'Manuel', 'Antonio', 'Fernando', 'Ramon', 'Carlos',
+                'Maria', 'Isabel', 'Cristina', 'Josefina', 'Luz', 'Ligaya', 'Rosa', 'Corazon', 'Pilar', 'Teresa'
+            ]),
+            'last_name' => fake()->randomElement([
+                'Dela Cruz', 'Santos', 'Reyes', 'Gonzales', 'Mendoza', 'Torres', 'Cruz', 'Garcia', 'Lopez', 'Ramos'
+            ]),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'role' => $this->faker->randomElement(['Admin', 'Lawyer', 'Staff', 'Staff Manager', 'Field Investigator']),

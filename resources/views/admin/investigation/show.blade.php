@@ -1,12 +1,13 @@
 <x-admin.dashboard-layout>
+    <x-slot:back><a href="{{ route('admin.investigation.index', $client) }}" class="text-white"><i class="bi bi-arrow-left larger-icon"></i></a></x-slot:back>
     <x-slot:heading>
         Credit Investigation Record
     </x-slot:heading>
         <div class="row">
             <div class="col-md-6">
                 <x-admin.card-table-info>
-                    <x-slot:heading>Credit Investigation ID: {{$investigation->id}} <a href="{{route('admin.investigation.edit', ['client'=> $client, 'investigation'=> $investigation->id])}}" class="btn btn-success d-none d-md-inline-block">Update Investigation</a></x-slot:heading>
-                    <x-slot:heading_child> <a href="{{route('admin.investigation.edit', ['client'=> $client, 'investigation'=> $investigation->id])}}" class="btn btn-success d-md-none">Update Case</a></x-slot:heading>
+                    <x-slot:heading>Credit Investigation ID: {{$investigation->id}} @can('investigation.edit')<a href="{{route('admin.investigation.edit', ['client'=> $client, 'investigation'=> $investigation->id])}}" class="btn btn-success d-none d-md-inline-block">Update Investigation</a> @endcan</x-slot:heading>
+                    <x-slot:heading_child> @can('investigation.edit')<a href="{{route('admin.investigation.edit', ['client'=> $client, 'investigation'=> $investigation->id])}}" class="btn btn-success d-md-none">Update Case</a>@endcan</x-slot:heading> 
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Client</x-slot:heading>
                             <a href="{{route('admin.client.show', $investigation->client->id)}}" class="text-light">{{ $investigation->client->first_name }} {{ $investigation->client->last_name }}</a>

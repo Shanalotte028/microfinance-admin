@@ -1,6 +1,8 @@
 <x-admin.dashboard-layout>
     @include('components.admin.success-modal')
+    @can('clients.index')
     <x-slot:back><a href="{{ route('admin.client.index') }}" class="text-white"><i class="bi bi-arrow-left larger-icon"></i></a></x-slot:back>
+    @endcan
     <x-slot:heading>User Overview</x-slot:heading>
     <x-slot:heading_child>{{ $client->first_name }} {{ $client->last_name }}</x-slot:heading_child>
         <div class="row">
@@ -120,7 +122,7 @@
                         <th class="col-3">Document Type</th>
                         <th class="col-3">Document Status</th>
                         <th class="col-3">Submission Date</th>
-                        <th class="col-2">Approval Date </th>
+                        <th class="col-2">Updated Date </th>
                     </x-slot:table_row>
                     @foreach ($client->compliance_records->take(3) as $compliance)
                         <tr>

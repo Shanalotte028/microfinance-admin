@@ -20,10 +20,15 @@ class ClientFactory extends Factory
         static $id = 1;
         return [
             'client_id' => $id++,
-            'first_name' => $this->faker->firstName(),
-            'last_name' => $this->faker->lastName(),
-            'email' => $this->faker->email(),
-            'phone_number' => $this->faker->phoneNumber(),
+            'first_name' => fake()->randomElement([
+                'Juan', 'Jose', 'Rizal', 'Andres', 'Emilio', 'Manuel', 'Antonio', 'Fernando', 'Ramon', 'Carlos',
+                'Maria', 'Isabel', 'Cristina', 'Josefina', 'Luz', 'Ligaya', 'Rosa', 'Corazon', 'Pilar', 'Teresa'
+            ]),
+            'last_name' => fake()->randomElement([
+                'Dela Cruz', 'Santos', 'Reyes', 'Gonzales', 'Mendoza', 'Torres', 'Cruz', 'Garcia', 'Lopez', 'Ramos'
+            ]),
+            'email' => fake()->unique()->safeEmail(),
+            'phone_number' => '+63' . fake()->numerify('9#########'),
             'birthday' => $this->faker->date($format = 'Y-m-d', $max = 'now'),
             'place_of_birth' => $this->faker->randomElement([
                 'Quezon City', 'Caloocan City', 'Davao City', 'Taguig', 'Manila', 'Zamboanga', 'Cebu City', 'Antipolo'
