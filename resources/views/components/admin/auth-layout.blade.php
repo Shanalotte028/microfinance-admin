@@ -18,5 +18,4 @@
             </main>
         </div>
     </div>
-    <x-admin.footer/>
 <x-admin.foot/>
