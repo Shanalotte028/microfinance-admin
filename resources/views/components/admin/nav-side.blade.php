@@ -57,8 +57,10 @@
                     <div class="sb-sidenav-menu-heading">Compliance Management</div>
                     <x-admin.nav-item id="collapseCompliances" heading="Compliances"  label="Compliance Records" route="{{ route('admin.compliances') }}" icon="bi bi-file-earmark-check" />
                     @endcan
+                    @can('compliance.index')
                     <div class="sb-sidenav-menu-heading">Risk Management</div>
                     <x-admin.nav-item id="collapseRisks" heading="Risk Management" label="List Risks" route="{{ route('admin.risk_assessment.risks') }}" icon="bi bi-people" />
+                    @endcan
                 </div>
             </div>
         </nav>

@@ -131,6 +131,7 @@
                                 Confidence Level: {{ $confidenceLevel }}%
                             </div>
                         </div>
+                        @can('assess.risk')
                         <div class="d-flex justify-content-between mt-3">
                             <p>Recent Assessment Date: {{ optional($client->risk_assessments()->latest('assessment_date')->first())->assessment_date ?? '' }}</p>
                             <form id="riskAssessmentForm"   method="POST" action="{{ route('api.risk_assessment.store', $client) }}">
@@ -141,6 +142,7 @@
                                 </button>   
                             </form>    
                         </div>
+                        @endcan
                     </div>
                 </div>
             </div>
@@ -297,6 +299,7 @@
                     </div>
                 </div>
             </div>
+            @can('compliances.approve')
             <div class="row">
                 @if($complianceRecords->where('document_status', 'pending')->count() > 0)
                 <div class="col-md-6">
@@ -323,7 +326,8 @@
                     </div>
                 </div>
                 @endif
-        </div>
+            </div>
+            @endcan
     <x-client.success-popup/>
 </x-admin.dashboard-layout>
 

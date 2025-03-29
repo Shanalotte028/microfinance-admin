@@ -9,7 +9,7 @@
         route="{{ route('admin.compliances', ['status' => 'pending']) }}" 
         />
         @endcan
-        @can('legal.index')
+        @can('legal.show')
         @if(Auth::user()->role === "Lawyer")
         <x-admin.cards 
         icon="bi bi-folder-check"
@@ -29,18 +29,22 @@
         />
         @endif
         @endcan
+        @can('approve.users')
         <x-admin.cards 
             icon="bi bi-person-plus"
             value="{{ $pendingUsers }}" 
             heading="Pending User Approvals"
             route="{{ route('admin.pending.users') }}" 
         />
+        @endcan
+        @can('approve.legal_cases')
         <x-admin.cards 
             icon="bi bi-file-earmark-text"
             value="{{ $pendingLegalCases }}"
             heading="Pending Legal Cases"
             route="{{ route('admin.pending.legal_cases') }}" 
         />
+        @endcan
     </div>
     <div>
         <div class="row mb-4">
