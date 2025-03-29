@@ -34,12 +34,12 @@
                 <x-admin.card-table-info>
                     <x-slot:heading>Credit Investigation</x-slot:heading>
                     <x-admin.card-table-info-tr>
-                        <x-slot:heading>ID</x-slot:heading>
-                        {{ $fieldInvestigation->id }}
+                        <x-slot:heading>Investigation ID</x-slot:heading>
+                        <a href="{{ route('admin.investigation.show', ['client'=>$client, 'investigation'=>$fieldInvestigation->id])}}" class="text-light">{{ $fieldInvestigation->id }}</a>
                     </x-admin.card-table-info-tr>
                     <x-admin.card-table-info-tr>
                         <x-slot:heading>Client ID</x-slot:heading>
-                        {{ $client->client_id }}
+                        <a href="{{ route('admin.client.show', $client)}}" class="text-light">{{ $client->client_id }}</a>
                     </x-admin.card-table-info-tr>
                     <x-admin.card-table-info-tr>
                         <x-slot:heading>Officer ID</x-slot:heading>
