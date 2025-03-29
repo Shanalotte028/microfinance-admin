@@ -38,83 +38,37 @@
         @endcan
     </div>
     <div>
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card bg-dark text-light"> <!-- Dark background, light text -->
+                    <div class="card-header">Risk Assessment Trends</div>
+                    <div class="card-body">
+                        <canvas id="riskTrendsChart" height="500"></canvas> <!-- Increased height -->
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- Top Section - Quick Insights -->
-        <div class="row">
+        <div class="row mb-4">
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header bg-dark text-white">Loan Approval vs. Rejection Rate</div>
                     <div class="card-body">
                         <div class="chart-container">
-                            <canvas id="loanChart" height="400px"></canvas>
+                            <canvas id="loanChart" height="400"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-6">
-                <div class="card bg-dark text-light"> <!-- Dark background, light text -->
-                    <div class="card-header">Risk Assessment Trends</div>
-                    <div class="card-body">
-                        <canvas id="riskTrendsChart" height="400"></canvas> <!-- Increased height -->
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Middle Section - Risk & Loan Insights -->
-        <div class="row mt-4 mb-4">
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header bg-dark text-white">Late Payments & Defaults</div>
                     <div class="card-body">
-                        <canvas id="latePaymentsChart"></canvas>
+                        <canvas id="latePaymentsChart" height="200"></canvas>
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header bg-dark text-white">Risk vs. Credit Score</div>
-                    <div class="card-body">
-                        <canvas id="riskVsCreditChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Bottom Section - High-Risk Clients -->
-        {{-- <div class="row mt-4 mb-4">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header bg-danger text-white">High-Risk Clients</div>
-                    <div class="card-body">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Client ID</th>
-                                    <th>Risk Level</th>
-                                    <th>Credit Score</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($highRiskClients as $client)
-                                <tr>
-                                    <td>{{ $client->client_id }}</td>
-                                    <td class="text-danger">{{ $client->risk_level }}</td>
-                                    <td>{{ $client->credit_score }}</td>
-                                    <td>
-                                        <a href="{{ route('admin.client.show', $client) }}" class="btn btn-sm btn-success">View</a>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
-
+        </div>  
     </div>
 
     <!-- Include Chart.js -->
