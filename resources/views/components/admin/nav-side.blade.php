@@ -8,15 +8,9 @@
                         Home
                     </a>
                     @can('clients.index')
-                    <div class="sb-sidenav-menu-heading">Client Management</div>
+                    <div class="sb-sidenav-menu-heading">List Clients</div>
                     <x-admin.nav-item id="collapseClients" heading="Clients" label="List Clients" route="{{ route('admin.client.index') }}" icon="bi bi-people" />
                     @endcan
-                    @can('compliances.index')
-                    <div class="sb-sidenav-menu-heading">Compliance Management</div>
-                    <x-admin.nav-item id="collapseCompliances" heading="Compliances"  label="Compliance Records" route="{{ route('admin.compliances') }}" icon="bi bi-file-earmark-check" />
-                    @endcan
-                    <div class="sb-sidenav-menu-heading">Risk Management</div>
-                    <x-admin.nav-item id="collapseRisks" heading="Risk Management" label="List Risks" route="{{ route('admin.risk_assessment.risks') }}" icon="bi bi-people" />
                     @can('users.index')
                     <div class="sb-sidenav-menu-heading">User Management</div>
                     <!-- Dropdown menu for User Management -->
@@ -59,6 +53,12 @@
                         </nav>
                     </div>
                     @endcan
+                    @can('compliances.index')
+                    <div class="sb-sidenav-menu-heading">Compliance Management</div>
+                    <x-admin.nav-item id="collapseCompliances" heading="Compliances"  label="Compliance Records" route="{{ route('admin.compliances') }}" icon="bi bi-file-earmark-check" />
+                    @endcan
+                    <div class="sb-sidenav-menu-heading">Risk Management</div>
+                    <x-admin.nav-item id="collapseRisks" heading="Risk Management" label="List Risks" route="{{ route('admin.risk_assessment.risks') }}" icon="bi bi-people" />
                 </div>
             </div>
         </nav>
