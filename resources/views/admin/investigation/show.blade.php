@@ -10,11 +10,15 @@
                     <x-slot:heading_child> @can('investigation.edit')<a href="{{route('admin.investigation.edit', ['client'=> $client, 'investigation'=> $investigation->id])}}" class="btn btn-success d-md-none">Update Case</a>@endcan</x-slot:heading> 
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Client</x-slot:heading>
-                            <a href="{{route('admin.client.show', $investigation->client->id)}}" class="text-light">{{ $investigation->client->first_name }} {{ $investigation->client->last_name }}</a>
+                            <a href="{{route('admin.client.show', $investigation->client->client_id)}}" class="text-light">{{ $investigation->client->first_name }} {{ $investigation->client->last_name }}</a>
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Field Investigator</x-slot:heading>
-                            {{ "Officer ID: {$investigation->id}: {$investigation->officer->first_name} {$investigation->officer->last_name}" }}
+                            @if($investigation->officer)
+                                {{ "Officer ID: {$investigation->id}: {$investigation->officer->first_name} {$investigation->officer->last_name}" }}
+                            @else
+                                {{ "Officer ID: {$investigation->id}: Unassigned" }}
+                            @endif
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Observations</x-slot:heading>

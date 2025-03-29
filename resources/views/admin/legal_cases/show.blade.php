@@ -7,14 +7,14 @@
             <div class="col-md-6">
                 <x-admin.card-table-info>
                     <x-slot:heading>Legal Case Title: {{$case->title}} <a href="{{route('admin.legal.edit', $case->id)}}" class="btn btn-success d-none d-md-inline-block">Update Case</a></x-slot:heading>
-                    <x-slot:heading_child> <a href="{{route('admin.legal.edit', $case->id)}}" class="btn btn-success d-md-none">Update Case</a></x-slot:heading>
+                    <x-slot:heading_child> <a href="{{route('admin.legal.edit', $case->client_id)}}" class="btn btn-success d-md-none">Update Case</a></x-slot:heading>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Case Number</x-slot:heading>
                             {{ $case->case_number }}
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Client</x-slot:heading>
-                            <a href="{{route('admin.client.show', $case->client->id)}}" class="text-light">{{ $case->client->first_name }} {{ $case->client->last_name }}</a>
+                            <a href="{{route('admin.client.show', $case->client->client_id)}}" class="text-light">{{ $case->client->first_name }} {{ $case->client->last_name }}</a>
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Assigned Lawyer</x-slot:heading>
