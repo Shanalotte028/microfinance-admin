@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\DB;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
@@ -14,6 +15,7 @@ class RolesAndPermissionsSeeder extends Seeder
      */
     public function run(): void
     {
+        DB::statement("SET SQL_MODE='ALLOW_INVALID_DATES';");
         // Create roles
         $admin = Role::create(['name' => 'Admin']);
         $staff = Role::create(['name' => 'Staff']);
