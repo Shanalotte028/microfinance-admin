@@ -32,9 +32,9 @@
                             <div class="text-end mt-4 pe-4">
                                 <button class="btn btn-success" type="submit"> Edit Information</button>
                             </div>
-                            <div class="text-end mt-4 pe-4">
+                            {{-- <div class="text-end mt-4 pe-4">
                                 <a class="btn btn-success" href="{{ route('password.request') }}">Reset Password</a>
-                            </div>
+                            </div> --}}
                         </x-admin.card-table-info-tr>
                         </form>                                 
                 </x-admin.card-table-info>     
