@@ -16,10 +16,11 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating mb-3 mb-md-0">
-                            <input class="form-control" name="officer_name" id="officer_name" type="text" value="{{ $investigation->officer->first_name . ' ' . $investigation->officer->last_name }}" required/>
+                            <input class="form-control" name="officer_name" id="officer_name" type="text"
+                                   value="{{ $investigation->officer ? $investigation->officer->first_name . ' ' . $investigation->officer->last_name : '' }}" required />
                             <label for="officer_name">Officer Name</label>
                             <x-admin.form-error name="officer_name"></x-admin.form-error>
-                            <input type="hidden" name="officer_id" value="{{ $investigation->officer->id }}">
+                            <input type="hidden" name="officer_id" value="{{ $investigation->officer ? $investigation->officer->id : '' }}">
                         </div>
                     </div>
                 </div>

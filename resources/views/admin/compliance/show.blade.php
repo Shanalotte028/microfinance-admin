@@ -43,7 +43,13 @@
                     </x-admin.card-table-info-tr>
                     <x-admin.card-table-info-tr>
                         <x-slot:heading>Officer ID</x-slot:heading>
-                        <a href="{{ route('admin.user.show', $fieldInvestigation->officer_id)}}" class="text-light"> {{ $fieldInvestigation->officer_id ?? 'Unassigned' }} </a>
+                        @if($fieldInvestigation->officer_id)
+                        <a href="{{ route('admin.user.show', $fieldInvestigation->officer_id) }}" class="text-light">
+                            {{ $fieldInvestigation->officer_id }}
+                        </a>
+                        @else
+                            <span class="text-muted">Unassigned</span>
+                        @endif
                     </x-admin.card-table-info-tr>
                     <x-admin.card-table-info-tr>
                         <x-slot:heading>Observations</x-slot:heading>

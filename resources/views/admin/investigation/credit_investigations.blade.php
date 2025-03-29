@@ -26,7 +26,7 @@
                             <td>{{ $investigation->created_at ?? 'n/a' }}</td>
                             <td>{{ $investigation->uploaded_at ?? 'n/a' }}</td>
                             <td>
-                                <a href="{{ route('admin.investigation.show', ['client'=> $investigation->client_id, 'investigation'=>$investigation->id]) }}" class="btn btn-success">View</a>
+                                <a href="{{ route('admin.investigation.show', ['client'=> $investigation->client->client_id, 'investigation'=>$investigation->id]) }}" class="btn btn-success">View</a>
                             </td>
                         </tr>
                     @endforeach
