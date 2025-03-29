@@ -38,7 +38,13 @@ class AddressFactory extends Factory
             'city'=> $this->faker->randomElement(['Quezon City', 'Caloocan City', 'Davao City', 'Taguig', 'Manila', 'Zamboanga', 'Cebu City', 'Antipolo']),
             'barangay' => fake()->numberBetween(1,250),
             'postal_code'=> fake()->postcode(),
-            'street' => fake()->streetAddress(),
+            'street' => fake()->randomElement([
+            'Rizal Street', 'Bonifacio Street', 'Mabini Street', 'Del Pilar Street',
+            'Luna Street', 'Burgos Street', 'Quezon Avenue', 'Aguinaldo Street',
+            'Osmeña Street', 'España Boulevard', 'San Juan Street', 'San Jose Street',
+            'San Pedro Street', 'Santo Niño Street', 'Commonwealth Avenue', 'EDSA',
+            'Taft Avenue', 'Ayala Avenue', 'Roxas Boulevard'
+        ]) . ', ' . fake()->buildingNumber(),
         ];
 
         return [
