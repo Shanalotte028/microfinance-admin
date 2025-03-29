@@ -74,9 +74,9 @@ class UserController extends Controller
         //  Add Audit Log
         AuditHelper::log('Deactivate/Activate',
             'User Management',
-            "User $adminUser->id ($adminUser->email) changed the status of User ID number: $user->id ($user->email)",
+            "User $adminUser->id $adminUser->email ($adminUser->role) changed the status of User ID number: $user->id ($user->email)",
             $previousStatus, // ID of the affected user
-            $newStatus,);
+            $newStatus);
 
         return redirect()->back()->with('success', $message);
     }
