@@ -61,6 +61,12 @@ Route::middleware(['auth'])->group(function () {
     ->name('admin.client.destroy');
 
     // Compliances
+
+    Route::get('/compliance-report', [ComplianceController::class, 'showReportForm'])->name('compliance.report.form');
+    Route::get('/generate-compliance-report', [ComplianceController::class, 'generateComplianceReport'])->name('compliance.report');
+
+    Route::get('/export-compliance', [ComplianceController::class, 'exportCompliance'])->name('compliance.export');
+
     Route::get('/compliances', [ComplianceController::class, 'compliance'])
     ->middleware('can:compliances.index')
     ->name('admin.compliances');

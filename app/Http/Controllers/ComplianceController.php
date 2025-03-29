@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ComplianceExport;
 use App\Helpers\AuditHelper;
 use App\Jobs\SendClientVerifiedEmail;
 use App\Jobs\SendComplianceApprovedEmail;
@@ -19,12 +20,70 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rules\File;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 
 class ComplianceController extends Controller
 {
     //
+
+    public function showReportForm(){
+        return view('admin.compliance.compliance_report_form');
+    }
+
+    // Generate the compliance report
+    public function generateComplianceReport(Request $request){
+        $request->validate([
+            'report_type' => 'required|in:monthly,yearly',
+            'year' => 'required|digits:4',
+            'month' => 'nullable|digits_between:1,12',
+        ]);
+
+        $year = $request->input('year');
+        $reportType = $request->input('report_type');
+
+        if ($reportType === 'monthly') {
+            $month = $request->input('month');
+            $startDate = Carbon::createFromDate($year, $month, 1)->startOfMonth();
+            $endDate = Carbon::createFromDate($year, $month, 1)->endOfMonth();
+            $title = "Compliance Report for " . date('F', mktime(0, 0, 0, $month, 1)) . " $year";
+        } else {
+            // Yearly report
+            $startDate = Carbon::createFromDate($year, 1, 1)->startOfYear();
+            $endDate = Carbon::createFromDate($year, 12, 31)->endOfYear();
+            $title = "Compliance Report for $year";
+        }
+
+        // Prevent lazy loading
+        $records = Compliance::with('client')
+            ->whereBetween('submission_date', [$startDate, $endDate])
+            ->get();
+
+        return view('admin.compliance.compliance_reports', compact('records', 'title'));
+    }
+
+
+    public function exportCompliance(Request $request){
+        $exportType = $request->input('export_type');
+        $year = $request->input('year');
+        
+        if ($exportType === 'monthly') {
+            $month = $request->input('month');
+            $startDate = Carbon::createFromFormat('Y-m-d', "$year-$month-01")->startOfMonth();
+            $endDate = Carbon::createFromFormat('Y-m-d', "$year-$month-01")->endOfMonth();
+            $fileName = "compliance_records_{$year}_{$month}.xlsx";
+        } else {
+            // Yearly export
+            $startDate = Carbon::createFromFormat('Y-m-d', "$year-01-01")->startOfYear();
+            $endDate = Carbon::createFromFormat('Y-m-d', "$year-12-31")->endOfYear();
+            $fileName = "compliance_records_{$year}.xlsx";
+        }
+
+        return Excel::download(new ComplianceExport($startDate, $endDate), $fileName);
+    }
+
+
 
     public function compliance_records(){
         $client = Auth::guard('client')->user();
