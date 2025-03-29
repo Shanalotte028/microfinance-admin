@@ -38,8 +38,12 @@
                         {{ $fieldInvestigation->id }}
                     </x-admin.card-table-info-tr>
                     <x-admin.card-table-info-tr>
+                        <x-slot:heading>Client ID</x-slot:heading>
+                        {{ $client->client_id }}
+                    </x-admin.card-table-info-tr>
+                    <x-admin.card-table-info-tr>
                         <x-slot:heading>Officer ID</x-slot:heading>
-                        {{ $fieldInvestigation->officer_id ?? 'Unassigned' }}
+                        <a href="{{ route('admin.user.show', $fieldInvestigation->officer_id)}}" class="text-light"> {{ $fieldInvestigation->officer_id ?? 'Unassigned' }} </a>
                     </x-admin.card-table-info-tr>
                     <x-admin.card-table-info-tr>
                         <x-slot:heading>Observations</x-slot:heading>

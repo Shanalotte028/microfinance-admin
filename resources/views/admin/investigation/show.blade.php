@@ -1,4 +1,5 @@
 <x-admin.dashboard-layout>
+    <x-slot:back><a href="{{ route('admin.investigation.index', $client) }}" class="text-white"><i class="bi bi-arrow-left larger-icon"></i></a></x-slot:back>
     <x-slot:heading>
         Credit Investigation Record
     </x-slot:heading>
