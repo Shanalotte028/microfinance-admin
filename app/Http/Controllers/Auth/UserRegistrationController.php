@@ -32,7 +32,7 @@ public function store(Request $request){
         'employee_id' => ['required', 'string', 'unique:users,employee_id'],
         'first_name' => ['required', 'string', 'max:255'],
         'last_name' => ['required', 'string', 'max:255'],
-        'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
+        'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
         'role' => ['required', 'string', 'in:Staff,Staff Manager,Admin,Lawyer'], 
         'microservice' => ['required', 'string', 'in:Admin,HR1,HR2,HR3,HR4,Core1,Core2,Logistic1,Logistic2,Finance'], // Define assigned service
     ]);
