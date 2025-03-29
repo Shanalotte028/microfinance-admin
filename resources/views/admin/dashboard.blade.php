@@ -17,13 +17,6 @@
         heading="Assigned cases"
         route="{{ route('admin.legal.index') }}" 
         />
-        @else
-        <x-admin.cards 
-        icon="bi bi-journal-text"
-        value="{{ $openCase }}"
-        heading="Open Cases"
-        route="{{ route('admin.legal.index', ['status' => 'open']) }}" 
-        />
         @endif
         @endcan
         @can('investigation.credit_investigations')
@@ -36,6 +29,18 @@
         />
         @endif
         @endcan
+        <x-admin.cards 
+            icon="bi bi-person-plus"
+            value="{{ $pendingUsers }}" 
+            heading="Pending User Approvals"
+            route="{{ route('admin.pending.users') }}" 
+        />
+        <x-admin.cards 
+            icon="bi bi-file-earmark-text"
+            value="{{ $pendingLegalCases }}"
+            heading="Pending Legal Cases"
+            route="{{ route('admin.pending.legal_cases') }}" 
+        />
     </div>
     <div>
         <div class="row mb-4">

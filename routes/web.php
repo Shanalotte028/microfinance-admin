@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminApprovalController;
 use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ComplianceController;
@@ -166,11 +167,7 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('clients/{client}/show/{investigation}/update', [FieldInvestigationController::class, 'update'])
     ->middleware('can:investigation.update')
     ->name('admin.investigation.update');
-
-
-    
-
-
+    // User Management 
     Route::get('admin/users', [UserController::class, 'index'])
     ->middleware('can:users.index')
     ->name('admin.user.index');
@@ -190,6 +187,15 @@ Route::middleware(['auth'])->group(function () {
     Route::put('admin/users/{user}', [UserController::class, 'update'])
     ->middleware('can:users.update')
     ->name('admin.user.update');
+
+    //Approval Management
+    Route::get('/admin/pending-users', [AdminApprovalController::class, 'pendingUsers'])->name('admin.pending.users');
+    Route::post('/admin/approve-user/{id}', [AdminApprovalController::class, 'approveUser'])->name('admin.approve.users');
+    Route::delete('/admin/reject-user/{id}', [AdminApprovalController::class, 'rejectUser'])->name('admin.reject.users');
+
+    Route::get('/admin/pending-legal-cases', [AdminApprovalController::class, 'pendingLegalCases'])->name('admin.pending.legal_cases');
+    Route::post('/admin/approve-legal-case/{id}', [AdminApprovalController::class, 'approveLegalCase'])->name('admin.approve.legal_cases');
+    Route::delete('/admin/reject-legal-case/{id}', [AdminApprovalController::class, 'rejectLegalCase'])->name('admin.reject.legal_cases');
 });
 
 // Routes for guest users
