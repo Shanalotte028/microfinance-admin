@@ -41,12 +41,12 @@ class RolesAndPermissionsSeeder extends Seeder
             'Admin' => $permissions,  // Full access
             'Staff Manager' => ['clients.index','clients.show','clients.block',
                                 'compliances.index','compliances.show','compliances.approve','compliances.reject',
-                                'audit','legal.index','legal.show','legal.edit','legal.create','legal.update','users.index','users.show','investigation.assign', 'investigaion.credit_investigations'],
+                                'audit','legal.index','legal.show','legal.edit','legal.create','legal.update','users.index','users.show','users.create','investigation.assign', 'investigaion.credit_investigations'],
             'Staff' => ['clients.index','clients.show',
                         'compliances.index','compliances.show','compliances.approve','compliances.reject',],
-            'Lawyer' => ['clients.show','legal.index','legal.show','legal.edit','legal.update',],
-            'Field Officer' => ['clients.index','clients.show',
-            'compliances.index','compliances.show', 'investigation.index', 'investigation.show', 'investigation.edit', 'investigation.update', 'investigation.credit_investigations']
+            'Lawyer' => ['clients.show','legal.show','legal.edit','legal.update',],
+            'Field Officer' => ['clients.show',
+            'compliances.index','compliances.show', 'investigation.show', 'investigation.edit', 'investigation.update', 'investigation.credit_investigations']
         ];
 
         // Create roles and assign permissions
