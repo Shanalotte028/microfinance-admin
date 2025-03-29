@@ -12,9 +12,7 @@ use Illuminate\Support\Facades\Auth;
 class FieldInvestigationController extends Controller
 {
     //
-
-    public function credit_investigations(Request $request)
-    {
+    public function credit_investigations(Request $request){
         $user = Auth::user();
         $user->role === 'Field Investigator' ;
         /** @var User $user */
@@ -23,7 +21,7 @@ class FieldInvestigationController extends Controller
     }
 
     public function assignInvestigation(Request $request){
-
+        $authUser = Auth::user();
         $request->validate([
             'client_id' => 'required|exists:clients,id',
             'officer_id' => 'required|exists:users,id',
@@ -33,6 +31,8 @@ class FieldInvestigationController extends Controller
             ['client_id' => $request->client_id], // Search condition
             ['officer_id' => $request->officer_id] // Fields to update or insert
         );
+        AuditHelper::log('Assign', 'Credit Investigation', 
+        "User $authUser->id $authUser->email ($authUser->role) Assigned (Officer ID: $request->officer_id) to conduct Credit Investigation for (Client ID: $request->client_id)");
         
         return redirect()->back()->with('success','Investigation assigned to field officer.'); 
     }
@@ -42,20 +42,17 @@ class FieldInvestigationController extends Controller
         return view('admin/investigation.index', compact('client', 'investigation_records'));
     }
 
-    public function show(Client $client, $investigation_id)
-    {
+    public function show(Client $client, $investigation_id){
         $investigation = FieldInvestigation::with(['client', 'officer'])->findOrFail($investigation_id);
         return view('admin/investigation.show', compact('client','investigation'));
     }
 
-    public function edit(Client $client, $investigation_id)
-    {
+    public function edit(Client $client, $investigation_id){
         $investigation = FieldInvestigation::with(['client', 'officer'])->findOrFail($investigation_id);
         return view('admin/investigation.edit', compact('client', 'investigation'));
     }
 
-    public function update(Request $request, Client $client, $investigation_id)
-    {
+    public function update(Request $request, Client $client, $investigation_id){
         $adminUser = Auth::user();
 
         $investigation = FieldInvestigation::findOrFail($investigation_id);
@@ -75,9 +72,9 @@ class FieldInvestigationController extends Controller
 
         // Log the audit trail
         AuditHelper::log(
-            'Update Investigation Record',
+            'Update',
             'Credit Investigation',
-            "User $adminUser->id ($adminUser->email) updated a Investigation Record with investigation number: $investigation_id",
+            "User $adminUser->id $adminUser->email ($adminUser->role) Updated a Investigation Record with investigation number of: $investigation_id",
             $previousStatus, // Old status
             $newStatus // New status
         );

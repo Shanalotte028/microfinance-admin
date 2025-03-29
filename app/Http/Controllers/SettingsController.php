@@ -28,9 +28,9 @@ class SettingsController extends Controller
         // Fill the validated data into the user model
         $user->update($validatedData);
 
-        AuditHelper::log('Account Creation', 
+        AuditHelper::log('Update', 
         'User Management', 
-        "User $user->id ($user->email) updated his profile", 
+        "User $user->id $user->email ($user->role) Updated his profile", 
         $oldData, 
         $user->toArray());
 

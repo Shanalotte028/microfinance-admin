@@ -59,8 +59,8 @@ class ResetPasswordController extends Controller
             AuditHelper::log(
                 'Update',
                 'User Management',
-                $authUser ? "User {$authUser->id} reset their own password ({$user->email})" : 
-                            "User {$user->id} ($user->email) reset their own password",
+                $authUser ? "User {$authUser->id} ({$user->email}) ($authUser->role) reset their own password " : 
+                            "User {$user->id} ($user->email) ($user->role) reset their own password",
                 $oldData,
                 $newData
             );

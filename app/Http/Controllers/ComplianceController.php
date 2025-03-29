@@ -32,120 +32,8 @@ class ComplianceController extends Controller
         return view('client/compliance',compact('compliances'));
     }
 
-    public function create(){
-        $client = Auth::guard('client')->user();
-
-        // Check if the user already has a pending or approved KYC request
-        $kycCount = Compliance::where('client_id', $client->id)->where('compliance_type', 'KYC')->count();
-
-        if ($kycCount >= 3) {
-            return redirect()->back()->with('success', 'You have already applied for KYC documents.');
-        }
-        // Show the KYC application form
-        return view('client/create', compact('client'));
-    }
-    public function kyc(Request $request){
-        //dd($request->all());
-        $validatedData = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'phone_number' => 'required|regex:/^09[0-9]{9}$/|min:11|unique:clients,phone_number', // Phone number must start with 09
-            'birthday' => 'required|date|before:today',
-            'gender' => 'required|string|in:Male,Female,Other',
-            'nationality' => 'required|string',
-            'marital_status' => 'required|string',
-            'identification_proof' => 'required|string',
-            'identification_proof_upload' => ['required', File::types(['png','jpg','pdf'])],
-            'address_line_1' => 'required|string|max:255',
-            'address_line_2' => 'nullable|string|max:255',
-            'city' => 'required|string',
-            'province' => 'required|string',
-            'postal_code' => 'required|string',
-            'address_proof' => 'required|string', 
-            'address_proof_upload' => ['required', File::types(['png','jpg','pdf'])],
-            'source_of_income' => 'required|string',
-            'tin_number' => 'required|string|min:9|max:12', // TIN number must be numeric
-            'income_proof' => 'required|string',
-            'income_proof_upload' => ['required', File::types(['png','jpg','pdf'])],
-            'clientConsent' => 'required'
-        ]);
-
-        $client = Auth::guard('client')->user();
-
-        if (!$client || !($client instanceof Client)) {
-            return redirect()->route('login')->withErrors('You must be logged in to update your information.');
-        }
-
-        // Save the personal information to the Client model
-        $client->fill([
-            'first_name' => $validatedData['first_name'],
-            'last_name' => $validatedData['last_name'],
-            'phone_number' => $validatedData['phone_number'],
-            'birthday' => $validatedData['birthday'],
-            'gender' => ucfirst($validatedData['gender']), // Capitalize the first letter of gender
-            'nationality' => $validatedData['nationality'],
-            'marital_status' => $validatedData['marital_status'],
-            'tin_number' => $validatedData['tin_number'], // Save TIN number to Client model
-            'source_of_income' => $validatedData['source_of_income'], // Save Source of Income to Client model
-        ])->save();
-
-        // Save the address to the Address model
-        Address::create([
-            'client_id' => $client->id, // Associate address with client
-            'address_line_1' => $validatedData['address_line_1'],
-            'address_line_2' => $validatedData['address_line_2'],
-            'city' => $validatedData['city'],
-            'province' => $validatedData['province'],
-            'postal_code' => $validatedData['postal_code'],
-        ]);
-
-        // Handle file uploads for compliance records
-        $identificationProofPath = $request->file('identification_proof_upload')->store('documents/identifications', 'public');
-        $addressProofPath = $request->file('address_proof_upload')->store('documents/address_proofs', 'public');
-        $incomeProofPath = $request->file('income_proof_upload')->store('documents/income_proofs', 'public');
-        Log::info('Document Path:', ['path' => $identificationProofPath]);
-        // Create compliance records for each document
-        Compliance::create([
-            'client_id' => $client->id,
-            'compliance_type' => 'KYC',
-            'document_type' => $validatedData['identification_proof'],
-            'document_path' => $identificationProofPath,
-            'document_status' => 'pending',
-            'submission_date' => now()
-        ]);
-
-        Compliance::create([
-            'client_id' => $client->id,
-            'compliance_type' => 'KYC',
-            'document_type' => $validatedData['address_proof'],
-            'document_path' => $addressProofPath,
-            'document_status' => 'pending',
-            'submission_date' => now()
-        ]);
-
-        Compliance::create([
-            'client_id' => $client->id,
-            'compliance_type' => 'KYC',
-            'document_type' => $validatedData['income_proof'],
-            'document_path' => $incomeProofPath,
-            'document_status' => 'pending',
-            'submission_date' => now()
-        ]);
-
-        // Prepare the email data
-        $documentTypes = [
-            'identification_proof' => $validatedData['identification_proof'],
-            'address_proof' => $validatedData['address_proof'],
-            'income_proof' => $validatedData['income_proof'],
-        ];
-
-    // Send the KYC confirmation email
-        Mail::to($client->email)->send(new KycConfirmationEmail($client, $documentTypes));
-
-        return redirect()->route('client.compliance.compliance_records')->with('success', 'Client and compliance records saved successfully.');
-    }
-
     public function approveBatch(Request $request, Client $client){
+        $authUser = Auth::user();
         Log::debug('Approval Request Data:', $request->all());
         $validated = $request->validate([
             'compliance_type' => 'required|string',
@@ -175,11 +63,16 @@ class ComplianceController extends Controller
             ]);
         });
 
+        AuditHelper::log('Approve Compliance', 'Compliance Management', 
+        "User $authUser->id $authUser->email ($authUser->role) Approved Compliance Documents of Client ID: $client->id ($client->first_name $client->last_name)");
+        
         return redirect()->back()
             ->with('success', "Successfully approved {$records->count()} documents");
     }
 
     public function rejectBatch(Request $request, Client $client){
+        $authUser = Auth::user();
+
         Log::debug('Rejection Request Data:', $request->all());
         $validated = $request->validate([
             'compliance_type' => 'required|string',
@@ -209,105 +102,53 @@ class ComplianceController extends Controller
             ]);
         });
 
+        AuditHelper::log('Reject Compliance', 'Compliance Management', 
+        "User $authUser->id $authUser->email ($authUser->role) Rejected Compliance Documents of Client ID: $client->id ($client->first_name $client->last_name)");
+
         return redirect()->back()
             ->with('success', "Successfully rejected {$records->count()} documents");
-    }
+    } 
 
-    public function approve(Client $client, Compliance $compliance)
-    {
+    public function store(Request $request, Client $client){
+        Log::info('Request received:', $request->all());
+
         try {
-            DB::transaction(function () use ($client, $compliance) {
-                $userAdmin = Auth::user();
-    
-                $compliance->update([
-                    'document_status' => 'approved',
-                    'approval_date' => now(),
-                ]);
-    
-                /* dispatch(new SendComplianceApprovedEmail($client, $compliance)); */
-    
-                AuditHelper::log('Approve Compliance', 'Compliance Management', 
-                "User $userAdmin->id ($userAdmin->email) approved $compliance->document_type of Client ID: $client->id ($client->first_name $client->last_name)");
-    
+            // Validate the request data
+            $validatedData = $this->validateRequest($request);
+
+            // Determine the HTTP method
+            $method = $request->method();
+
+            // Process and store data
+            DB::transaction(function () use ($validatedData, $method, $client) {
+                // Find or create the client based on the HTTP method
+                if ($method === 'POST') {
+                    // Create a new client
+                    $client = $this->createOrUpdateClient($validatedData['client']);
+                } else if ($method === 'PATCH' || $method === 'PUT') {
+                    // Update an existing client
+                    /* $client = Client::findOrFail($client); */
+                    $client = $this->createOrUpdateClient($validatedData['client'], $client);
+                } else {
+                    throw new \Exception('Unsupported HTTP method');
+                }
+
+                // Process address, financial details, loan, and compliance documents
+                $this->createOrUpdateAddress($client, $validatedData['address']);
+                $this->createOrUpdateFinancialDetails($client, $validatedData['financial']);
+                $this->createLoan($client, $validatedData['loan']);
+                $this->handleComplianceDocuments($client, $validatedData['compliance']);
             });
-    
-            return redirect()->back()->with('success', 'Compliance document approved successfully.');
+
+            return response()->json(['client' =>$client, 'message' => 'Client data processed successfully'], 201);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Validation error in store method:', ['error' => $e->errors()]);
+            return response()->json(['error' => $e->errors()], 422);
         } catch (\Exception $e) {
-            Log::error('Compliance Approval Failed', ['error' => $e->getMessage()]);
-    
-            return redirect()->back()->with('error', 'Failed to approve the compliance document. Please try again.');
+            Log::error('Error in store method:', ['error' => $e->getMessage()]);
+            return response()->json(['error' => 'An unexpected error occurred'], 500);
         }
     }
-
-    public function reject(Client $client, Compliance $compliance, Request $request){
-        try {
-            DB::transaction(function () use ($client, $compliance, $request) {
-                $userAdmin = Auth::user();
-    
-                $request->validate([
-                    'remarks' => 'nullable|string|max:255',
-                ]);
-    
-                $compliance->update([
-                    'document_status' => 'rejected',
-                    'remarks' => $request->remarks,
-                ]);
-    
-                dispatch(new SendComplianceRejectedEmail($client, $compliance, $request->remarks));
-    
-                AuditHelper::log('Reject Compliance', 'Compliance Management', 
-                "User $userAdmin->id ($userAdmin->email) rejected $compliance->document_type of Client ID: $client->id ($client->first_name $client->last_name)");
-            });
-    
-            return redirect()->back()->with('success', 'Compliance document rejected successfully.');
-        } catch (\Exception $e) {
-            Log::error('Compliance Rejection Failed', ['error' => $e->getMessage()]);
-    
-            return redirect()->back()->with('error', 'Failed to reject the compliance document. Please try again.');
-        }
-    }
-
-    public function store(Request $request, Client $client)
-{
-    Log::info('Request received:', $request->all());
-
-    try {
-        // Validate the request data
-        $validatedData = $this->validateRequest($request);
-
-        // Determine the HTTP method
-        $method = $request->method();
-
-        // Process and store data
-        DB::transaction(function () use ($validatedData, $method, $client) {
-            // Find or create the client based on the HTTP method
-            if ($method === 'POST') {
-                // Create a new client
-                $client = $this->createOrUpdateClient($validatedData['client']);
-            } else if ($method === 'PATCH' || $method === 'PUT') {
-                // Update an existing client
-                /* $client = Client::findOrFail($client); */
-                $client = $this->createOrUpdateClient($validatedData['client'], $client);
-            } else {
-                throw new \Exception('Unsupported HTTP method');
-            }
-
-            // Process address, financial details, loan, and compliance documents
-            $this->createOrUpdateAddress($client, $validatedData['address']);
-            $this->createOrUpdateFinancialDetails($client, $validatedData['financial']);
-            $this->createLoan($client, $validatedData['loan']);
-            $this->handleComplianceDocuments($client, $validatedData['compliance']);
-        });
-
-        return response()->json(['client' =>$client, 'message' => 'Client data processed successfully'], 201);
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        Log::error('Validation error in store method:', ['error' => $e->errors()]);
-        return response()->json(['error' => $e->errors()], 422);
-    } catch (\Exception $e) {
-        Log::error('Error in store method:', ['error' => $e->getMessage()]);
-        return response()->json(['error' => 'An unexpected error occurred'], 500);
-    }
-}
 
     /**
      * Validate the request data.
@@ -470,24 +311,9 @@ class ComplianceController extends Controller
     }
 
     /**
-     * Handle compliance documents.
+     * Handle Compliance Documents.
      */
-   /*  private function handleComplianceDocuments(Client $client, array $files): void{
-        foreach ($files as $type => $file) {
-            $path = $file->store("documents/{$type}", 'public');
-            $client->compliance_records->updateOrCreate([
-                'client_id' => $client->client_id, 
-                'compliance_type' => 'KYC & AML',
-                'document_type' => $type,
-                'document_path' => $path,
-                'document_status' => 'pending',
-                'submission_date' => now(),
-            ]);
-        }
-    } */
-
-    private function handleComplianceDocuments(Client $client, array $files): void
-    {
+    private function handleComplianceDocuments(Client $client, array $files): void{
         foreach ($files as $type => $file) {
             $path = $file->store("documents/{$type}", 'public');
     
@@ -504,11 +330,7 @@ class ComplianceController extends Controller
         }
     }
     
-    
-
-    /**
-     * Process address data.
-     */
+    /*Process address data.*/
     private function processAddress(array $addressData): array{
         if ($addressData['same_address'] === 'Yes') {
             $addressData['present_region'] = $addressData['region'];
@@ -521,8 +343,6 @@ class ComplianceController extends Controller
         return $addressData;
     }
     
-
-
     // Compliance Sidebar
     public function compliance(Request $request){
         $status = $request->query('status');
@@ -544,15 +364,6 @@ class ComplianceController extends Controller
     }
 
     public function show(Client $client, $complianceType, $submission_date){
-        /* $client = Client::with(['compliance_records' => function ($query) use ($compliance_id) {
-            $query->where('id', $compliance_id); // Filter by compliance ID
-        }])->findOrFail($client);
-    
-        $compliance = $client->compliance_records->first(); // Get the filtered record */
-
-         // Eager load the `client` relationship
-        /* $compliance = Compliance::with('client')->findOrFail($compliance->id); */
-        /* $complianceDocuments = Compliance::where('client_id', $client->client_id)->get(); */
         $complianceRecords = $client->compliance_records()
                                 ->where('compliance_type', $complianceType)
                                 ->where('submission_date', $submission_date)
@@ -563,6 +374,151 @@ class ComplianceController extends Controller
 
         return view('admin.compliance.show', compact('client', 'complianceRecords', 'complianceType', 'fieldInvestigation', 'field_officers'));
     }
+
+    
+
+    /* public function reject(Client $client, Compliance $compliance, Request $request){
+        try {
+            DB::transaction(function () use ($client, $compliance, $request) {
+                $userAdmin = Auth::user();
+    
+                $request->validate([
+                    'remarks' => 'nullable|string|max:255',
+                ]);
+    
+                $compliance->update([
+                    'document_status' => 'rejected',
+                    'remarks' => $request->remarks,
+                ]);
+    
+                dispatch(new SendComplianceRejectedEmail($client, $compliance, $request->remarks));
+    
+                AuditHelper::log('Reject Compliance', 'Compliance Management', 
+                "User $userAdmin->id ($userAdmin->email) rejected $compliance->document_type of Client ID: $client->id ($client->first_name $client->last_name)");
+            });
+    
+            return redirect()->back()->with('success', 'Compliance document rejected successfully.');
+        } catch (\Exception $e) {
+            Log::error('Compliance Rejection Failed', ['error' => $e->getMessage()]);
+    
+            return redirect()->back()->with('error', 'Failed to reject the compliance document. Please try again.');
+        }
+    } */
+
+
+    /* public function kyc(Request $request){
+        //dd($request->all());
+        $validatedData = $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'phone_number' => 'required|regex:/^09[0-9]{9}$/|min:11|unique:clients,phone_number', // Phone number must start with 09
+            'birthday' => 'required|date|before:today',
+            'gender' => 'required|string|in:Male,Female,Other',
+            'nationality' => 'required|string',
+            'marital_status' => 'required|string',
+            'identification_proof' => 'required|string',
+            'identification_proof_upload' => ['required', File::types(['png','jpg','pdf'])],
+            'address_line_1' => 'required|string|max:255',
+            'address_line_2' => 'nullable|string|max:255',
+            'city' => 'required|string',
+            'province' => 'required|string',
+            'postal_code' => 'required|string',
+            'address_proof' => 'required|string', 
+            'address_proof_upload' => ['required', File::types(['png','jpg','pdf'])],
+            'source_of_income' => 'required|string',
+            'tin_number' => 'required|string|min:9|max:12', // TIN number must be numeric
+            'income_proof' => 'required|string',
+            'income_proof_upload' => ['required', File::types(['png','jpg','pdf'])],
+            'clientConsent' => 'required'
+        ]);
+
+        $client = Auth::guard('client')->user();
+
+        if (!$client || !($client instanceof Client)) {
+            return redirect()->route('login')->withErrors('You must be logged in to update your information.');
+        }
+
+        // Save the personal information to the Client model
+        $client->fill([
+            'first_name' => $validatedData['first_name'],
+            'last_name' => $validatedData['last_name'],
+            'phone_number' => $validatedData['phone_number'],
+            'birthday' => $validatedData['birthday'],
+            'gender' => ucfirst($validatedData['gender']), // Capitalize the first letter of gender
+            'nationality' => $validatedData['nationality'],
+            'marital_status' => $validatedData['marital_status'],
+            'tin_number' => $validatedData['tin_number'], // Save TIN number to Client model
+            'source_of_income' => $validatedData['source_of_income'], // Save Source of Income to Client model
+        ])->save();
+
+        // Save the address to the Address model
+        Address::create([
+            'client_id' => $client->id, // Associate address with client
+            'address_line_1' => $validatedData['address_line_1'],
+            'address_line_2' => $validatedData['address_line_2'],
+            'city' => $validatedData['city'],
+            'province' => $validatedData['province'],
+            'postal_code' => $validatedData['postal_code'],
+        ]);
+
+        // Handle file uploads for compliance records
+        $identificationProofPath = $request->file('identification_proof_upload')->store('documents/identifications', 'public');
+        $addressProofPath = $request->file('address_proof_upload')->store('documents/address_proofs', 'public');
+        $incomeProofPath = $request->file('income_proof_upload')->store('documents/income_proofs', 'public');
+        Log::info('Document Path:', ['path' => $identificationProofPath]);
+        // Create compliance records for each document
+        Compliance::create([
+            'client_id' => $client->id,
+            'compliance_type' => 'KYC',
+            'document_type' => $validatedData['identification_proof'],
+            'document_path' => $identificationProofPath,
+            'document_status' => 'pending',
+            'submission_date' => now()
+        ]);
+
+        Compliance::create([
+            'client_id' => $client->id,
+            'compliance_type' => 'KYC',
+            'document_type' => $validatedData['address_proof'],
+            'document_path' => $addressProofPath,
+            'document_status' => 'pending',
+            'submission_date' => now()
+        ]);
+
+        Compliance::create([
+            'client_id' => $client->id,
+            'compliance_type' => 'KYC',
+            'document_type' => $validatedData['income_proof'],
+            'document_path' => $incomeProofPath,
+            'document_status' => 'pending',
+            'submission_date' => now()
+        ]);
+
+        // Prepare the email data
+        $documentTypes = [
+            'identification_proof' => $validatedData['identification_proof'],
+            'address_proof' => $validatedData['address_proof'],
+            'income_proof' => $validatedData['income_proof'],
+        ];
+
+        // Send the KYC confirmation email
+        Mail::to($client->email)->send(new KycConfirmationEmail($client, $documentTypes));
+
+        return redirect()->route('client.compliance.compliance_records')->with('success', 'Client and compliance records saved successfully.');
+    }*/
+
+    /* public function create(){
+        $client = Auth::guard('client')->user();
+
+        // Check if the user already has a pending or approved KYC request
+        $kycCount = Compliance::where('client_id', $client->id)->where('compliance_type', 'KYC')->count();
+
+        if ($kycCount >= 3) {
+            return redirect()->back()->with('success', 'You have already applied for KYC documents.');
+        }
+        // Show the KYC application form
+        return view('client/create', compact('client'));
+    } */
 
     /* public function download(Client $client, $file): Response{
         // Ensure the file path is properly constructed
@@ -593,5 +549,30 @@ class ComplianceController extends Controller
         // Use response()->download() to send the file
         return response()->download($fullPath, $originalName, $headers);
     } */
+
+   /*  public function approve(Client $client, Compliance $compliance){
+        try {
+            DB::transaction(function () use ($client, $compliance) {
+                $userAdmin = Auth::user();
+    
+                $compliance->update([
+                    'document_status' => 'approved',
+                    'approval_date' => now(),
+                ]);
+    
+               dispatch(new SendComplianceApprovedEmail($client, $compliance)); 
+    
+                AuditHelper::log('Approve Compliance', 'Compliance Management', 
+                "User $userAdmin->id ($userAdmin->email) approved $compliance->document_type of Client ID: $client->id ($client->first_name $client->last_name)");
+    
+            });
+    
+            return redirect()->back()->with('success', 'Compliance document approved successfully.');
+        } catch (\Exception $e) {
+            Log::error('Compliance Approval Failed', ['error' => $e->getMessage()]);
+    
+            return redirect()->back()->with('error', 'Failed to approve the compliance document. Please try again.');
+        }
+    } */ 
     
 }

@@ -48,7 +48,7 @@ class SessionController extends Controller
         AuditHelper::log(
             'Login', // Action
             'Authentication', // Module
-            "User $user->email logged in successfully.", // Description
+            "User $user->id $user->email ($user->role) logged in successfully.", // Description
             null, // Old Data (not needed here)
             ['user_id' => $user->id, 'email' => $user->email, 'ip' => request()->ip()] // New Data
         );
@@ -75,7 +75,7 @@ class SessionController extends Controller
             AuditHelper::log(
                 'Logout', // Action
                 'Authentication', // Module
-                "User $user->email logged out successfully.", // Description
+                "User $user->id $user->email ($user->role) logged out successfully.", // Description
                 null, // Old Data (not needed here)
                 ['user_id' => $user->id, 'email' => $user->email, 'ip' => request()->ip()] // New Data
             );

@@ -67,7 +67,7 @@ public function store(Request $request){
     AuditHelper::log(
         'Account Creation',
         'User Management',
-        "User $userAdmin->id ($userAdmin->email) created account for $user->first_name $user->last_name ($user->email)",
+        "User $userAdmin->id ($userAdmin->email) ($userAdmin->role) created account for $user->first_name $user->last_name ($user->email)",
         null,
         $user->toArray()
     );
