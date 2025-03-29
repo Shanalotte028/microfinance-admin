@@ -1,5 +1,8 @@
 <x-admin.header class="bg-dark-low sb-nav-fixed"/>
     <div id="layoutAuthentication">
+        <div class="me-2" style="position: relative; top: 13px;">
+            {{ $back ?? '' }}
+        </div>
         <div id="layoutAuthentication_content">
             <main>
                 <div class="container pb-5">

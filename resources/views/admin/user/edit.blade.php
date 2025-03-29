@@ -1,4 +1,5 @@
 <x-admin.auth-layout>
+    <x-slot:back><a href="{{ route('admin.user.show', $user->id) }}" class="text-white"><i class="bi bi-arrow-left larger-icon"></i></a></x-slot:back>
     <x-slot:header>User Update</x-slot:header>
         <div class="card-body">
             <form method="POST" action="{{ route('admin.user.update', $user) }}">

@@ -1,4 +1,5 @@
 <x-admin.auth-layout>
+    <x-slot:back><a href="{{ route('admin.user.index') }}" class="text-white"><i class="bi bi-arrow-left larger-icon"></i></a></x-slot:back>
     <x-slot:header>Create Account</x-slot:header>
         <div class="card-body">
             <form method="POST" action="{{ route('admin.accountCreate.post')  }}">
