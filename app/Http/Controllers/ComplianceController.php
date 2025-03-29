@@ -406,15 +406,17 @@ class ComplianceController extends Controller
     public function compliance(Request $request){
         $status = $request->query('status');
 
-        // Fetch all clients with their compliance records
+        // Fetch all clients with their compliance records, ordered by latest first
         $clients = Client::with(['compliance_records' => function ($query) use ($status) {
             if ($status) {
                 $query->where('document_status', $status);
-        }
+            }
+            $query->latest(); // Orders by created_at descending
         }])->get();
 
         return view('admin/compliance.showall', compact('clients'));
     }
+
 
 
     public function index(Client $client){

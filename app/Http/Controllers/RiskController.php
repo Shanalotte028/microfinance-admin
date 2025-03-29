@@ -138,11 +138,12 @@ class RiskController extends Controller
     public function risks(Request $request){
         $status = $request->query('status');
 
-        // Fetch all clients with their compliance records
+        // Fetch all clients with their risk assessments, ordered by latest first
         $clients = Client::with(['risk_assessments' => function ($query) use ($status) {
             if ($status) {
                 $query->where('risk_level', $status);
             }
+            $query->orderBy('assessment_date', 'desc'); // Order by latest first
         }])->get();
 
         return view('admin/risk.risks', compact('clients'));

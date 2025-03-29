@@ -13,9 +13,10 @@ use Illuminate\Support\Facades\Session;
 class ClientController extends Controller
 {
     public function index(){
-        $clients = Client::all();
+        $clients = Client::orderBy('updated_at', 'desc')->get();
         return view('admin/client.index', compact('clients'));
     }
+
 
     public function profile(){
         $client = Auth::guard('client')->user();

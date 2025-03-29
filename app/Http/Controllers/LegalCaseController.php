@@ -21,18 +21,23 @@ class LegalCaseController extends Controller
 
         if ($user->role === 'Lawyer') {
             /** @var User $user */
-            $cases = $user->legalCases()->with(['client', 'assignedLawyer'])->get();
+            $cases = $user->legalCases()
+                ->with(['client', 'assignedLawyer'])
+                ->orderBy('created_at', 'desc') // Order by latest first
+                ->get();
         } else {
-                // Query the legal cases based on the status
+            // Query the legal cases based on the status
             $cases = LegalCase::with(['client', 'assignedLawyer'])
-            ->when($status, function ($query, $status) {
-                return $query->where('status', $status);
-            })
-            ->get();
+                ->when($status, function ($query, $status) {
+                    return $query->where('status', $status);
+                })
+                ->orderBy('created_at', 'desc') // Order by latest first
+                ->get();
         }
-        
+
         return view('admin/legal_cases.index', compact('cases'));
     }
+
 
     // Show form to create a new legal case
     public function create(){
