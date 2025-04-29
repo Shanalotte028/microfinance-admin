@@ -8,9 +8,9 @@
 
     <div class="mb-4">
         <a href="{{ route('admin.compliances') }}" class="btn btn-secondary">All</a>
-        <a href="{{ route('admin.compliances', ['status' => 'pending']) }}" class="btn btn-primary">Pending</a>
-        <a href="{{ route('admin.compliances', ['status' => 'approved']) }}" class="btn btn-warning">Approved</a>
-        <a href="{{ route('admin.compliances', ['status' => 'rejected']) }}" class="btn btn-success">Rejected</a>
+        <a href="{{ route('admin.compliances', ['status' => 'pending']) }}" class="btn btn-warning">Pending</a>
+        <a href="{{ route('admin.compliances', ['status' => 'approved']) }}" class="btn btn-success">Approved</a>
+        <a href="{{ route('admin.compliances', ['status' => 'rejected']) }}" class="btn btn-danger">Rejected</a>
         <div class="mt-4">
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exportComplianceModal">
                 Export Compliance Records
@@ -59,7 +59,21 @@
                                 <td>{{ $client->email ?? 'n/a' }}</td>
                                 <td>{{ $compliance->compliance_type }}</td>
                                 <td>{{ $compliance->document_type }}</td>
-                                <td>{{ $compliance->document_status }}</td>
+                                <td>
+                                    @php
+                                        $status = $compliance->document_status ?? 'n/a';
+                                        $badgeClass = match($status) {
+                                            'approved' => 'bg-success',
+                                            'rejected' => 'bg-danger',
+                                            'pending' => 'bg-warning text-dark',
+                                            default => 'bg-secondary'
+                                        };
+                                    @endphp
+                                
+                                    <span class="badge {{ $badgeClass }}">
+                                        {{ ucfirst($status) }}
+                                    </span>
+                                </td>
                                 <td>{{ $compliance->submission_date }}</td>
                                 <td>{{ $compliance->approval_date ?? 'n/a' }}</td>
                                 <td>

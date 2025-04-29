@@ -23,7 +23,21 @@
                     <td>{{ $record->client->name ?? 'N/A' }}</td>
                     <td>{{ $record->compliance_type }}</td>
                     <td>{{ $record->document_type }}</td>
-                    <td>{{ ucfirst($record->document_status) }}</td>
+                    <td>
+                        @php
+                            $status = $record->document_status ?? 'n/a';
+                            $badgeClass = match($status) {
+                                'approved' => 'bg-success',
+                                'rejected' => 'bg-danger',
+                                'pending' => 'bg-warning text-dark',
+                                default => 'bg-secondary'
+                            };
+                        @endphp
+                    
+                        <span class="badge {{ $badgeClass }}">
+                            {{ ucfirst($status) }}
+                        </span>
+                    </td>
                     <td>{{ $record->submission_date }}</td>
                     <td>{{ $record->approval_date ?? 'Pending' }}</td>
                 </tr>
