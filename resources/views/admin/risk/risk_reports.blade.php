@@ -20,7 +20,21 @@
                             <tr>
                                 <td>{{ $risk->id }}</td>
                                 <td>{{ $risk->client_id }}</td> 
-                                <td>{{ $risk->risk_level }}</td>
+                                <td>
+                                    @php
+                                        $status = $risk->risk_level ?? 'n/a';
+                                        $badgeClass = match($status) {
+                                            'Low Risk' => 'bg-success',
+                                            'High Risk' => 'bg-danger',
+                                            'Medium Risk' => 'bg-warning text-dark',
+                                            default => 'bg-secondary'
+                                        };
+                                    @endphp
+                                
+                                    <span class="badge {{ $badgeClass }}">
+                                        {{ ucfirst($status) }}
+                                    </span>
+                                </td>
                                 <td>{{ $risk->confidence_level }}</td>
                                 <td>{{ $risk->assessment_date }}</td>
                             </tr>
