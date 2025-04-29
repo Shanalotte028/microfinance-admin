@@ -1,9 +1,11 @@
 <x-admin.dashboard-layout>
+    <x-slot:back><a href="{{ route('admin.risk_assessment.risks') }}" class="text-white"><i class="bi bi-arrow-left larger-icon"></i></a></x-slot:back>
     <x-slot name="heading">{{ $title }}</x-slot>
 
-    <div class="card">
-        <div class="card-body">
-            <table class="table table-bordered">
+    <x-admin.table-data>
+        <x-slot:heading>
+            Risk Assessment Report
+        </x-slot:heading>
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -24,9 +26,6 @@
                             </tr>
                     @endforeach
                 </tbody>
-            </table>
-
-            <a href="{{ route('admin.risk_assessment.risks') }}" class="btn btn-primary mt-3">Back</a>
-        </div>
-    </div>
+    </x-admin.table-data>
+    
 </x-admin.dashboard-layout>

@@ -1,9 +1,8 @@
 <x-admin.dashboard-layout>
+    <x-slot:back><a href="{{ route('admin.legal.index') }}" class="text-white"><i class="bi bi-arrow-left larger-icon"></i></a></x-slot:back>
     <x-slot name="heading">{{ $title }}</x-slot>
-
-    <div class="card">
-        <div class="card-body">
-            <table class="table table-bordered">
+    <x-admin.table-data>
+        <x-slot:heading>Legal Case Reports</x-slot:heading>
                 <thead>
                     <tr>
                         <th>Case Number</th>
@@ -12,7 +11,6 @@
                         <th>Assigned Lawyer</th>
                         <th>Status</th>
                         <th>Filing Date</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -27,9 +25,6 @@
                         </tr>
                     @endforeach
                 </tbody>
-            </table>
+    </x-admin.table-data>
 
-            <a href="{{ route('admin.legal.index') }}" class="btn btn-primary mt-3">Back</a>
-        </div>
-    </div>
 </x-admin.dashboard-layout>
