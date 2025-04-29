@@ -2,15 +2,68 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\RiskExport;
 use App\Helpers\AuditHelper;
 use Illuminate\Http\Request;
 use App\Models\Client;
+use App\Models\Risk;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Maatwebsite\Excel\Facades\Excel;
 
 class RiskController extends Controller
 {
+
+    public function generateRiskReport(Request $request){
+        $request->validate([
+            'report_type' => 'required|in:monthly,yearly',
+            'year' => 'required|digits:4',
+            'month' => 'nullable|digits_between:1,12',
+        ]);
+
+        $year = $request->input('year');
+        $reportType = $request->input('report_type');
+
+        if ($reportType === 'monthly') {
+            $month = $request->input('month');
+            $startDate = Carbon::createFromDate($year, $month, 1)->startOfMonth();
+            $endDate = Carbon::createFromDate($year, $month, 1)->endOfMonth();
+            $title = "Risk Assessment Report for " . date('F', mktime(0, 0, 0, $month, 1)) . " $year";
+        } else {
+            // Yearly report
+            $startDate = Carbon::createFromDate($year, 1, 1)->startOfYear();
+            $endDate = Carbon::createFromDate($year, 12, 31)->endOfYear();
+            $title = "Risk Assessment Report for $year";
+        }
+
+        // Prevent lazy loading
+        $risks = Risk::with('client')
+            ->whereBetween('assessment_date', [$startDate, $endDate])
+            ->get();
+
+        return view('admin.risk.risk_reports', compact('risks', 'title'));
+    }
+
+    public function exportRisk(Request $request){
+        $exportType = $request->input('export_type');
+        $year = $request->input('year');
+        
+        if ($exportType === 'monthly') {
+            $month = $request->input('month');
+            $startDate = Carbon::createFromFormat('Y-m-d', "$year-$month-01")->startOfMonth();
+            $endDate = Carbon::createFromFormat('Y-m-d', "$year-$month-01")->endOfMonth();
+            $fileName = "risk_case_records_{$year}_{$month}.xlsx";
+        } else {
+            // Yearly export
+            $startDate = Carbon::createFromFormat('Y-m-d', "$year-01-01")->startOfYear();
+            $endDate = Carbon::createFromFormat('Y-m-d', "$year-12-31")->endOfYear();
+            $fileName = "risk_case_records_{$year}.xlsx";
+        }
+
+        return Excel::download(new RiskExport($startDate, $endDate), $fileName);
+    }
+
     //
     public function store(Request $request, Client $client){
         // Fetch financial details

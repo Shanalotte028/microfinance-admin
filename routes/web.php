@@ -156,6 +156,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('admin/create', [UserRegistrationController::class, 'store'])->name('admin.accountCreate.post');
 
     // Risk Management
+
+    Route::get('/generate-risk_assessment-report', [RiskController::class, 'generateRiskReport'])->name('risk.report');
+    Route::get('/export-risk_assessment', [RiskController::class, 'exportRisk'])->name('risk.export');
+
     Route::get('/risks',[RiskController::class, 'risks'])->name('admin.risk_assessment.risks');
     Route::get('clients/{client}/list_risk',[RiskController::class, 'index'])->name('admin.risk_assessment.index');
     Route::get('clients/{client}/show_risk/{risk}',[RiskController::class, 'show'])->name('admin.risk_assessment.show');
