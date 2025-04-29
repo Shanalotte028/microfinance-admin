@@ -57,7 +57,7 @@
         <div class="modal-dialog">
             <div class="modal-content bg-dark text-light">
                 <div class="modal-header border-0">
-                    <h5 class="modal-title" id="exportLegalCaseModalLabel">Export LegalCase Records</h5>
+                    <h5 class="modal-title" id="exportLegalCaseModalLabel">Export Lega Case Records</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -100,15 +100,15 @@
     </div>
 
     <!-- Modal -->
-   {{--  <div class="modal fade" id="LegalCaseReportModal" tabindex="-1" aria-labelledby="LegalCaseReportModalLabel" aria-hidden="true">
+    <div class="modal fade" id="legalCaseReportModal" tabindex="-1" aria-labelledby="legalCaseReportModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content bg-dark text-light">
                 <div class="modal-header border-0">
-                    <h5 class="modal-title" id="LegalCaseReportModalLabel">Generate LegalCase Report</h5>
+                    <h5 class="modal-title" id="legalCaseReportModalLabel">Generate Legal Case Report</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{ route('LegalCase.report') }}" method="GET">
+                    <form action="{{ route('legal.report') }}" method="GET">
                         <div class="mb-3">
                             <label for="report_type">Report Type:</label>
                             <select class="form-control" id="report_type" name="report_type" required>
@@ -144,7 +144,7 @@
                 </div>
             </div>
         </div>
-    </div> --}}
+    </div>
 </x-admin.dashboard-layout>
 
 <!-- Script to Show/Hide Month Picker -->

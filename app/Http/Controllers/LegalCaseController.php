@@ -18,6 +18,37 @@ use Carbon\Carbon;
 
 class LegalCaseController extends Controller
 {
+    // Generate the compliance report
+    public function generateLegalReport(Request $request){
+        $request->validate([
+            'report_type' => 'required|in:monthly,yearly',
+            'year' => 'required|digits:4',
+            'month' => 'nullable|digits_between:1,12',
+        ]);
+
+        $year = $request->input('year');
+        $reportType = $request->input('report_type');
+
+        if ($reportType === 'monthly') {
+            $month = $request->input('month');
+            $startDate = Carbon::createFromDate($year, $month, 1)->startOfMonth();
+            $endDate = Carbon::createFromDate($year, $month, 1)->endOfMonth();
+            $title = "Legal Case Report for " . date('F', mktime(0, 0, 0, $month, 1)) . " $year";
+        } else {
+            // Yearly report
+            $startDate = Carbon::createFromDate($year, 1, 1)->startOfYear();
+            $endDate = Carbon::createFromDate($year, 12, 31)->endOfYear();
+            $title = "Legal Case Report for $year";
+        }
+
+        // Prevent lazy loading
+        $cases = LegalCase::with('client')
+            ->whereBetween('filing_date', [$startDate, $endDate])
+            ->get();
+
+        return view('admin.legal_cases.legalCase_reports', compact('cases', 'title'));
+    }
+
 
     public function exportCase(Request $request){
         $exportType = $request->input('export_type');

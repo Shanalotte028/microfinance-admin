@@ -116,7 +116,7 @@ Route::middleware(['auth'])->group(function () {
     ->name('admin.activity-log');
 
     //Legal Management
-
+    Route::get('/generate-legal-report', [LegalCaseController::class, 'generateLegalReport'])->name('legal.report');
     Route::get('/export-case', [LegalCaseController::class, 'exportCase'])->name('legal.export');
 
 
