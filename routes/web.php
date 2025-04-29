@@ -116,6 +116,10 @@ Route::middleware(['auth'])->group(function () {
     ->name('admin.activity-log');
 
     //Legal Management
+
+    Route::get('/export-case', [LegalCaseController::class, 'exportCase'])->name('legal.export');
+
+
     Route::get('admin/legal-case', [LegalCaseController::class, 'index'])
         ->middleware('can:legal.show')
         ->name('admin.legal.index');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\LegalCaseExport;
 use App\Helpers\AuditHelper;
 use App\Jobs\SendLegalCaseCreatedEmail;
 use App\Models\Client;
@@ -11,9 +12,32 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
+use Carbon\Carbon;
+
 
 class LegalCaseController extends Controller
 {
+
+    public function exportCase(Request $request){
+        $exportType = $request->input('export_type');
+        $year = $request->input('year');
+        
+        if ($exportType === 'monthly') {
+            $month = $request->input('month');
+            $startDate = Carbon::createFromFormat('Y-m-d', "$year-$month-01")->startOfMonth();
+            $endDate = Carbon::createFromFormat('Y-m-d', "$year-$month-01")->endOfMonth();
+            $fileName = "legal_case_records_{$year}_{$month}.xlsx";
+        } else {
+            // Yearly export
+            $startDate = Carbon::createFromFormat('Y-m-d', "$year-01-01")->startOfYear();
+            $endDate = Carbon::createFromFormat('Y-m-d', "$year-12-31")->endOfYear();
+            $fileName = "legal_case_records_{$year}.xlsx";
+        }
+
+        return Excel::download(new LegalCaseExport($startDate, $endDate), $fileName);
+    }
+
     // List all legal cases
     public function index(Request $request){
         $status = $request->query('status');

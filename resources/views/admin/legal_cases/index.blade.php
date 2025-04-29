@@ -9,6 +9,15 @@
             <a href="{{ route('admin.legal.index', ['status' => 'open']) }}" class="btn btn-primary">Open</a>
             <a href="{{ route('admin.legal.index', ['status' => 'in_progress']) }}" class="btn btn-warning">In Progress</a>
             <a href="{{ route('admin.legal.index', ['status' => 'closed']) }}" class="btn btn-success">Closed</a>
+
+            <div class="mt-4">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exportLegalCaseModal">
+                    Export Legal Case Records
+                </button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#legalCaseReportModal">
+                    Generate Legal Case Report
+                </button>
+            </div>
         </div>
 
             <x-admin.table-data>
@@ -43,4 +52,132 @@
                 </tbody>
             </x-admin.table-data>
             <x-client.success-popup/>
+            
+    <div class="modal fade" id="exportLegalCaseModal" tabindex="-1" aria-labelledby="exportLegalCaseModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="exportLegalCaseModalLabel">Export LegalCase Records</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('legal.export') }}" method="GET">
+                        <div class="mb-3">
+                            <label for="export_type">Export Type:</label>
+                            <select class="form-control" id="export_type" name="export_type" required>
+                                <option value="monthly">Monthly</option>
+                                <option value="yearly">Yearly</option>
+                            </select>
+                        </div>
+    
+                        <!-- Month Picker (Shown for Monthly Export) -->
+                        <div class="mb-3" id="month_picker">
+                            <label for="month">Select Month:</label>
+                            <select class="form-control" name="month" id="month">
+                                @foreach(range(1, 12) as $m)
+                                    <option value="{{ str_pad($m, 2, '0', STR_PAD_LEFT) }}">
+                                        {{ date('F', mktime(0, 0, 0, $m, 1)) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+    
+                        <!-- Year Picker (Always Shown) -->
+                        <div class="mb-3">
+                            <label for="year">Select Year:</label>
+                            <select class="form-control" name="year" id="year" required>
+                                @foreach(range(date('Y'), date('Y') - 5) as $y)
+                                    <option value="{{ $y }}">{{ $y }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+    
+                        <button type="submit" class="btn btn-success">Download</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+   {{--  <div class="modal fade" id="LegalCaseReportModal" tabindex="-1" aria-labelledby="LegalCaseReportModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="LegalCaseReportModalLabel">Generate LegalCase Report</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('LegalCase.report') }}" method="GET">
+                        <div class="mb-3">
+                            <label for="report_type">Report Type:</label>
+                            <select class="form-control" id="report_type" name="report_type" required>
+                                <option value="monthly">Monthly</option>
+                                <option value="yearly">Yearly</option>
+                            </select>
+                        </div>
+
+                        <!-- Month Picker (Hidden for Yearly Report) -->
+                        <div class="mb-3" id="report_month_picker">
+                            <label for="month">Select Month:</label>
+                            <select class="form-control" name="month" id="month">
+                                @foreach(range(1, 12) as $m)
+                                    <option value="{{ str_pad($m, 2, '0', STR_PAD_LEFT) }}">
+                                        {{ date('F', mktime(0, 0, 0, $m, 1)) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Year Picker -->
+                        <div class="mb-3">
+                            <label for="year">Select Year:</label>
+                            <select class="form-control" name="year" id="year" required>
+                                @foreach(range(date('Y'), date('Y') - 5) as $y)
+                                    <option value="{{ $y }}">{{ $y }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-success">Generate Report</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div> --}}
 </x-admin.dashboard-layout>
+
+<!-- Script to Show/Hide Month Picker -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const exportType = document.getElementById('export_type');
+        const monthPicker = document.getElementById('month_picker');
+    
+        exportType.addEventListener('change', function () {
+            if (this.value === 'yearly') {
+                monthPicker.style.display = 'none';
+            } else {
+                monthPicker.style.display = 'block';
+            }
+        });
+    
+        // Ensure the correct option is displayed when page loads
+        if (exportType.value === 'yearly') {
+            monthPicker.style.display = 'none';
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const reportType = document.getElementById('report_type');
+        const monthPicker = document.getElementById('report_month_picker');
+
+        reportType.addEventListener('change', function () {
+            monthPicker.style.display = this.value === 'yearly' ? 'none' : 'block';
+        });
+
+        // Set initial visibility
+        monthPicker.style.display = reportType.value === 'yearly' ? 'none' : 'block';
+    });
+</script>
