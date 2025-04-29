@@ -42,7 +42,7 @@ class LegalCaseController extends Controller
         }
 
         // Prevent lazy loading
-        $cases = LegalCase::with('client')
+        $cases = LegalCase::with('client', 'assignedLawyer')
             ->whereBetween('filing_date', [$startDate, $endDate])
             ->get();
 
