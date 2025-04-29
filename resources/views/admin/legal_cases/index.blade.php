@@ -42,7 +42,21 @@
                             <td>{{ $case->title }}</td>
                             <td>{{ $case->client->first_name }} {{ $case->client->last_name }}</td>
                             <td>{{ $case->assignedLawyer->first_name }} {{ $case->assignedLawyer->last_name }}</td>
-                            <td>{{ ucfirst(str_replace('_', ' ', $case->status)) }}</td>
+                            <td>
+                                @php
+                                    $status = $case->status ?? 'n/a';
+                                    $badgeClass = match($status) {
+                                        'open' => 'bg-success',
+                                        'closed' => 'bg-danger',
+                                        'in_progress' => 'bg-warning text-dark',
+                                        default => 'bg-secondary'
+                                    };
+                                @endphp
+                            
+                                <span class="badge {{ $badgeClass }}">
+                                    {{ ucfirst($status) }}
+                                </span>
+                            </td>
                             <td>{{ $case->filing_date }}</td>
                             <td>
                                 <a href="{{ route('admin.legal.show', $case->id) }}" class="btn btn-success">View</a>
