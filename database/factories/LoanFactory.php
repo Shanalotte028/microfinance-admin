@@ -22,7 +22,7 @@ class LoanFactory extends Factory
         return [
             //
             'financial_id' => Financial::factory(),
-            'submitted_at' => $this->faker->date($format = 'Y-m-d', $max = 'now'),
+            'submitted_at' => $this->faker->dateTimeBetween('2020-01-01', '2025-12-31')->format('Y-m-d'),
             'loan_status' => fake()->randomElement(['pending','processing','approved', 'rejected', 'active', 'finished', 'default', 'review']),
             'principal_amount'=> fake()->numberBetween(1000,10000),
             'interest_rate'=> fake()->numberBetween(5,30),

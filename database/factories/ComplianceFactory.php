@@ -24,7 +24,7 @@ class ComplianceFactory extends Factory
             'document_type'=> $this->faker->randomElement(['ID Proof', 'Income Proof', 'Citizenship Proof']),
             'document_path'=> fake()->imageUrl($width = 640, $height = 480),    
             'document_status'=> 'pending',
-            'submission_date'=> fake()->date(),
+            'submission_date'=> $this->faker->date('Y-m-d', $this->faker->dateTimeBetween('2020-01-01', '2025-12-31')),
             'approval_date'=> null,
             'remarks'=> null,
         ];

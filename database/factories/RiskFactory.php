@@ -24,7 +24,7 @@ class RiskFactory extends Factory
             'confidence_level' => 0,
             'risk_level' => 'Medium Risk',
             'recommendation' => fake()->sentence(2),
-            'assessment_date' => fake()->dateTimeBetween('-4 years', 'now')->format('Y-m-d'),      
+            'assessment_date' => $this->faker->date('Y-m-d', $this->faker->dateTimeBetween('2020-01-01', '2025-12-31')),    
         ];
     }
 
