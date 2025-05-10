@@ -12,6 +12,7 @@ use App\Models\Risk;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -23,6 +24,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             RolesAndPermissionsSeeder::class,
+            ContractTemplateSeeder::class,
         ]);
         // Create an admin user
         $user = User::create([
@@ -100,19 +102,38 @@ class DatabaseSeeder extends Seeder
 
         
 
-        // Create a specific client
-     /*    Client::create([
-            'client_id' => 101,
-            'first_name' => 'Kram',
-            'last_name' => 'Trash',
-            'email' => 'kramtrash@gmail.com',
-            /* 'client_type' => 'Individual', */
-            /* 'password' => 'adminadmin1234',
-        ]); */
+       
+        
         
         // Pre-create a set of lawyers (to avoid creating a new one for each case)
         $lawyers = User::factory()->count(3)->create(['role' => 'Lawyer']);
         $field_officers = User::factory()->count(3)->create(['role' => 'Field Officer']);
+        
+        //individual client
+        $client = Client::create([
+            'client_id' => 101,
+            'first_name' => 'Kram',
+            'last_name' => 'Trash',
+            'email' => 'kramtrash@gmail.com',
+            'password' => Hash::make('adminadmin1234'),
+        ]);
+        
+        $client->address()->save(Address::factory()->make());
+        
+        $financial = Financial::factory()->create(['client_id' => $client->id]);
+        
+        $loans = Loan::factory()->count(3)->create(['financial_id' => $financial->id]);
+        
+        $financial->update([
+            'total_loan_amount_borrowed' => $loans->sum('principal_amount'),
+        ]);
+        
+        $client->compliance_records()->saveMany(Compliance::factory()->count(2)->make());
+        $client->risk_assessments()->saveMany(Risk::factory()->count(3)->make());
+        
+        $client->legalCases()->save(
+            LegalCase::factory()->make(['assigned_to' => $lawyers->random()->id])
+        );
         
         // Create 100 clients with related records
         Client::factory()
