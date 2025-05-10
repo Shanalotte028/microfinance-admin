@@ -81,11 +81,14 @@ class ContractController extends Controller
                 }
 
                 $contract->update($validated);
-
-                /*  activity()
-                    ->causedBy(auth()->user())
-                    ->performedOn($contract)
-                    ->log('Contract updated'); */
+                $authUser = Auth::user();
+                AuditHelper::log(
+                    'Contract Updated',
+                    'Contract Management',
+                    "User $authUser->id $authUser->email ($authUser->role) updated a contract for Client ID: $contract->client_id",
+                    null,
+                    $contract->toArray()
+                );
             });
 
             return redirect()->route('admin.contracts.show', $contract->id)
