@@ -14,6 +14,7 @@ use App\Http\Controllers\ClientAuth\ClientForgotPasswordController;
 use App\Http\Controllers\ClientAuth\ClientResetPasswordController;
 use App\Http\Controllers\ClientAuth\ClientSessionController;
 use App\Http\Controllers\ClientAuth\ClientUserRegistrationController;
+use App\Http\Controllers\ContractController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FieldInvestigationController;
 use App\Http\Controllers\LegalCaseController;
@@ -223,14 +224,25 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/admin/reject-legal-case/{id}', [AdminApprovalController::class, 'rejectLegalCase'])
     ->middleware('can:approve.legal_cases')
     ->name('admin.reject.legal_cases');
+
+    // Contract Management
+    Route::get('admin/contracts', [ContractController::class, 'index'])->name('admin.contracts.index');
+    Route::get('admin/contracts/create', [ContractController::class, 'create'])->name('admin.contracts.create');
+    Route::post('admin/contracts', [ContractController::class, 'store'])->name('admin.contracts.store');
+    Route::get('admin/contracts/{contract}', [ContractController::class, 'show'])->name('admin.contracts.show');
+    Route::get('admin/contracts/{contract}/edit', [ContractController::class, 'edit'])->name('admin.contracts.edit');
+    Route::put('admin/contracts/{contract}/update', [ContractController::class, 'update'])->name('admin.contracts.update');
+    Route::post('admin/contracts/{contract}/send', [ContractController::class, 'sendForSignature'])->name('admin.contracts.send');
+
+    Route::get('admin/contract-templates/{template}/fields', [ContractController::class, 'getTemplateFields']);
 });
 
 // Routes for guest users
 Route::middleware(['guest'])->group(function () {
-    
     // Login
     Route::get('admin/login', [SessionController::class, 'create'])->name('login');
     Route::post('admin/login', [SessionController::class, 'store'])->middleware('throttle:5,1')->name('admin.login.post');
+    
 });
 
 // Password Reset
@@ -238,6 +250,11 @@ Route::get('admin/password/reset', [ForgotPasswordController::class, 'create'])-
 Route::post('admin/password/email', [ForgotPasswordController::class, 'store'])->name('password.email');
 Route::get('admin/password/reset/{token}', [ResetPasswordController::class, 'create'])->name('password.reset');
 Route::post('admin/reset', [ResetPasswordController::class, 'update'])->name('password.update');
+
+// Contract Controller
+Route::get('admin/contracts/{contract}/download', [ContractController::class, 'download'])->name('admin.contracts.download');
+Route::get('admin/contracts/{contract}/sign', [ContractController::class, 'showSigningPage'])->name('contracts.sign');
+Route::post('admin/contracts/{contract}/sign', [ContractController::class, 'processSignature'])->name('contracts.process-signature');
 
 
 /* // Client Routes
