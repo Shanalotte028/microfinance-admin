@@ -136,6 +136,11 @@ class ComplianceController extends Controller
             'Compliance Management',
             "User $authUser->id $authUser->email ($authUser->role) Approved Compliance Documents of Client ID: $client->id ({$client->first_name} {$client->last_name})"
         );
+        AuditHelper::log(
+            'Contract Created',
+            'Contract Management',
+            "User $authUser->id $authUser->email ($authUser->role) Created a contract for Client ID: $client->id ({$client->first_name} {$client->last_name})"
+        );
 
         DB::commit();
 
