@@ -32,7 +32,7 @@
 
                 <x-admin.card-table-info-tr>
                     <x-slot:heading>Client</x-slot:heading>
-                    <a href="{{ route('admin.client.show', $contract->client_id) }}" 
+                    <a href="{{ route('admin.client.show', $contract->client) }}" 
                        class="text-light">
                        {{ $contract->client->first_name }} {{ $contract->client->last_name }}
                     </a>
