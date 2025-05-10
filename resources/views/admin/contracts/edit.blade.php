@@ -34,7 +34,7 @@
                         @php
                             $statusColor = match($contract->status) {
                                 'active' => 'success',
-                                'pending' => 'warning',
+                                'pending_signature' => 'warning',
                                 'expired' => 'danger',
                                 default => 'secondary',
                             };
