@@ -129,17 +129,12 @@ class ComplianceController extends Controller
          $contractController = new ContractController();
 
          // Call the createContractForClient method
-         $contractController->createContractForClient($client);
+         $contractController->createContractForClient($client, $authUser);
 
         AuditHelper::log(
             'Approve Compliance',
             'Compliance Management',
             "User $authUser->id $authUser->email ($authUser->role) Approved Compliance Documents of Client ID: $client->id ({$client->first_name} {$client->last_name})"
-        );
-        AuditHelper::log(
-            'Contract Created',
-            'Contract Management',
-            "User $authUser->id $authUser->email ($authUser->role) Created a contract for Client ID: $client->id ({$client->first_name} {$client->last_name})"
         );
 
         DB::commit();

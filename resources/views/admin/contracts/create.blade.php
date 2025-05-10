@@ -75,8 +75,8 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="description" class="form-label text-light">Additional Notes</label>
-                    <textarea class="form-control" id="description" name="description" rows="3">{{ old('description') }}</textarea>
+                    <label for="description" class="form-label text-light">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="3" required>{{ old('description') }}</textarea>
                 </div>
 
                 <!-- Dynamic Fields Section -->

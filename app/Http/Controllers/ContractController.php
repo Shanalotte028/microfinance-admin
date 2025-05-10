@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\AuditHelper;
 use App\Jobs\SendContractSigningMail;
 use App\Mail\ContractsSigningMail;
 use App\Models\Client;
@@ -19,11 +20,13 @@ use Carbon\Carbon;
 
 class ContractController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $contracts = Contract::with('client')->get(); // eager load client to avoid N+1 problem
-        return view('admin/contracts.index',compact('contracts'));
+        return view('admin/contracts.index', compact('contracts'));
     }
-    public function show(Contract $contract){
+    public function show(Contract $contract)
+    {
         return view('admin/contracts.show', compact('contract'));
     }
 
@@ -31,7 +34,7 @@ class ContractController extends Controller
     {
         return view('admin.contracts.edit', compact('contract'));
     }
-    
+
     public function update(Request $request, Contract $contract)
     {
         $rules = [
@@ -55,22 +58,22 @@ class ContractController extends Controller
                 if ($contract->status === 'draft') {
                     // Handle terms - decode if it's a string
                     $terms = $validated['terms'];
-                    
+
                     if (is_string($terms)) {
                         $terms = json_decode($terms, true);
-                        
+
                         // Validate JSON decoding
                         if (json_last_error() !== JSON_ERROR_NONE) {
                             throw new \Exception('Invalid terms format');
                         }
                     }
-    
+
                     // Process content
                     $content = $contract->template->content;
                     foreach ($terms as $key => $value) {
                         $content = str_replace("{{$key}}", $value, $content);
                     }
-    
+
                     $contract->update([
                         'content' => $content,
                         'terms' => $terms // Store as array
@@ -79,7 +82,7 @@ class ContractController extends Controller
 
                 $contract->update($validated);
 
-            /*  activity()
+                /*  activity()
                     ->causedBy(auth()->user())
                     ->performedOn($contract)
                     ->log('Contract updated'); */
@@ -89,20 +92,20 @@ class ContractController extends Controller
                 ->with('success', 'Contract updated successfully');
         } catch (\Exception $e) {
             Log::error("Contract update failed: {$e->getMessage()}");
-            return back()->withInput()->with('error', 'Failed to update contract: '.$e->getMessage());
+            return back()->withInput()->with('error', 'Failed to update contract: ' . $e->getMessage());
         }
     }
-    
+
     public function storeAmendment(Request $request, Contract $contract)
     {
         abort_if($contract->status !== 'active', 403);
-    
+
         $validated = $request->validate([
             'reason' => 'required|string|max:500',
             'new_terms' => 'required|json',
             'effective_date' => 'required|date|after_or_equal:today',
         ]);
-    
+
         try {
             $amendment = $contract->amendments()->create([
                 'old_terms' => $contract->terms,
@@ -111,10 +114,10 @@ class ContractController extends Controller
                 'effective_date' => $validated['effective_date'],
                 'requested_by' => Auth::user()->id,
             ]);
-    
+
             // Notify approvers
             // Notification::send($approvers, new ContractAmendmentRequested($amendment));
-    
+
             return redirect()->route('admin.contracts.show', $contract->id)
                 ->with('success', 'Amendment request submitted for approval');
         } catch (\Exception $e) {
@@ -123,7 +126,8 @@ class ContractController extends Controller
         }
     }
     //
-    public function create(){
+    public function create()
+    {
         return view('admin.contracts.create', [
             'clients' => Client::all(),
             'templates' => ContractTemplate::all()
@@ -131,95 +135,105 @@ class ContractController extends Controller
     }
 
     public function store(Request $request)
-{
-    $validated = $request->validate([
-        'client_id' => 'required|exists:clients,id',
-        'template_id' => 'required|exists:contract_templates,id',
-        'title' => 'required|string|max:255',
-        'start_date' => 'required|date',
-        'end_date' => 'required|date|after:start_date',
-        'auto_renew' => 'nullable|boolean',
-        'description' => 'nullable|string',
-        'terms' => 'required|array',
-    ]);
-
-    try {
-        DB::beginTransaction();
-
-        // Get template and process content
-        $template = ContractTemplate::findOrFail($validated['template_id']);
-        $content = $template->content;
-        
-        foreach ($validated['terms'] as $key => $value) {
-            $content = str_replace("{{$key}}", $value, $content);
-        }
-
-        // Create contract with signing fields
-        $contract = Contract::create([
-            'client_id' => $validated['client_id'],
-            'template_id' => $validated['template_id'],
-            'title' => $validated['title'],
-            'content' => $content,
-            'terms' => $validated['terms'],
-            'status' => 'pending_signature', // Set initial status
-            'start_date' => $validated['start_date'],
-            'end_date' => $validated['end_date'],
-            'auto_renew' => $validated['auto_renew'] ?? false,
-            'description' => $validated['description'],
-            'created_by' => Auth::user()->id,
-            'signing_token' => Str()->random(40),
-            'signing_expires_at' => now()->addDays(3), // Set expiry here
-            'signing_sent_at' => now(),
+    {
+        $authUser = Auth::user();
+    
+        $validated = $request->validate([
+            'client_id' => 'required|exists:clients,id',
+            'template_id' => 'required|exists:contract_templates,id',
+            'title' => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after:start_date',
+            'auto_renew' => 'nullable|boolean',
+            'description' => 'nullable|string',
+            'terms' => 'required|array',
         ]);
 
-        // Send signing email
-        dispatch(new SendContractSigningMail($contract));
+        try {
+            DB::beginTransaction();
 
-        DB::commit();
+            // Get template and process content
+            $template = ContractTemplate::findOrFail($validated['template_id']);
+            $content = $template->content;
 
-        return redirect()->route('admin.contracts.index')
-            ->with('success', 'Contract created and signing request sent!');
+            $content = str_replace('@{{', '{{', $content); // remove '@'
+            foreach ($validated['terms'] as $key => $value) {
+                $content = preg_replace('/\{\{\s*' . preg_quote($key) . '\s*\}\}/', $value, $content);
+            }
 
-    } catch (\Exception $e) {
-        DB::rollBack();
-        Log::error('Contract creation failed: ' . $e->getMessage());
-        return back()->withInput()
-            ->with('error', 'Error: ' . $e->getMessage());
+            // Create contract with signing fields
+            $contract = Contract::create([
+                'client_id' => $validated['client_id'],
+                'template_id' => $validated['template_id'],
+                'title' => $validated['title'],
+                'content' => $content,
+                'terms' => $validated['terms'],
+                'status' => 'pending_signature', // Set initial status
+                'start_date' => $validated['start_date'],
+                'end_date' => $validated['end_date'],
+                'auto_renew' => $validated['auto_renew'] ?? false,
+                'description' => $validated['description'],
+                'created_by' => Auth::user()->id,
+                'signing_token' => Str()->random(40),
+                'signing_expires_at' => now()->addDays(3), // Set expiry here
+                'signing_sent_at' => now(),
+            ]);
+
+            AuditHelper::log(
+                'Contract Created',
+                'Contract Management',
+                "User $authUser->id $authUser->email ($authUser->role) Created a contract for Client ID: $contract->client_id",
+                null,
+                $contract->toArray()
+            );
+
+            // Send signing email
+            dispatch(new SendContractSigningMail($contract));
+
+            DB::commit();
+
+            return redirect()->route('admin.contracts.index')
+                ->with('success', 'Contract created and signing request sent!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Contract creation failed: ' . $e->getMessage());
+            return back()->withInput()
+                ->with('error', 'Error: ' . $e->getMessage());
+        }
     }
-}
 
-public function showSigningPage(Contract $contract, Request $request)
-{
-    if ($contract->client_signed_at) {
-        return view('admin/contracts.already-signed', compact('contract'));
+    public function showSigningPage(Contract $contract, Request $request)
+    {
+        if ($contract->client_signed_at) {
+            return view('admin/contracts.already-signed', compact('contract'));
+        }
+
+        return view('admin/contracts.sign', [
+            'contract' => $contract,
+            'token' => $request->token
+        ]);
     }
-    
-    return view('admin/contracts.sign', [
-        'contract' => $contract,
-        'token' => $request->token
-    ]);
-}
 
-public function processSignature(Request $request, Contract $contract)
-{
-    $validated = $request->validate([
-        'signature_data' => 'required|regex:/^data:image\/svg\+xml;base64,.+/',
-        'token' => 'required'
-    ]);
-    
-    $contract->update([
-        'status' => 'active',
-        'signature_data' => $validated['signature_data'],
-        'client_signed_at' => now(),
-        'signer_ip' => $request->ip(),
-        'signer_user_agent' => $request->userAgent(),
-        'signing_token' => null, // Invalidate token
-    ]);
+    public function processSignature(Request $request, Contract $contract, $user)
+    {
+        $validated = $request->validate([
+            'signature_data' => 'required|regex:/^data:image\/svg\+xml;base64,.+/',
+            'token' => 'required'
+        ]);
 
-    $contract->createdBy->notify(new ContractSignedNotification($contract));
-    
-    // Generate signed PDF
-    /* $pdf = PDF::loadView('admin/contracts.signed-pdf', [
+        $contract->update([
+            'status' => 'active',
+            'signature_data' => $validated['signature_data'],
+            'client_signed_at' => now(),
+            'signer_ip' => $request->ip(),
+            'signer_user_agent' => $request->userAgent(),
+            'signing_token' => null, // Invalidate token
+        ]);
+
+        $contract->createdBy->notify(new ContractSignedNotification($contract));
+
+        // Generate signed PDF
+        /* $pdf = PDF::loadView('admin/contracts.signed-pdf', [
         'contract' => $contract
     ]);
 
@@ -228,10 +242,11 @@ public function processSignature(Request $request, Contract $contract)
         "contract-{$contract->id}-signed.pdf"
     ); */
 
-    return redirect()->back();
-}
+        return redirect()->back();
+    }
 
-    public function download(Contract $contract){
+    public function download(Contract $contract)
+    {
         $pdf = PDF::loadView('admin/contracts.signed-pdf', [
             'contract' => $contract
         ]);
@@ -239,57 +254,65 @@ public function processSignature(Request $request, Contract $contract)
         return $pdf->download("contract-{$contract->id}.pdf");
     }
 
-    public function createContractForClient(Client $client)
-{
-    $loan = optional(optional($client->financial_details)->loans()->latest('submitted_at')->first());
-    
+    public function createContractForClient(Client $client, $user)
+    {
+        $loan = optional(optional($client->financial_details)->loans()->latest('submitted_at')->first());
 
-    if (!$loan) {
-        throw new \Exception('No loan found for contract generation.');
+
+        if (!$loan) {
+            throw new \Exception('No loan found for contract generation.');
+        }
+
+        $template = ContractTemplate::where('slug', 'loan-agreement')->firstOrFail(); // or by ID
+
+        $terms = [
+            'client_name' => $client->full_name ?? "{$client->first_name} {$client->last_name}",
+            'submitted_at' => Carbon::parse($loan->submitted_at)->format('F j, Y'),
+            'principal_amount' => number_format($loan->principal_amount, 2),
+            'interest_rate' => $loan->interest_rate,
+            'loan_term' => $loan->loan_term,
+            'term_type' => ucfirst($loan->term_type),
+            'payment_frequency_method' => ucfirst($loan->payment_frequency_method),
+            'installment' => number_format($loan->installment, 2),
+            'end_date' => $loan->end_date ? Carbon::parse($loan->end_date)->format('F j, Y') : 'N/A',
+            'loan_description' => $loan->loan_description ?? 'N/A',
+        ];
+
+        $content = $template->content;
+        $content = str_replace('@{{', '{{', $content); // remove '@'
+        foreach ($terms as $key => $value) {
+            $content = preg_replace('/\{\{\s*' . preg_quote($key) . '\s*\}\}/', $value, $content);
+        }
+
+        $contract = Contract::create([
+            'client_id' => $client->id,
+            'template_id' => $template->id,
+            'title' => "Loan Agreement for {$terms['client_name']}",
+            'content' => $content,
+            'terms' => $terms,
+            'status' => 'pending_signature',
+            'start_date' => now(),
+            'end_date' => now()->addMonths($loan->loan_term),
+            'auto_renew' => false,
+            'description' => $loan->loan_description,
+            'created_by' => Auth::id(),
+            'signing_token' => Str()->random(40),
+            'signing_expires_at' => now()->addDays(3),
+            'signing_sent_at' => now(),
+        ]);
+
+        AuditHelper::log(
+            'Contract Created',
+            'Contract Management',
+            "User $user->id $user->email ($user->role) Created a contract for Client ID: $contract->client_id",
+            null,
+            $contract->toArray()
+        );
+
+
+
+        dispatch(new SendContractSigningMail($contract));
     }
-
-    $template = ContractTemplate::where('slug', 'loan-agreement')->firstOrFail(); // or by ID
-
-    $terms = [
-        'client_name' => $client->full_name ?? "{$client->first_name} {$client->last_name}",
-        'submitted_at' => Carbon::parse($loan->submitted_at)->format('F j, Y'),
-        'principal_amount' => number_format($loan->principal_amount, 2),
-        'interest_rate' => $loan->interest_rate,
-        'loan_term' => $loan->loan_term,
-        'term_type' => ucfirst($loan->term_type),
-        'payment_frequency_method' => ucfirst($loan->payment_frequency_method),
-        'installment' => number_format($loan->installment, 2),
-        'end_date' => $loan->end_date ? Carbon::parse($loan->end_date)->format('F j, Y') : 'N/A',
-        'loan_description' => $loan->loan_description ?? 'N/A',
-    ];
-
-    $content = $template->content;
-    foreach ($terms as $key => $value) {
-        $content = preg_replace('/@?\{\{\s*' . preg_quote($key) . '\s*\}\}/', e($value), $content);
-        
-    }
-
-    $contract = Contract::create([
-        'client_id' => $client->id,
-        'template_id' => $template->id,
-        'title' => "Loan Agreement for {$terms['client_name']}",
-        'content' => $content,
-        'terms' => $terms,
-        'status' => 'pending_signature',
-        'start_date' => now(),
-        'end_date' => now()->addMonths($loan->loan_term),
-        'auto_renew' => false,
-        'description' => $loan->loan_description,
-        'created_by' => Auth::id(),
-        'signing_token' => Str()->random(40),
-        'signing_expires_at' => now()->addDays(3),
-        'signing_sent_at' => now(),
-    ]);
-
-    
-
-    dispatch(new SendContractSigningMail($contract));
-}
 
 
 
