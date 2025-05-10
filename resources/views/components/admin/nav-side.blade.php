@@ -80,6 +80,33 @@
                         </div>
                     @endcan
 
+                    {{-- Contract Management --}}
+                        <div class="sb-sidenav-menu-heading">Contract Management</div>
+                        <a class="nav-link {{ request()->routeIs('admin.contracts.*') ? 'active' : 'collapsed' }}" href="#"
+                            data-bs-toggle="collapse" data-bs-target="#collapseContracts"
+                            aria-expanded="{{ request()->routeIs('admin.contracts.*') ? 'true' : 'false' }}"
+                            aria-controls="collapseContracts">
+                            <div class="sb-nav-link-icon"><i class="bi bi-person-gear"></i></div>
+                            Contract Management
+                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <div class="collapse {{ request()->routeIs('admin.contracts.*') ? 'show' : '' }}" id="collapseContracts"
+                            aria-labelledby="headingContracts" data-bs-parent="#sidenavAccordion">
+                            <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link {{ request()->routeIs('admin.user.index') ? 'active' : '' }}"
+                                        href="{{ route('admin.contracts.index') }}">
+                                        List Contracts
+                                    </a>
+                                    <a class="nav-link {{ request()->routeIs('admin.contracts.create') ? 'active' : '' }}"
+                                        href="{{ route('admin.contracts.create') }}">
+                                        Create Contracts
+                                    </a>
+                            </nav>
+                        </div>
+                    
+                   
+
+
                     <!-- Legal Management -->
                     @can('legal.index')
                         <div class="sb-sidenav-menu-heading">Legal Management</div>
