@@ -31,11 +31,28 @@
                 </x-admin.card-table-info-tr>
 
                 <x-admin.card-table-info-tr>
-                    <x-slot:heading>Client</x-slot:heading>
-                    <a href="{{ route('admin.client.show', $contract->client) }}" 
-                       class="text-light">
-                       {{ $contract->client->first_name }} {{ $contract->client->last_name }}
-                    </a>
+                    @php
+                        $person = optional($contract->client) ?: optional($contract->user);
+                        $heading = $contract->client ? 'Client' : ($contract->user ? 'User' : 'Government/Vendor');
+                        if ($contract->client) {
+                            $route = route('admin.client.show', $contract->client);
+                            $fullName = $contract->client->first_name . ' '. $contract->client->last_name;
+                        } elseif ($contract->user) {
+                            $route = route('admin.user.show', $contract->user);
+                            $fullName = $contract->user->first_name . ' '. $contract->user->last_name;
+                        }else
+                            $route = '';
+                            $fullName = $contract->vendor_name ? $contract->vendor_name : $contract->government_agency ;
+                    @endphp
+                
+                    <x-slot:heading>{{ $heading }}</x-slot:heading>
+                    @if($person)
+                        <a href="{{ $route }}" class="text-light">
+                            {{ $fullName }}
+                        </a>
+                    @else
+                        <span>-</span>
+                    @endif
                 </x-admin.card-table-info-tr>
 
                 <x-admin.card-table-info-tr>
@@ -53,7 +70,7 @@
                     </span>
                 </x-admin.card-table-info-tr>
 
-                <x-admin.card-table-info-tr>
+                {{-- <x-admin.card-table-info-tr>
                     <x-slot:heading>Start Date</x-slot:heading>
                     {{ $contract->start_date->format('M d, Y') }}
                 </x-admin.card-table-info-tr>
@@ -67,7 +84,7 @@
                         @endif
                     </span>
                 </x-admin.card-table-info-tr>
-
+ --}}
                 <x-admin.card-table-info-tr>
                     <x-slot:heading>Document</x-slot:heading>
                     <a href="{{ route('admin.contracts.download', $contract->id) }}" 
@@ -76,10 +93,10 @@
                     </a>
                 </x-admin.card-table-info-tr>
 
-                <x-admin.card-table-info-tr>
+               {{--  <x-admin.card-table-info-tr>
                     <x-slot:heading>Description</x-slot:heading>
                     <div style="white-space: pre-line;">{{ $contract->description }}</div>
-                </x-admin.card-table-info-tr>
+                </x-admin.card-table-info-tr> --}}
             </x-admin.card-table-info>
             <div class="card">
                 <div class="card-body">

@@ -8,18 +8,25 @@
                 <x-slot:heading>Contracts List</x-slot:heading>
                     <x-slot:table_row>
                         <th>Contract ID</th>
-                        <th>Client</th>
+                        <th>Party</th>
                         <th>Status</th>
-                        <th>Expiry</th>
                         <th>Actions</th>
                     </x-slot:table_row>
                 @foreach ($contracts as $contract)
                     <tr>
                         <td>{{ $contract->id }}</td>
-                        <td>{{ $contract->client->first_name }}</td>
+                        @if(isset($contract->client))
+                            <td>{{ $contract->client->first_name }} {{ $contract->client->last_name }} (Client)</td>
+                        @elseif(isset($contract->user))
+                            <td>{{ $contract->user->first_name }} {{ $contract->user->last_name }} (Employee)</td>
+                        @elseif($contract->template->id === 3)
+                            <td>{{$contract->vendor_name}}</td>
+                        @else
+                            <td>{{ $contract->government_agency ?? '-'}} </td>
+                        @endif
                         <td>
                             @php
-                                $status = $contract->status ?? 'n/a';
+                                $status = $contract->status ?? '-';
                                 $badgeClass = match($status) {
                                     'active' => 'bg-success',
                                     'terminated' => 'bg-danger',
@@ -28,14 +35,12 @@
                                     'draft' => 'bg-secondary'
                                 };
                             @endphp
-                        
                             <span class="badge {{ $badgeClass }}">
                                 {{ ucfirst($status) }}
                             </span>
                         </td>
-                        <td>{{ $contract->end_date->diffForHumans()}}</td>
                         <td>
-                            <a href="{{ route('admin.contracts.show', $contract->id) }}" class="btn btn-success">View</a>
+                            <a href="{{ route('admin.contracts.show', $contract) }}" class="btn btn-success">View</a>
                             {{-- @if($contract->status === 'draft')
                                 <a href="{{ route('contracts.send', $contract->id) }}" class="btn btn-primary">Send for Signature</a>
                             @endif --}}
