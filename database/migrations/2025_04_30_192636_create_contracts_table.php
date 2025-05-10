@@ -13,19 +13,21 @@ return new class extends Migration
     {
         Schema::create('contracts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('client_id')->constrained()->onDelete('cascade');
+            $table->foreignId('client_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->foreignId('template_id')->constrained('contract_templates');
             $table->foreignId('compliance_record_id')->nullable()->constrained(); // Link to compliance
-            $table->foreignId('legal_case_id')->nullable()->constrained(); // Link to legal cases
-            $table->string('title');
+            /* $table->foreignId('legal_case_id')->nullable()->constrained(); */ // Link to legal cases
             $table->text('content');
             $table->json('terms')->nullable();
             $table->enum('status', ['draft', 'pending_signature', 'active', 'expired', 'terminated']);
+            $table->string('title');
+            /* 
             $table->date('start_date');
             $table->date('end_date');
             $table->boolean('auto_renew');
             $table->text('description');
-            /* $table->string('signed_file_path')->nullable(); */ // Stores signed PDF
+            $table->string('signed_file_path')->nullable();  */ // Stores signed PDF
             $table->string('signing_token')->nullable()->unique();
             $table->timestamp('signing_expires_at')->nullable();
             $table->timestamp('signing_sent_at')->nullable();

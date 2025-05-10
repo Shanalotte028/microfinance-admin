@@ -9,6 +9,7 @@ use App\Models\Client;
 use App\Models\Compliance;
 use App\Models\Contract;
 use App\Models\ContractTemplate;
+use App\Models\User;
 use App\Notifications\ContractSignedNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,12 +18,13 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Carbon\Carbon;
+use phpDocumentor\Reflection\Types\Nullable;
 
 class ContractController extends Controller
 {
     public function index()
     {
-        $contracts = Contract::with('client')->get(); // eager load client to avoid N+1 problem
+        $contracts = Contract::with('client', 'user', 'template')->get(); // eager load client to avoid N+1 problem
         return view('admin/contracts.index', compact('contracts'));
     }
     public function show(Contract $contract)
@@ -133,23 +135,28 @@ class ContractController extends Controller
     {
         return view('admin.contracts.create', [
             'clients' => Client::all(),
+            'users'=> User::all(),
             'templates' => ContractTemplate::all()
         ]);
     }
 
     public function store(Request $request)
     {
+        
+        
         $authUser = Auth::user();
     
         $validated = $request->validate([
-            'client_id' => 'required|exists:clients,id',
+            'client_id' => 'nullable|exists:clients,id',
+            'user_id' => 'nullable|exists:users,id',
+            'compliance_record_id' => 'nullable|exist:compliance,id',
             'template_id' => 'required|exists:contract_templates,id',
             'title' => 'required|string|max:255',
-            'start_date' => 'required|date',
+            'terms' => 'required|array',
+            /* 'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
             'auto_renew' => 'nullable|boolean',
-            'description' => 'nullable|string',
-            'terms' => 'required|array',
+            'description' => 'nullable|string', */
         ]);
 
         try {
@@ -165,27 +172,37 @@ class ContractController extends Controller
             }
 
             // Create contract with signing fields
-            $contract = Contract::create([
-                'client_id' => $validated['client_id'],
+            $contractData = [
                 'template_id' => $validated['template_id'],
                 'title' => $validated['title'],
                 'content' => $content,
                 'terms' => $validated['terms'],
                 'status' => 'pending_signature', // Set initial status
-                'start_date' => $validated['start_date'],
-                'end_date' => $validated['end_date'],
-                'auto_renew' => $validated['auto_renew'] ?? false,
-                'description' => $validated['description'],
                 'created_by' => Auth::user()->id,
                 'signing_token' => Str()->random(40),
                 'signing_expires_at' => now()->addDays(3), // Set expiry here
                 'signing_sent_at' => now(),
-            ]);
+                /* 'start_date' => $validated['start_date'],
+                'end_date' => $validated['end_date'],
+                'auto_renew' => $validated['auto_renew'] ?? false,
+                'description' => $validated['description'], */
+            ];
+
+              // Set either client_id or user_id based on template type
+                if ($template->slug === 'loan-agreement') {
+                    $contractData['client_id'] = $validated['client_id'];
+                } elseif ($template->slug === 'employment-agreement') {
+                    $contractData['user_id'] = $validated['user_id'];
+                }
+
+            /* dd($contractData); */
+
+            $contract = Contract::create($contractData);
 
             AuditHelper::log(
                 'Contract Created',
                 'Contract Management',
-                "User $authUser->id $authUser->email ($authUser->role) Created a contract for Client ID: $contract->client_id",
+                "User $authUser->id $authUser->email ($authUser->role) Created a contract",
                 null,
                 $contract->toArray()
             );
