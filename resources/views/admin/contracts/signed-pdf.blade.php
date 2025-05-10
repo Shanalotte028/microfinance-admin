@@ -26,7 +26,7 @@
                 </td>
                 <td width="50%">
                     <strong>Date Signed</strong><br>
-                    {{ $contract->client_signed_at->format('M j, Y') ?? 'n/a' }}
+                    {{ optional($contract->client_signed_at)->format('M j, Y') ?? 'n/a' }}
                 </td>
             </tr>
         </table>
