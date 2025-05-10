@@ -11,6 +11,7 @@ use App\Mail\KycConfirmationEmail;
 use App\Models\Address;
 use App\Models\Client;
 use App\Models\Compliance;
+use App\Models\Contract;
 use App\Models\FieldInvestigation;
 use App\Models\User;
 use Carbon\Carbon;
@@ -91,43 +92,63 @@ class ComplianceController extends Controller
         return view('client/compliance',compact('compliances'));
     }
 
-    public function approveBatch(Request $request, Client $client){
-        $authUser = Auth::user();
-        Log::debug('Approval Request Data:', $request->all());
-        $validated = $request->validate([
-            'compliance_type' => 'required|string',
-            'submission_date' => 'required|date',
-            'remarks' => 'nullable|string|max:500'
+    public function approveBatch(Request $request, Client $client)
+{
+    $authUser = Auth::user();
+
+    $validated = $request->validate([
+        'compliance_type' => 'required|string',
+        'submission_date' => 'required|date',
+        'remarks' => 'nullable|string|max:500'
+    ]);
+
+    $submissionDate = Carbon::parse($validated['submission_date'])->startOfDay();
+
+    $records = $client->compliance_records()
+        ->where('compliance_type', $validated['compliance_type'])
+        ->where('submission_date', '>=', $submissionDate)
+        ->where('submission_date', '<', $submissionDate->copy()->addDay())
+        ->where('document_status', 'pending')
+        ->get();
+
+    if ($records->isEmpty()) {
+        return redirect()->back()
+            ->with('error', 'No pending documents found for the selected date');
+    }
+
+    DB::beginTransaction();
+
+    try {
+        $records->each->update([
+            'document_status' => 'approved',
+            'approval_date' => now(),
+            'remarks' => $validated['remarks'] ?? null
         ]);
 
-        $submissionDate = Carbon::parse($validated['submission_date'])->startOfDay();
+         // Create an instance of the ContractController
+         $contractController = new ContractController();
 
-        $records = $client->compliance_records()
-            ->where('compliance_type', $validated['compliance_type'])
-            ->where('submission_date', '>=', $submissionDate)
-            ->where('submission_date', '<', $submissionDate->copy()->addDay())
-            ->where('document_status', 'pending')
-            ->get();
+         // Call the createContractForClient method
+         $contractController->createContractForClient($client);
 
-        if ($records->isEmpty()) {
-            return redirect()->back()
-                ->with('error', 'No pending documents found for the selected date');
-        }
+        AuditHelper::log(
+            'Approve Compliance',
+            'Compliance Management',
+            "User $authUser->id $authUser->email ($authUser->role) Approved Compliance Documents of Client ID: $client->id ({$client->first_name} {$client->last_name})"
+        );
 
-        DB::transaction(function () use ($records, $validated) {
-            $records->each->update([
-                'document_status' => 'approved',
-                'approval_date' => now(),
-                'remarks' => $validated['remarks'] ?? null
-            ]);
-        });
+        DB::commit();
 
-        AuditHelper::log('Approve Compliance', 'Compliance Management', 
-        "User $authUser->id $authUser->email ($authUser->role) Approved Compliance Documents of Client ID: $client->id ($client->first_name $client->last_name)");
-        
         return redirect()->back()
-            ->with('success', "Successfully approved {$records->count()} documents");
+            ->with('success', "Successfully approved {$records->count()} documents and sent contract for signature");
+    } catch (\Exception $e) {
+        DB::rollBack();
+        Log::error('Approval or contract generation failed: ' . $e->getMessage());
+
+        return redirect()->back()->with('error', 'Approval failed: ' . $e->getMessage());
     }
+}
+
 
     public function rejectBatch(Request $request, Client $client){
         $authUser = Auth::user();
@@ -452,7 +473,7 @@ class ComplianceController extends Controller
                     'remarks' => $request->remarks,
                 ]);
     
-                dispatch(new SendComplianceRejectedEmail($client, $compliance, $request->remarks));
+                dispatch(new SendCofmplianceRejectedEmail($client, $compliance, $request->remarks));
     
                 AuditHelper::log('Reject Compliance', 'Compliance Management', 
                 "User $userAdmin->id ($userAdmin->email) rejected $compliance->document_type of Client ID: $client->id ($client->first_name $client->last_name)");
