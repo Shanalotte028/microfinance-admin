@@ -115,7 +115,7 @@
                     <div class="row">
                         <div class="col-md-6 text-center">
                             <div class="border p-3 mb-3 rounded">
-                                <h5>Client Signature</h5>
+                                <h5>Party Signature</h5>
                                 @if($contract->party_signed_at)
                                     <p class="text-success">Signed on {{ $contract->party_signed_at->format('M d, Y') }}</p>
                                 @else
