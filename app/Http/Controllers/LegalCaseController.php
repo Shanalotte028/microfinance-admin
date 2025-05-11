@@ -76,17 +76,16 @@ class LegalCaseController extends Controller
 
         if ($user->role === 'Lawyer') {
             /** @var User $user */
-            $cases = $user->legalCases()
-                ->with(['client', 'assignedLawyer'])
-                ->orderBy('created_at', 'desc') // Order by latest first
+            $cases = $user->assignedCases()
+                ->with(['client', 'employee', 'assignedLawyer'])
+                ->orderBy('created_at', 'desc')
                 ->get();
         } else {
-            // Query the legal cases based on the status
-            $cases = LegalCase::with(['client', 'assignedLawyer'])
+            $cases = LegalCase::with(['client', 'employee', 'assignedLawyer'])
                 ->when($status, function ($query, $status) {
                     return $query->where('status', $status);
                 })
-                ->orderBy('created_at', 'desc') // Order by latest first
+                ->orderBy('created_at', 'desc')
                 ->get();
         }
 
@@ -98,17 +97,20 @@ class LegalCaseController extends Controller
     public function create(){
 
         $clients = Client::all();
+        $employees = User::all();
         $lawyers = User::where('role', 'lawyer')->get(); // Assuming you have a 'role' column
 
-        return view('admin/legal_cases.create', compact('clients', 'lawyers'));
+        return view('admin/legal_cases.create', compact('clients', 'lawyers', 'employees'));
     }
 
     // Store a new legal case
     public function store(Request $request){
         $adminUser = Auth::user();
     
-        $request->validate([
-            'client_id' => 'required|exists:clients,id',
+        $validated = $request->validate([
+            'recipient_type' => 'required|in:client,employee',
+            'client_id' => 'required_if:recipient_type,client|nullable|exists:clients,id',
+            'employee_id' => 'required_if:recipient_type,employee|nullable|exists:users,id',
             'assigned_to' => 'required|exists:users,id',
             'case_number' => 'required|string|unique:legal_cases',
             'title' => 'required|string|max:255',
@@ -118,16 +120,30 @@ class LegalCaseController extends Controller
             'closing_date' => 'nullable|date|after:filing_date',
         ]);
     
-        DB::transaction(function () use ($request, $adminUser) {
+        DB::transaction(function () use ($validated, $adminUser) {
             // Find the assigned lawyer
-            $assignedLawyer = User::find($request->assigned_to);
+            $assignedLawyer = User::find($validated['assigned_to']);
             // Ensure the assigned lawyer exists
             if (!$assignedLawyer) {
                 throw new \Exception("Assigned lawyer not found.");
             }
+
+            $recipientId = ($validated['recipient_type'] === 'client') 
+            ? $validated['client_id'] 
+            : $validated['employee_id'];
     
             // Create the legal case
-            $legalCase = LegalCase::create($request->all());
+            $legalCase = LegalCase::create([
+                'client_id' => ($validated['recipient_type'] === 'client') ? $validated['client_id'] : null,
+                'employee_id' => ($validated['recipient_type'] === 'employee') ? $validated['employee_id'] : null,
+                'assigned_to' => $validated['assigned_to'],
+                'case_number' => $validated['case_number'],
+                'title' => $validated['title'],
+                'description' => $validated['description'],
+                'status' => $validated['status'],
+                'filing_date' => $validated['filing_date'],
+                'closing_date' => $validated['closing_date'],
+            ]);
     
             // Dispatch the job to send the legal case created email
             dispatch(new SendLegalCaseCreatedEmail($legalCase, $assignedLawyer->email));
@@ -136,7 +152,7 @@ class LegalCaseController extends Controller
             AuditHelper::log(
                 'Create Legal Case',
                 'Legal Management',
-                "User $adminUser->id $adminUser->email ($adminUser->role) created a new legal case with case number: $request->case_number",
+                "User $adminUser->id $adminUser->email ($adminUser->role) created a new legal case with case number: $legalCase->case_number",
                 null, // ID of the affected client
                 null
             );
@@ -147,27 +163,29 @@ class LegalCaseController extends Controller
 
     // Show a specific legal case
     public function show($id){
-        $case = LegalCase::with(['client', 'assignedLawyer'])->findOrFail($id);
+        $case = LegalCase::with(['client', 'employee', 'assignedLawyer'])->findOrFail($id);
         return view('admin/legal_cases.show', compact('case'));
     }
 
-    public function edit($id){
 
-        $case = LegalCase::with(['client', 'assignedLawyer'])->findOrFail($id);
-        $clients = Client::all(); // Fetch all clients for the dropdown
-        $lawyers = User::where('role', 'lawyer')->get(); // Fetch all lawyers for the dropdown
-        return view('admin/legal_cases.edit', compact('case', 'clients', 'lawyers'));
+    public function edit($id){
+        $case = LegalCase::with(['client', 'employee', 'assignedLawyer'])->findOrFail($id);
+        $clients = Client::all();
+        $employees = User::all();
+        $lawyers = User::where('role', 'lawyer')->get();
+        
+        return view('admin/legal_cases.edit', compact('case', 'clients', 'employees', 'lawyers'));
     }
 
-    // Update a legal case
     public function update(Request $request, $id){
         $adminUser = Auth::user();
-
         $case = LegalCase::findOrFail($id);
         $previousStatus = $case->toArray();
 
-        $request->validate([
-            'client_id' => 'required|exists:clients,id',
+        $validated = $request->validate([
+            'recipient_type' => 'required|in:client,employee',
+            'client_id' => 'required_if:recipient_type,client|nullable|exists:clients,id',
+            'employee_id' => 'required_if:recipient_type,employee|nullable|exists:users,id',
             'assigned_to' => 'required|exists:users,id',
             'case_number' => 'required|string|unique:legal_cases,case_number,' . $id,
             'title' => 'required|string|max:255',
@@ -177,22 +195,42 @@ class LegalCaseController extends Controller
             'closing_date' => 'nullable|date|after:filing_date',
         ]);
 
-        // Update the legal case
-        $case->update($request->all());
+        // Clear the unused recipient ID
+        try{
+            $updateData = $validated;
+            if ($validated['recipient_type'] === 'client') {
+                $updateData['employee_id'] = null;
+            } else {
+                $updateData['client_id'] = null;
+            }
 
-        $newStatus = $case->toArray();
+            $case->update([
+                'client_id' => ($validated['recipient_type'] === 'client') ? $validated['client_id'] : null,
+                'employee_id' => ($validated['recipient_type'] === 'employee') ? $validated['employee_id'] : null,
+                'assigned_to' => $validated['assigned_to'],
+                'case_number' => $validated['case_number'],
+                'title' => $validated['title'],
+                'description' => $validated['description'],
+                'status' => $validated['status'],
+                'filing_date' => $validated['filing_date'],
+                'closing_date' => $validated['closing_date'],
+            ]);
 
-        // Log the audit trail
-        AuditHelper::log(
-            'Update',
-            'Legal Management',
-            "User $adminUser->id $adminUser->email $adminUser->role updated a legal case with case number: $case->case_number",
-            $previousStatus, // Old status
-            $newStatus // New status
-        );
+            AuditHelper::log(
+                'Update',
+                'Legal Management',
+                "User $adminUser->id $adminUser->email $adminUser->role updated legal case #$case->case_number",
+                $previousStatus,
+                $case->toArray()
+            );
 
-        // Redirect to the show page
-        return redirect()->route('admin.legal.show', $case->id)->with('success', 'Legal case updated successfully.');
+            return redirect()->route('admin.legal.show', $case->id)
+                ->with('success', 'Legal case updated successfully.');
+        }catch(\Exception $e){
+            DB::rollBack();
+            Log::error('Legal case edit failed: ' . $e->getMessage());
+        }
+        
     }
 
    /*  public function destroy($id){

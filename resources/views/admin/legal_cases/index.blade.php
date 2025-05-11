@@ -28,7 +28,7 @@
                     <tr>
                         <th>Case Number</th>
                         <th>Title</th>
-                        <th>Client</th>
+                        <th>Recipient</th>
                         <th>Assigned Lawyer</th>
                         <th>Status</th>
                         <th>Filing Date</th>
@@ -40,7 +40,11 @@
                         <tr>
                             <td>{{ $case->case_number }}</td>
                             <td>{{ $case->title }}</td>
-                            <td>{{ $case->client->first_name }} {{ $case->client->last_name }}</td>
+                            @if(isset($case->client))
+                                <td>{{ $case->client->first_name }} {{ $case->client->last_name }} (Client)</td>
+                            @elseif(isset($case->employee))
+                                <td>{{ $case->employee->first_name }} {{ $case->employee->last_name }} (Employee)</td>
+                            @endif
                             <td>{{ $case->assignedLawyer->first_name }} {{ $case->assignedLawyer->last_name }}</td>
                             <td>
                                 @php
