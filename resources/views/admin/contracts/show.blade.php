@@ -105,8 +105,8 @@
                         <div class="col-md-6 text-center">
                             <div class="border p-3 mb-3 rounded">
                                 <h5>Client Signature</h5>
-                                @if($contract->client_signed_at)
-                                    <p class="text-success">Signed on {{ $contract->client_signed_at->format('M d, Y') }}</p>
+                                @if($contract->party_signed_at)
+                                    <p class="text-success">Signed on {{ $contract->party_signed_at->format('M d, Y') }}</p>
                                 @else
                                     <p class="text-warning">Pending</p>
                                     {{-- <a href="{{ route('admin.contracts.send', $contract->id) }}" 

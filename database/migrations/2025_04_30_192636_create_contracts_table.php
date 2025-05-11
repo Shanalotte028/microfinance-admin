@@ -31,7 +31,7 @@ return new class extends Migration
             $table->string('signing_token')->nullable()->unique();
             $table->timestamp('signing_expires_at')->nullable();
             $table->timestamp('signing_sent_at')->nullable();
-            $table->timestamp('client_signed_at')->nullable();
+            $table->timestamp('party_signed_at')->nullable();
             $table->text('signature_data')->nullable(); // SVG format
             $table->string('signer_ip')->nullable();
             $table->string('signer_user_agent')->nullable();

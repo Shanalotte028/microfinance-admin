@@ -20,7 +20,7 @@
 
         <p class="mt-4 text-gray-300">
             This contract was signed on
-            <strong class="text-white">{{ \Carbon\Carbon::parse($contract->client_signed_at)->format('M j, Y g:i A') }}</strong>.
+            <strong class="text-white">{{ \Carbon\Carbon::parse($contract->party_signed_at)->format('M j, Y g:i A') }}</strong>.
         </p>
 
         <div class="mt-6">

@@ -27,7 +27,7 @@ class Contract extends Model
         'signer_ip',
         'signer_user_agent',
         'signing_token',
-        'client_signed_at',
+        'party_signed_at',
     ];
 
     protected $casts = [
@@ -35,7 +35,7 @@ class Contract extends Model
         /* 'start_date' => 'date',
         'end_date' => 'date',
         'auto_renew' => 'boolean', */
-        'client_signed_at' => 'datetime',
+        'party_signed_at' => 'datetime',
         'signing_expires_at' => 'datetime',
     ];
 

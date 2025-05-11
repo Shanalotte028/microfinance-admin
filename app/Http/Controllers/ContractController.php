@@ -224,7 +224,7 @@ class ContractController extends Controller
 
     public function showSigningPage(Contract $contract, Request $request)
     {
-        if ($contract->client_signed_at) {
+        if ($contract->party_signed_at) {
             return view('admin/contracts.already-signed', compact('contract'));
         }
 
@@ -244,7 +244,7 @@ class ContractController extends Controller
         $contract->update([
             'status' => 'active',
             'signature_data' => $validated['signature_data'],
-            'client_signed_at' => now(),
+            'party_signed_at' => now(),
             'signer_ip' => $request->ip(),
             'signer_user_agent' => $request->userAgent(),
             'signing_token' => null, // Invalidate token
