@@ -13,17 +13,17 @@
             <x-admin.card-table-info>
                 <x-slot:heading>
                     {{ $contract->title }} 
-                    <a href="{{ route('admin.contracts.edit', $contract->id) }}" 
+                 {{--    <a href="{{ route('admin.contracts.edit', $contract->id) }}" 
                        class="btn btn-success d-none d-md-inline-block">
                        Edit Contract
-                    </a>
+                    </a> --}}
                 </x-slot:heading>
-                <x-slot:heading_child>
+                {{-- <x-slot:heading_child>
                     <a href="{{ route('admin.contracts.edit', $contract->id) }}" 
                        class="btn btn-success d-md-none">
                        Edit Contract
                     </a>
-                </x-slot:heading_child>
+                </x-slot:heading_child> --}}
 
                 <x-admin.card-table-info-tr>
                     <x-slot:heading>Contract ID</x-slot:heading>
