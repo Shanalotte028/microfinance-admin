@@ -26,17 +26,20 @@ class ContractsSigningMail extends Mailable
      * Build the message.
      */
     public function build()
-    {
-        return $this->subject("Sign Your Contract #{$this->contract->id}")
-            ->markdown('emails.contract-signing')
-            ->with([
-                'url' => route('contracts.sign', [
-                    'contract' => $this->contract->id,
-                    'token' => $this->contract->signing_token
-                ]),
-                'client' => $this->contract->client,
-                'expiry' => $this->contract->signing_expires_at ? \Carbon\Carbon::parse($this->contract->signing_expires_at)->format('M j, Y g:i A') : 'No expiry date',
-            ]);
-            
-    }
+{
+    $recipient = $this->contract->client ?? $this->contract->user;
+    
+    return $this->subject("Sign Your Contract #{$this->contract->id}")
+        ->markdown('emails.contract-signing')
+        ->with([
+            'url' => route('contracts.sign', [
+                'contract' => $this->contract->id,
+                'token' => $this->contract->signing_token
+            ]),
+            'recipient' => $recipient,
+            'expiry' => $this->contract->signing_expires_at 
+                ? Carbon::parse($this->contract->signing_expires_at)->format('M j, Y g:i A') 
+                : 'No expiry date',
+        ]);
+}
 }

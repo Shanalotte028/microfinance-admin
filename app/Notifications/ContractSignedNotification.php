@@ -37,13 +37,21 @@ class ContractSignedNotification extends Notification
      * Get the mail representation of the notification.
      */
     // app/Notifications/ContractSignedNotification.php
-public function toMail($notifiable)
-{
-    return (new MailMessage)
-        ->subject("Contract #{$this->contract->id} Signed")
-        ->line("Client {$this->contract->client->name} has signed the contract.")
-        ->action('View Contract', route('admin.contracts.show', $this->contract));
-}
+    public function toMail($notifiable)
+    {
+        // Determine who signed (client or user)
+        $signer = $this->contract->client ?? $this->contract->user;
+        
+        // Determine who should be notified (admin or another party)
+        $notificationMessage = $notifiable->isAdmin() 
+            ? "{$signer->first_name} ({$signer->email}) has signed the contract."
+            : "Your contract #{$this->contract->id} has been successfully signed.";
+    
+        return (new MailMessage)
+            ->subject("Contract #{$this->contract->id} Signed")
+            ->line($notificationMessage)
+            ->action('View Contract', route('admin.contracts.show', $this->contract));
+    }
 
     /**
      * Get the array representation of the notification.

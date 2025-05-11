@@ -197,7 +197,7 @@ class ContractController extends Controller
 
             /* dd($contractData); */
 
-            $contract = Contract::create($contractData);
+            $contract = Contract::create($contractData)->load(['client', 'user']);
 
             AuditHelper::log(
                 'Contract Created',
@@ -206,11 +206,11 @@ class ContractController extends Controller
                 null,
                 $contract->toArray()
             );
+            
+            DB::commit();
 
             // Send signing email
             dispatch(new SendContractSigningMail($contract));
-
-            DB::commit();
 
             return redirect()->route('admin.contracts.index')
                 ->with('success', 'Contract created and signing request sent!');
@@ -234,7 +234,7 @@ class ContractController extends Controller
         ]);
     }
 
-    public function processSignature(Request $request, Contract $contract, $user)
+    public function processSignature(Request $request, Contract $contract)
     {
         $validated = $request->validate([
             'signature_data' => 'required|regex:/^data:image\/svg\+xml;base64,.+/',

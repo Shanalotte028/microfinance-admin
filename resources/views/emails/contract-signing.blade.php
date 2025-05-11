@@ -1,7 +1,7 @@
 @component('mail::message')
-# Contract: {{ $contract->title }}
+# Contract: {{ $contract->title ?? 'Untitled Contract' }}
 
-Dear {{ $client->first_name }},
+Dear {{ $recipient->first_name }},
 
 Please sign your contract by clicking the button below:
 

@@ -31,9 +31,15 @@ class SendContractSigningMail implements ShouldQueue
      * Execute the job.
      */
     public function handle(): void
-    {
-        //
+{
+    if ($this->contract->client_id) {
         Mail::to($this->contract->client->email)
             ->send(new ContractsSigningMail($this->contract));
+    } elseif ($this->contract->user_id) {
+        Mail::to($this->contract->user->email)
+            ->send(new ContractsSigningMail($this->contract));
+    } else {
+        Log::error("No recipient found for contract {$this->contract->id}");
     }
+}
 }
