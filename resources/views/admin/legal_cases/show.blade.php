@@ -6,15 +6,42 @@
         <div class="row">
             <div class="col-md-6">
                 <x-admin.card-table-info>
-                    <x-slot:heading>Legal Case Title: {{$case->title}} <a href="{{route('admin.legal.edit', $case->id)}}" class="btn btn-success d-none d-md-inline-block">Update Case</a></x-slot:heading>
-                    <x-slot:heading_child> <a href="{{route('admin.legal.edit', $case->client_id)}}" class="btn btn-success d-md-none">Update Case</a></x-slot:heading>
+                    <x-slot:heading>
+                    Legal Case Title: {{ $case->title }}
+                    <a href="{{ route('admin.legal.edit', $case->id) }}" class="btn btn-success d-none d-md-inline-block">
+                        Update Case
+                    </a>
+                </x-slot:heading>
+
+                <x-slot:heading_child>
+                    @if($case->client_id || $case->employee_id)
+                        <a href="{{ route('admin.legal.edit', $case->id) }}" class="btn btn-success d-md-none">
+                            Update Case
+                        </a>
+                    @endif
+                </x-slot:heading_child>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Case Number</x-slot:heading>
                             {{ $case->case_number }}
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
-                            <x-slot:heading>Client</x-slot:heading>
-                            <a href="{{route('admin.client.show', $case->client->client_id)}}" class="text-light">{{ $case->client->first_name }} {{ $case->client->last_name }}</a>
+                            @php
+                                $recipient = $case->client ?? $case->employee;
+                                $isClient = $case->client_id !== null;
+                                $route = $isClient 
+                                    ? route('admin.client.show', $case->client_id)
+                                    : ($case->employee_id ? route('admin.user.show', $case->employee_id) : '#');
+                            @endphp
+                            
+                            <x-slot:heading>{{ $isClient ? 'Client' : 'Employee' }}</x-slot:heading>
+                            
+                            @if($recipient)
+                                <a href="{{ $route }}" class="text-light">
+                                    {{ $recipient->first_name }} {{ $recipient->last_name }}
+                                </a>
+                            @else
+                                <span class="text-muted">Not assigned</span>
+                            @endif
                         </x-admin.card-table-info-tr>
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Assigned Lawyer</x-slot:heading>

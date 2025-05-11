@@ -5,17 +5,37 @@
             <form method="POST" action="{{ route('admin.legal.store') }}">
                 @csrf
                 <div class="row mb-3">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <select class="form-control" name="client_id" id="client_id" value="{{ old('client_id') }}" required>
-                                <option value="" disabled selected class="text-dark">Clients</option>
-                                @foreach ($clients as $client)
-                                <option value="{{ $client->id }}">{{ $client->first_name }} {{ $client->last_name }} </option>
-                                @endforeach
-                            </select>
-                            <x-admin.form-error name="client_id"></x-admin.form-error>
-                        </div>
+                   <!-- Dropdown to select type (Client or User) -->
+                    <div class="form-group mb-3">
+                        <select class="form-control" name="recipient_type" id="recipient_type" required>
+                            <option value="" disabled selected class="text-dark">Select Recipient Type</option>
+                            <option value="client">Client</option>
+                            <option value="employee">Employee</option>
+                        </select>
                     </div>
+
+                    <!-- Dynamic Dropdown (Clients or Users) -->
+                    <div class="form-group mb-3">
+                        <!-- Clients Dropdown (hidden by default) -->
+                        <select class="form-control" name="client_id" id="client_id" style="display: none;" value="{{ old('client_id') }}">
+                            <option value="" disabled selected class="text-dark">Select Client</option>
+                            @foreach ($clients as $client)
+                                <option value="{{ $client->id }}">{{ $client->first_name }} {{ $client->last_name }}</option>
+                            @endforeach
+                        </select>
+
+                        <!-- Users Dropdown (hidden by default) -->
+                        <select class="form-control" name="employee_id" id="employee_id" style="display: none;" value="{{ old('employee_id') }}">
+                            <option value="" disabled selected class="text-dark">Select User</option>
+                            @foreach ($employees as $employee)
+                                <option value="{{ $employee->id }}">{{ $employee->first_name }} {{ $employee->last_name }}</option>
+                            @endforeach
+                        </select>
+
+                        <x-admin.form-error name="client_id"></x-admin.form-error>
+                        <x-admin.form-error name="employee_id"></x-admin.form-error>
+                    </div>
+                
                     <div class="col-md-6">
                         <div class="form-group">
                             <select class="form-control" name="assigned_to" id="assigned_to" value="{{ old('assigned_to') }}" required>
@@ -85,4 +105,26 @@
                 </div>
             </form>
         </div>
+
+        <!-- JavaScript to toggle dropdowns -->
+<script>
+    document.getElementById('recipient_type').addEventListener('change', function() {
+        const recipientType = this.value;
+        
+        // Hide both dropdowns first
+        document.getElementById('client_id').style.display = 'none';
+        document.getElementById('employee_id').style.display = 'none';
+        
+        // Show the selected dropdown
+        if (recipientType === 'client') {
+            document.getElementById('client_id').style.display = 'block';
+            document.getElementById('client_id').required = true;
+            document.getElementById('employee_id').required = false;
+        } else if (recipientType === 'employee') {
+            document.getElementById('employee_id').style.display = 'block';
+            document.getElementById('employee_id').required = true;
+            document.getElementById('client_id').required = false;
+        }
+    });
+</script>
 </x-admin.auth-layout>                     

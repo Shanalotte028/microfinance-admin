@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('legal_cases', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('client_id')->constrained()->onDelete('cascade');
+            $table->foreignId('client_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('employee_id')->nullable()->constrained('users')->onDelete('cascade'); //employees that might have a case
             $table->foreignId('assigned_to')->constrained('users')->onDelete('cascade'); // Assigned lawyer
             $table->string('case_number')->unique(); // Unique case number
             $table->string('title');

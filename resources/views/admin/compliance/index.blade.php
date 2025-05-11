@@ -20,7 +20,22 @@
                                     <td>{{ $compliance->id ?? 'n/a'}}</td>
                                     <td>{{ $compliance->compliance_type }}</td>
                                     <td>{{ $compliance->document_type ?? 'n/a' }}</td>
-                                    <td>{{ $compliance->document_status ?? 'n/a'}}</td>
+                                    
+                                    <td>
+                                        @php
+                                            $status = $compliance->document_status ?? 'n/a';
+                                            $badgeClass = match($status) {
+                                                'approved' => 'bg-success',
+                                                'rejected' => 'bg-danger',
+                                                'pending' => 'bg-warning text-dark',
+                                                default => 'bg-secondary'
+                                            };
+                                        @endphp
+                                    
+                                        <span class="badge {{ $badgeClass }}">
+                                            {{ ucfirst($status) }}
+                                        </span>
+                                    </td>
                                     <td>{{ $compliance->submission_date ?? 'n/a'}}</td>
                                     <td>{{ $compliance->approval_date ?? 'n/a' }}</td>
                                     <td>

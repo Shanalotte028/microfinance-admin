@@ -13,7 +13,7 @@ class UserController extends Controller
     //
 
     public function index(){
-        $users = User::orderBy('created_at', 'desc')->get();
+        $users = User::orderBy('updated_at', 'desc')->get();
         return view('admin.user.index', compact('users'));
     }
 
@@ -59,25 +59,49 @@ class UserController extends Controller
         return redirect()->route('admin.user.index')->with('success', 'User updated successfully.');
     }
 
-    public function deactivate(User $user){
+    public function deactivate(Request $request, User $user){
         $previousStatus = $user->status;
         $adminUser = Auth::user();
-        
-        // Toggle the blocked status between 'yes' and 'no'
-        $user->status = ($user->status === 'inactive') ? 'active' : 'inactive';
-        $newStatus = $user->status;
+
+        // Determine new status
+        $newStatus = ($user->status === 'inactive') ? 'active' : 'inactive';
+
+        // If deactivating, validate and capture reason
+        $deactivationReason = null;
+        if ($newStatus === 'inactive') {
+            $request->validate([
+                'deactivation_reason' => 'required|string|max:500',
+            ]);
+            $deactivationReason = $request->input('deactivation_reason');
+        }
+
+        // Update user status
+        $user->status = $newStatus;
         $user->save();
 
-        // Prepare a success message based on the new status
-        $message = $user->status === 'inactive' ? 'user has been deactivated successfully.' : 'user has been activated successfully.';
-        
-        //  Add Audit Log
-        AuditHelper::log('Deactivate/Activate',
+        $user->deactivation_reason = $deactivationReason;
+        $user->save();
+
+        // Audit log with optional reason
+        $logMessage = "User $adminUser->id $adminUser->email ($adminUser->role) changed the status of User ID number: $user->id ($user->email)";
+        if ($deactivationReason) {
+            $logMessage .= " with reason: \"$deactivationReason\"";
+        }
+
+        AuditHelper::log(
+            'Deactivate/Activate',
             'User Management',
-            "User $adminUser->id $adminUser->email ($adminUser->role) changed the status of User ID number: $user->id ($user->email)",
-            $previousStatus, // ID of the affected user
-            $newStatus);
+            $logMessage,
+            $previousStatus,
+            $newStatus
+        );
+
+        // Prepare message
+        $message = $newStatus === 'inactive'
+            ? 'User has been deactivated successfully.'
+            : 'User has been activated successfully.';
 
         return redirect()->back()->with('success', $message);
     }
+
 }

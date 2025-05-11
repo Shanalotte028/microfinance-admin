@@ -14,6 +14,7 @@ use App\Http\Controllers\ClientAuth\ClientForgotPasswordController;
 use App\Http\Controllers\ClientAuth\ClientResetPasswordController;
 use App\Http\Controllers\ClientAuth\ClientSessionController;
 use App\Http\Controllers\ClientAuth\ClientUserRegistrationController;
+use App\Http\Controllers\ContractController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FieldInvestigationController;
 use App\Http\Controllers\LegalCaseController;
@@ -116,6 +117,10 @@ Route::middleware(['auth'])->group(function () {
     ->name('admin.activity-log');
 
     //Legal Management
+    Route::get('/generate-legal-report', [LegalCaseController::class, 'generateLegalReport'])->name('legal.report');
+    Route::get('/export-case', [LegalCaseController::class, 'exportCase'])->name('legal.export');
+
+
     Route::get('admin/legal-case', [LegalCaseController::class, 'index'])
         ->middleware('can:legal.show')
         ->name('admin.legal.index');
@@ -152,6 +157,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('admin/create', [UserRegistrationController::class, 'store'])->name('admin.accountCreate.post');
 
     // Risk Management
+
+    Route::get('/generate-risk_assessment-report', [RiskController::class, 'generateRiskReport'])->name('risk.report');
+    Route::get('/export-risk_assessment', [RiskController::class, 'exportRisk'])->name('risk.export');
+
     Route::get('/risks',[RiskController::class, 'risks'])->name('admin.risk_assessment.risks');
     Route::get('clients/{client}/list_risk',[RiskController::class, 'index'])->name('admin.risk_assessment.index');
     Route::get('clients/{client}/show_risk/{risk}',[RiskController::class, 'show'])->name('admin.risk_assessment.show');
@@ -215,14 +224,37 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/admin/reject-legal-case/{id}', [AdminApprovalController::class, 'rejectLegalCase'])
     ->middleware('can:approve.legal_cases')
     ->name('admin.reject.legal_cases');
+
+    // Contract Management
+    Route::get('admin/contracts', [ContractController::class, 'index'])
+    ->middleware('can:contracts.index')
+    ->name('admin.contracts.index');
+    Route::get('admin/contracts/create', [ContractController::class, 'create'])
+    ->middleware('can:contracts.create')
+    ->name('admin.contracts.create');
+    Route::post('admin/contracts', [ContractController::class, 'store'])
+    ->middleware('can:contracts.store')
+    ->name('admin.contracts.store');
+    Route::get('admin/contracts/{contract}', [ContractController::class, 'show'])
+    ->middleware('can:contracts.show')
+    ->name('admin.contracts.show');
+    Route::get('admin/contracts/{contract}/edit', [ContractController::class, 'edit'])
+    ->middleware('can:contracts.edit')
+    ->name('admin.contracts.edit');
+    Route::put('admin/contracts/{contract}/update', [ContractController::class, 'update'])
+    ->middleware('can:contracts.update')
+    ->name('admin.contracts.update');
+    Route::post('admin/contracts/{contract}/send', [ContractController::class, 'sendForSignature'])->name('admin.contracts.send');
+
+    Route::get('admin/contract-templates/{template}/fields', [ContractController::class, 'getTemplateFields']);
 });
 
 // Routes for guest users
 Route::middleware(['guest'])->group(function () {
-    
     // Login
     Route::get('admin/login', [SessionController::class, 'create'])->name('login');
     Route::post('admin/login', [SessionController::class, 'store'])->middleware('throttle:5,1')->name('admin.login.post');
+    
 });
 
 // Password Reset
@@ -230,6 +262,11 @@ Route::get('admin/password/reset', [ForgotPasswordController::class, 'create'])-
 Route::post('admin/password/email', [ForgotPasswordController::class, 'store'])->name('password.email');
 Route::get('admin/password/reset/{token}', [ResetPasswordController::class, 'create'])->name('password.reset');
 Route::post('admin/reset', [ResetPasswordController::class, 'update'])->name('password.update');
+
+// Contract Controller
+Route::get('admin/contracts/{contract}/download', [ContractController::class, 'download'])->name('admin.contracts.download');
+Route::get('admin/contracts/{contract}/sign', [ContractController::class, 'showSigningPage'])->name('contracts.sign');
+Route::post('admin/contracts/{contract}/sign', [ContractController::class, 'processSignature'])->name('contracts.process-signature');
 
 
 /* // Client Routes

@@ -48,7 +48,7 @@ class LegalCaseFactory extends Factory
                 'Legal proceedings have been initiated due to a client’s failure to adhere to the agreed repayment schedule, resulting in severe penalties.'
             ]),
             'status' => $this->faker->randomElement(['open', 'in_progress', 'closed']), // Random status
-            'filing_date' => $this->faker->date(), // Random filing date
+            'filing_date' => $this->faker->dateTimeBetween('2020-01-01', '2025-12-31')->format('Y-m-d'),
             'closing_date' => $this->faker->optional()->date(), // Random closing date (nullable)
         ];
     }

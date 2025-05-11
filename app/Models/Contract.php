@@ -1,0 +1,72 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
+
+class Contract extends Model
+{
+    protected $fillable = [
+        'client_id',
+        'user_id',
+        'template_id',
+        'title',
+        'content',
+        'terms',
+        'status',
+        /* 'start_date',
+        'end_date',
+        'auto_renew',
+        'description', */
+        'created_by',
+        'signing_token',
+        'signing_sent_at',
+        'signing_expires_at',
+        'signature_data',
+        'signer_ip',
+        'signer_user_agent',
+        'signing_token',
+        'party_signed_at',
+    ];
+
+    protected $casts = [
+        'terms' => 'array',
+        /* 'start_date' => 'date',
+        'end_date' => 'date',
+        'auto_renew' => 'boolean', */
+        'party_signed_at' => 'datetime',
+        'signing_expires_at' => 'datetime',
+    ];
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
+
+    public function template()
+    {
+        return $this->belongsTo(ContractTemplate::class);
+    }
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function isExpired(): bool{
+        return $this->status === 'expired' || 
+            ($this->end_date && $this->end_date->isPast());
+    }
+
+    public function getVendorNameAttribute(){
+        return $this->terms['vendor_name'] ?? null;
+    }
+    public function getGovernmentAgencyAttribute(){
+        return $this->terms['government_agency'] ?? null;
+    }
+}

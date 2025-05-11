@@ -305,35 +305,37 @@
                     </div>
                 </div>
             </div>
-            @can('compliances.approve')
-            <div class="row">
-                @if($complianceRecords->where('document_status', 'pending')->count() > 0)
-                <div class="col-md-6">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h5 class="card-title">Batch Approval</h5>
-                            <button type="button" class="btn btn-success"
-                                    onclick="setupBatchActionModal('approve', '{{ $complianceType }}', '{{ $complianceRecords->first()->submission_date }}')">
-                                <i class="bi bi-check-all"></i> Approve All ({{ $complianceRecords->where('document_status', 'pending')->count() }} pending)
-                            </button>
+            @if(optional($fieldInvestigation)->verified)
+                @can('compliances.approve')
+                <div class="row">
+                    @if($complianceRecords->where('document_status', 'pending')->count() > 0)
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">Batch Approval</h5>
+                                <button type="button" class="btn btn-success"
+                                        onclick="setupBatchActionModal('approve', '{{ $complianceType }}', '{{ $complianceRecords->first()->submission_date }}')">
+                                    <i class="bi bi-check-all"></i> Approve All ({{ $complianceRecords->where('document_status', 'pending')->count() }} pending)
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <!-- Rejection Button -->
-                <div class="col-md-6">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h5 class="card-title">Batch Rejection</h5>
-                            <button type="button" class="btn btn-danger"
-                                    onclick="setupBatchActionModal('reject', '{{ $complianceType }}', '{{ $complianceRecords->first()->submission_date }}')">
-                                <i class="bi bi-x-circle"></i> Reject All ({{ $complianceRecords->where('document_status', 'pending')->count() }} pending)
-                            </button>
+                    <!-- Rejection Button -->
+                    <div class="col-md-6">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">Batch Rejection</h5>
+                                <button type="button" class="btn btn-danger"
+                                        onclick="setupBatchActionModal('reject', '{{ $complianceType }}', '{{ $complianceRecords->first()->submission_date }}')">
+                                    <i class="bi bi-x-circle"></i> Reject All ({{ $complianceRecords->where('document_status', 'pending')->count() }} pending)
+                                </button>
+                            </div>
                         </div>
                     </div>
+                    @endif
                 </div>
-                @endif
-            </div>
-            @endcan
+                @endcan
+            @endif
     <x-client.success-popup/>
 </x-admin.dashboard-layout>
 

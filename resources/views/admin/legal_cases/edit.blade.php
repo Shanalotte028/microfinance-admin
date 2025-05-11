@@ -8,10 +8,21 @@
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <div class="form-floating mb-3 mb-md-0">
-                            <input class="form-control" name="client_name" id="client_name" type="text" value="{{ $case->client->first_name . ' ' . $case->client->last_name }}" required/>
-                            <label for="client_name">Client Name</label>
+                            @if($case->client_id)
+                                <input class="form-control" name="client_name" id="client_name" type="text" 
+                                       value="{{ $case->client->first_name . ' ' . $case->client->last_name }}" required readonly/>
+                                <label for="client_name">Client Name</label>
+                                <input type="hidden" name="client_id" value="{{ $case->client->id }}">
+                                <input type="hidden" name="recipient_type" value="client">
+                            @elseif($case->employee_id)
+                                <input class="form-control" name="employee_name" id="employee_name" type="text" 
+                                       value="{{ $case->employee->first_name . ' ' . $case->employee->last_name }}" required readonly/>
+                                <label for="employee_name">Employee Name</label>
+                                <input type="hidden" name="recipient_type" value="employee">
+                                <input type="hidden" name="employee_id" value="{{ $case->employee->id }}">
+                            @endif
                             <x-admin.form-error name="client_name"></x-admin.form-error>
-                            <input type="hidden" name="client_id" value="{{ $case->client->id }}">
+                            <x-admin.form-error name="employee_name"></x-admin.form-error>
                         </div>
                     </div>
                     <div class="col-md-6">

@@ -23,6 +23,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->boolean('password_reset_required')->default(true);
+            $table->text('deactivation_reason')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

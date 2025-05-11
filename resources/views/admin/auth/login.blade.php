@@ -2,15 +2,15 @@
     <x-slot:column_size>5</x-slot:column_size>
     <x-slot:header>Login</x-slot:header>
         <div class="card-body">
-            <form method="post" action="{{ route('admin.login.post') }}">
+            <form method="post" action="{{ route('admin.login.post') }}" autoc>
                 @csrf
                 <div class="form-floating mb-3">
-                    <input class="form-control text-dark" id="inputEmail" name="email" type="email" name="email" value="{{ $email ?? old('email') }}" required/>
+                    <input class="form-control text-dark" id="inputEmail" name="email" type="email" name="email" value="{{ $email ?? old('email') }}" autocomplete="off" required/>
                     <label for="inputEmail">Email address</label>
                     <x-admin.form-error name="email"></x-admin.form-error>
                 </div>
                 <div class="form-floating mb-3">
-                    <input class="form-control text-dark" id="inputPassword" name="password" type="password" required />
+                    <input class="form-control text-dark" id="inputPassword" name="password" type="password" autocomplete="off" required />
                     <label for="inputPassword">Password</label>
                     <x-admin.form-error name="password"></x-admin.form-error>
                 </div>

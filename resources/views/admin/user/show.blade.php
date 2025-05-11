@@ -32,6 +32,12 @@
                             <x-slot:heading>Status</x-slot:heading>
                             {{ $user->status }}
                         </x-admin.card-table-info-tr>
+                        @if(isset($user->deactivation_reason))
+                            <x-admin.card-table-info-tr>
+                                <x-slot:heading>Deactivation Reason</x-slot:heading>
+                                {{ $user->deactivation_reason }}
+                            </x-admin.card-table-info-tr>
+                        @endif
                         <x-admin.card-table-info-tr>
                             <x-slot:heading>Created At</x-slot:heading>
                             {{ $user->created_at }}
