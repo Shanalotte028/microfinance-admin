@@ -93,14 +93,18 @@
                         <div class="collapse {{ request()->routeIs('admin.contracts.*') ? 'show' : '' }}" id="collapseContracts"
                             aria-labelledby="headingContracts" data-bs-parent="#sidenavAccordion">
                             <nav class="sb-sidenav-menu-nested nav">
+                                    @can('contracts.index')
                                     <a class="nav-link {{ request()->routeIs('admin.user.index') ? 'active' : '' }}"
                                         href="{{ route('admin.contracts.index') }}">
                                         List Contracts
                                     </a>
+                                    @endcan
+                                    @can('contracts.create')
                                     <a class="nav-link {{ request()->routeIs('admin.contracts.create') ? 'active' : '' }}"
                                         href="{{ route('admin.contracts.create') }}">
                                         Create Contracts
                                     </a>
+                                    @endcan
                             </nav>
                         </div>
                     

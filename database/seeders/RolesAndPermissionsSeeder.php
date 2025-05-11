@@ -32,7 +32,8 @@ class RolesAndPermissionsSeeder extends Seeder
             'users.index','users.show','users.create','users.edit','users.update','users.deactivate',
             'investigation.assign', 'investigation.index', 'investigation.show', 'investigation.edit','investigation.update', 'investigation.credit_investigations',
             'approve.users', 'reject.users', 'approve.legal_cases', 'reject.legal_cases',
-            'assess.risk'
+            'assess.risk',
+            'contracts.index', 'contracts.create','contracts.store','contracts.show', 'contracts.edit', 'contracts.update',
         ];
 
           // Create and assign permissions
@@ -47,10 +48,13 @@ class RolesAndPermissionsSeeder extends Seeder
                                 'compliances.index','compliances.show','compliances.approve','compliances.reject',
                                 'audit','legal.index','legal.show','legal.edit','legal.create','legal.update','users.index','users.show','users.create',
                                 'investigation.assign', 'investigation.credit_investigations',
-                                'approve.users', 'reject.users', 'approve.legal_cases', 'reject.legal_cases','assess.risk'],
+                                'approve.users', 'reject.users', 'approve.legal_cases', 'reject.legal_cases','assess.risk',
+                                'contracts.index', 'contracts.create','contracts.store','contracts.show', 'contracts.edit', 'contracts.update',],
             'Staff' => ['clients.index','clients.show',
-                        'compliances.index','compliances.show','compliances.approve','compliances.reject','assess.risk'],
-            'Lawyer' => ['clients.show','legal.show','legal.edit','legal.update','compliances.show'],
+                        'compliances.index','compliances.show','compliances.approve','compliances.reject','assess.risk', 
+                        'contracts.index', 'contracts.show',],
+            'Lawyer' => ['clients.show','legal.show','legal.edit','legal.update','compliances.show',
+                        'contracts.index','contracts.show',],
             'Field Officer' => ['clients.show', 'compliances.show', 'investigation.show', 'investigation.edit', 'investigation.update', 'investigation.credit_investigations']
         ];
 

@@ -226,12 +226,24 @@ Route::middleware(['auth'])->group(function () {
     ->name('admin.reject.legal_cases');
 
     // Contract Management
-    Route::get('admin/contracts', [ContractController::class, 'index'])->name('admin.contracts.index');
-    Route::get('admin/contracts/create', [ContractController::class, 'create'])->name('admin.contracts.create');
-    Route::post('admin/contracts', [ContractController::class, 'store'])->name('admin.contracts.store');
-    Route::get('admin/contracts/{contract}', [ContractController::class, 'show'])->name('admin.contracts.show');
-    Route::get('admin/contracts/{contract}/edit', [ContractController::class, 'edit'])->name('admin.contracts.edit');
-    Route::put('admin/contracts/{contract}/update', [ContractController::class, 'update'])->name('admin.contracts.update');
+    Route::get('admin/contracts', [ContractController::class, 'index'])
+    ->middleware('can:contracts.index')
+    ->name('admin.contracts.index');
+    Route::get('admin/contracts/create', [ContractController::class, 'create'])
+    ->middleware('can:contracts.create')
+    ->name('admin.contracts.create');
+    Route::post('admin/contracts', [ContractController::class, 'store'])
+    ->middleware('can:contracts.store')
+    ->name('admin.contracts.store');
+    Route::get('admin/contracts/{contract}', [ContractController::class, 'show'])
+    ->middleware('can:contracts.show')
+    ->name('admin.contracts.show');
+    Route::get('admin/contracts/{contract}/edit', [ContractController::class, 'edit'])
+    ->middleware('can:contracts.edit')
+    ->name('admin.contracts.edit');
+    Route::put('admin/contracts/{contract}/update', [ContractController::class, 'update'])
+    ->middleware('can:contracts.update')
+    ->name('admin.contracts.update');
     Route::post('admin/contracts/{contract}/send', [ContractController::class, 'sendForSignature'])->name('admin.contracts.send');
 
     Route::get('admin/contract-templates/{template}/fields', [ContractController::class, 'getTemplateFields']);
