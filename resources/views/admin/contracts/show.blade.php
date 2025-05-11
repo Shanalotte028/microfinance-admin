@@ -32,24 +32,35 @@
 
                 <x-admin.card-table-info-tr>
                     @php
-                        $person = optional($contract->client) ?: optional($contract->user);
-                        $heading = $contract->client ? 'Client' : ($contract->user ? 'User' : 'Government/Vendor');
+                        $person = null;
+                        $heading = 'Vendor/Government';
+                        $route = '';
+                        $fullName = $contract->vendor_name ?: $contract->government_agency;
+                
                         if ($contract->client) {
-                            $route = route('admin.client.show', $contract->client);
-                            $fullName = $contract->client->first_name . ' '. $contract->client->last_name;
+                            $person = $contract->client;
+                            $heading = 'Client';
+                            $route = route('admin.client.show', $person);
                         } elseif ($contract->user) {
-                            $route = route('admin.user.show', $contract->user);
-                            $fullName = $contract->user->first_name . ' '. $contract->user->last_name;
-                        }else
-                            $route = '';
-                            $fullName = $contract->vendor_name ? $contract->vendor_name : $contract->government_agency ;
+                            $person = $contract->user;
+                            $heading = 'User';
+                            $route = route('admin.user.show', $person);
+                        }
+                
+                        if ($person) {
+                            $fullName = $person->first_name . ' ' . $person->last_name;
+                        }
                     @endphp
                 
                     <x-slot:heading>{{ $heading }}</x-slot:heading>
-                    @if($person)
-                        <a href="{{ $route }}" class="text-light">
-                            {{ $fullName }}
-                        </a>
+                    @if($fullName)
+                        @if($route)
+                            <a href="{{ $route }}" class="text-light">
+                                {{ $fullName }}
+                            </a>
+                        @else
+                            <span>{{ $fullName }}</span>
+                        @endif
                     @else
                         <span>-</span>
                     @endif
