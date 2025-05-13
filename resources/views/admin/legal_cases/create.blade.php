@@ -35,8 +35,9 @@
                         <x-admin.form-error name="client_id"></x-admin.form-error>
                         <x-admin.form-error name="employee_id"></x-admin.form-error>
                     </div>
-                
-                    <div class="col-md-6">
+                </div>
+                <div class="row mb-3">
+                     <div class="col-md-6">
                         <div class="form-group">
                             <select class="form-control" name="assigned_to" id="assigned_to" value="{{ old('assigned_to') }}" required>
                                 <option value="" disabled selected class="text-dark">Assigned Lawyer</option>
@@ -45,15 +46,6 @@
                                 @endforeach
                             </select>
                             <x-admin.form-error name="assigned_to"></x-admin.form-error>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <div class="form-floating mb-3 mb-md-0">
-                            <input class="form-control" name="case_number" id="case_number" type="text" value="{{ old('case_number') }}" required/>
-                            <label for="case_number">Case Number</label>
-                            <x-admin.form-error name="case_number"></x-admin.form-error>
                         </div>
                     </div>
                     <div class="col-md-6">

@@ -112,7 +112,6 @@ class LegalCaseController extends Controller
             'client_id' => 'required_if:recipient_type,client|nullable|exists:clients,id',
             'employee_id' => 'required_if:recipient_type,employee|nullable|exists:users,id',
             'assigned_to' => 'required|exists:users,id',
-            'case_number' => 'required|string|unique:legal_cases',
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'status' => 'required|in:open,in_progress,closed',
@@ -137,7 +136,7 @@ class LegalCaseController extends Controller
                 'client_id' => ($validated['recipient_type'] === 'client') ? $validated['client_id'] : null,
                 'employee_id' => ($validated['recipient_type'] === 'employee') ? $validated['employee_id'] : null,
                 'assigned_to' => $validated['assigned_to'],
-                'case_number' => $validated['case_number'],
+                'case_number' => $this->generateUniqueCaseNumber(),
                 'title' => $validated['title'],
                 'description' => $validated['description'],
                 'status' => $validated['status'],
@@ -231,6 +230,14 @@ class LegalCaseController extends Controller
             Log::error('Legal case edit failed: ' . $e->getMessage());
         }
         
+    }
+
+    private function generateUniqueCaseNumber(): string{
+        do {
+            $caseNumber = 'CASE-' . str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
+        } while (LegalCase::where('case_number', $caseNumber)->exists());
+
+        return $caseNumber;
     }
 
    /*  public function destroy($id){
