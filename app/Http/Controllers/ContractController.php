@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ContractExport;
 use App\Helpers\AuditHelper;
 use App\Jobs\SendContractSigningMail;
 use App\Mail\ContractsSigningMail;
@@ -18,10 +19,71 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 use phpDocumentor\Reflection\Types\Nullable;
 
 class ContractController extends Controller
 {
+    public function showContractReportForm()
+    {
+        return view('admin.contracts.contract_report_form');
+    }
+
+    public function generateContractReport(Request $request)
+    {
+        $request->validate([
+            'report_type' => 'required|in:monthly,yearly',
+            'year' => 'required|digits:4',
+            'month' => 'nullable|digits_between:1,12',
+        ]);
+
+        $year = $request->input('year');
+        $reportType = $request->input('report_type');
+
+        if ($reportType === 'monthly') {
+            $month = $request->input('month');
+            $startDate = Carbon::createFromDate($year, $month, 1)->startOfMonth();
+            $endDate = Carbon::createFromDate($year, $month, 1)->endOfMonth();
+            $title = "Contract Report for " . date('F', mktime(0, 0, 0, $month, 1)) . " $year";
+        } else {
+            $startDate = Carbon::createFromDate($year, 1, 1)->startOfYear();
+            $endDate = Carbon::createFromDate($year, 12, 31)->endOfYear();
+            $title = "Contract Report for $year";
+        }
+
+        $records = Contract::with(['client', 'user', 'template','createdBy'])
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->get();
+
+        return view('admin.contracts.contract_reports', compact('records', 'title'));
+    }
+
+    public function exportContract(Request $request)
+    {
+        $request->validate([
+            'export_type' => 'required|in:monthly,yearly',
+            'year' => 'required|digits:4',
+            'month' => 'nullable|digits_between:1,12',
+        ]);
+
+        $year = $request->input('year');
+        $exportType = $request->input('export_type');
+
+        if ($exportType === 'monthly') {
+            $month = $request->input('month');
+            $startDate = Carbon::createFromFormat('Y-m-d', "$year-$month-01")->startOfMonth();
+            $endDate = Carbon::createFromFormat('Y-m-d', "$year-$month-01")->endOfMonth();
+            $fileName = "contract_records_{$year}_{$month}.xlsx";
+        } else {
+            $startDate = Carbon::createFromFormat('Y-m-d', "$year-01-01")->startOfYear();
+            $endDate = Carbon::createFromFormat('Y-m-d', "$year-12-31")->endOfYear();
+            $fileName = "contract_records_{$year}.xlsx";
+        }
+
+        return Excel::download(new ContractExport($startDate, $endDate), $fileName);
+    }
+
+
     public function index()
     {
         $contracts = Contract::with('client', 'user', 'template')->get(); // eager load client to avoid N+1 problem

@@ -226,6 +226,11 @@ Route::middleware(['auth'])->group(function () {
     ->name('admin.reject.legal_cases');
 
     // Contract Management
+    Route::get('/contract-report', [ContractController::class, 'showReportForm'])->name('contract.report.form');
+    Route::get('/generate-contract-report', [ContractController::class, 'generateContractReport'])->name('contract.report');
+
+    Route::get('/export-compliance', [ContractController::class, 'exportContract'])->name('contract.export');
+
     Route::get('admin/contracts', [ContractController::class, 'index'])
     ->middleware('can:contracts.index')
     ->name('admin.contracts.index');
