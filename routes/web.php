@@ -63,14 +63,13 @@ Route::middleware(['auth'])->group(function () {
 
     // Compliances
 
-    Route::get('/compliance-report', [ComplianceController::class, 'showReportForm'])->name('compliance.report.form');
-    Route::get('/generate-compliance-report', [ComplianceController::class, 'generateComplianceReport'])->name('compliance.report');
-
-    Route::get('/export-compliance', [ComplianceController::class, 'exportCompliance'])->name('compliance.export');
-
     Route::get('/compliances', [ComplianceController::class, 'compliance'])
     ->middleware('can:compliances.index')
     ->name('admin.compliances');
+
+    Route::get('/compliance-report', [ComplianceController::class, 'showReportForm'])->name('compliance.report.form');
+    Route::get('/generate-compliance-report', [ComplianceController::class, 'generateComplianceReport'])->name('compliance.report');
+    Route::get('/export-compliance', [ComplianceController::class, 'exportCompliance'])->name('compliance.export');
 
     Route::patch('/clients/{client}/compliance/approve-batch', [ComplianceController::class, 'approveBatch'])
     ->name('admin.compliance.approve-batch');
@@ -229,7 +228,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/contract-report', [ContractController::class, 'showReportForm'])->name('contract.report.form');
     Route::get('/generate-contract-report', [ContractController::class, 'generateContractReport'])->name('contract.report');
 
-    Route::get('/export-compliance', [ContractController::class, 'exportContract'])->name('contract.export');
+    Route::get('/export-contract', [ContractController::class, 'exportContract'])->name('contract.export');
 
     Route::get('admin/contracts', [ContractController::class, 'index'])
     ->middleware('can:contracts.index')
